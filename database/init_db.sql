@@ -5,14 +5,6 @@ USE ads_management;
 	Generate some enums
 */
 
-CREATE TABLE ROLE(
-	title NVARCHAR(20),
-    PRIMARY KEY(title)
-);
-INSERT INTO ROLE VALUES ('Cán bộ phường');
-INSERT INTO ROLE VALUES ('Cán bộ quận');
-INSERT INTO ROLE VALUES ('Cán bộ VHTT');
-
 CREATE TABLE PROCESSING_STATUS(
 	title NVARCHAR(20),
     PRIMARY KEY (title)
@@ -84,14 +76,14 @@ INSERT INTO ADS_TYPE VALUES ('Trung tâm thương mại');
 	Generate main entities
 */
 
-CREATE TABLE ACCOUNT(
+CREATE TABLE USER(
 	username VARCHAR(20) NOT NULL,
-    password VARCHAR(256) NOT NULL,
-    role NVARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('WARD', 'DISTRICT', 'VHTT'),
     ward NVARCHAR(20),
     district NVARCHAR(20),
-    PRIMARY KEY (username),
-    CONSTRAINT FK_ACCOUNT_ROLE FOREIGN KEY (role) REFERENCES ROLE (title)
+    refresh_token VARCHAR(255),
+    PRIMARY KEY (username)
 ); 
 
 CREATE TABLE STAFF(
@@ -103,7 +95,7 @@ CREATE TABLE STAFF(
     username VARCHAR(20) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT UC_STAFF_username UNIQUE(username),
-    CONSTRAINT FK_STAFF_ACCOUNT FOREIGN KEY (username) REFERENCES ACCOUNT(username)
+    CONSTRAINT FK_STAFF_ACCOUNT FOREIGN KEY (username) REFERENCES USER(username)
 );
 
 CREATE TABLE REPORT(
