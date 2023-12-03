@@ -11,10 +11,10 @@ import com.example.backend.dto.JwtAuthenticationReponse;
 import com.example.backend.dto.RefreshTokenRequest;
 import com.example.backend.dto.SignInRequest;
 import com.example.backend.dto.SignUpRequest;
-import com.example.backend.entity.User;
 import com.example.backend.exception.InvalidAccountException;
 import com.example.backend.service.AuthenticationService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,9 +24,9 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (authenticationService.isExistedUsername(signUpRequest.getUsername())) {
-            throw new InvalidAccountException();
+            throw new InvalidAccountException("Username already exists");
         }
 
         authenticationService.signup(signUpRequest);

@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
         User user = userRepository.findByUsername(signInRequest.getUsername())
-                .orElseThrow(() -> new InvalidAccountException());
+                .orElseThrow(() -> new InvalidAccountException("Invalid username"));
 
         String jwt = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
@@ -67,7 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationReponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String username = jwtService.extractUserName(refreshTokenRequest.getToken());
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new InvalidAccountException());
+                .orElseThrow(() -> new InvalidAccountException("Invalid username"));
 
         if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)
                 && user.getRefreshToken().equals(refreshTokenRequest.getToken())) {
