@@ -29,6 +29,10 @@ public class AuthenticationController {
             throw new InvalidAccountException("Username already exists");
         }
 
+        if (!signUpRequest.getConfirmPassword().equals(signUpRequest.getPassword())) {
+            throw new InvalidAccountException("Confirm password does not match to password");
+        }
+
         authenticationService.signup(signUpRequest);
 
         return new ResponseEntity<>("Registration success", HttpStatus.OK);
