@@ -4,10 +4,6 @@ import java.sql.Date;
 
 import com.example.backend.enums.Role;
 
-<<<<<<< HEAD
-import jakarta.annotation.Nullable;
-=======
->>>>>>> 5508150 (edit the sign in request)
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -24,13 +20,10 @@ public class SignUpRequest {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$", message = "Password must be min 8 and max 20 length containing atleast 1 uppercase, 1 lowercase, 1 special characters and 1 digit")
     private String password;
 
-<<<<<<< HEAD
-=======
     @NotEmpty
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$", message = "Confirm password must be min 8 and max 20 length containing atleast 1 uppercase, 1 lowercase, 1 special characters and 1 digit")
     private String confirmPassword;
 
->>>>>>> 5508150 (edit the sign in request)
     @NotNull(message = "Role must not be null")
     private Role role;
 
