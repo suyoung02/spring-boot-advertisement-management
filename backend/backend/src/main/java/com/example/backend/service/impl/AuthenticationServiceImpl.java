@@ -1,5 +1,6 @@
 package com.example.backend.service.impl;
 
+import java.security.Principal;
 import java.util.HashMap;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.JwtAuthenticationReponse;
 import com.example.backend.dto.RefreshTokenRequest;
 import com.example.backend.dto.SignInRequest;
@@ -35,7 +37,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtService jwtService;
 
+    @Override
     public User signup(SignUpRequest signUpRequest) {
+        // check if username already exists
+        if (isExistedUsername(signUpRequest.getUsername())) {
+            throw new InvalidAccountException("Username already exists");
+        }
+
+        // check if confirm password does not match to password
+        if (!signUpRequest.getConfirmPassword().equals(signUpRequest.getPassword())) {
+            throw new InvalidAccountException("Confirm password does not match to password");
+        }
+
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setDistrict(signUpRequest.getDistrict());
@@ -55,15 +68,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return user;
     }
 
+    @Override
     public JwtAuthenticationReponse signin(SignInRequest signInRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
-        User user = userRepository.findByUsername(signInRequest.getUsername())
+        var user = userRepository.findByUsername(signInRequest.getUsername())
                 .orElseThrow(() -> new InvalidAccountException("Invalid username"));
 
-        String jwt = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        var jwt = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
         JwtAuthenticationReponse jwtAuthenticationReponse = new JwtAuthenticationReponse();
 
@@ -97,7 +111,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
-    public boolean isExistedUsername(String username) {
+    public boolean changePassword(ChangePasswordRequest changePasswordRequest, Principal connectedUser) {
+        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        // check if the current password is incorrect
+        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
+            throw new InvalidAccountException("Wrong password");
+        }
+
+        // check if the current password is same new password
+        if (changePasswordRequest.getCurrentPassword().equals(changePasswordRequest.getNewPassword())) {
+            throw new InvalidAccountException("Should create a new password");
+        }
+
+        // check if confirm password does not match to new password
+        if (!changePasswordRequest.getConfirmPassword().equals(changePasswordRequest.getNewPassword())) {
+            throw new InvalidAccountException("Confirm password does not match to new password");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+
+        return true;
+    }
+
+    private boolean isExistedUsername(String username) {
         User user = userRepository.findByUsername(username).orElse(null);
         return user != null ? true : false;
     }

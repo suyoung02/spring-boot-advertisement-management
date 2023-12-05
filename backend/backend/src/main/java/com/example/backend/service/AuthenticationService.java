@@ -1,5 +1,8 @@
 package com.example.backend.service;
 
+import java.security.Principal;
+
+import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.JwtAuthenticationReponse;
 import com.example.backend.dto.RefreshTokenRequest;
 import com.example.backend.dto.SignInRequest;
@@ -13,5 +16,5 @@ public interface AuthenticationService {
 
     JwtAuthenticationReponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 
-    boolean isExistedUsername(String username);
+    boolean changePassword(ChangePasswordRequest changePasswordRequest, Principal connectedUser);
 }

@@ -12,15 +12,12 @@ import lombok.Data;
 
 @Data
 public class SignUpRequest {
-    @NotEmpty
     @Pattern(regexp = "^[a-z0-9]{8,20}$", message = "Username must be of 8 to 20 length with no uppercase characters and no special characters")
     private String username;
 
-    @NotEmpty
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$", message = "Password must be min 8 and max 20 length containing atleast 1 uppercase, 1 lowercase, 1 special characters and 1 digit")
     private String password;
 
-    @NotEmpty
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$", message = "Confirm password must be min 8 and max 20 length containing atleast 1 uppercase, 1 lowercase, 1 special characters and 1 digit")
     private String confirmPassword;
 
