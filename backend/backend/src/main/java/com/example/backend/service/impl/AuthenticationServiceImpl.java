@@ -11,8 +11,10 @@ import com.example.backend.dto.JwtAuthenticationReponse;
 import com.example.backend.dto.RefreshTokenRequest;
 import com.example.backend.dto.SignInRequest;
 import com.example.backend.dto.SignUpRequest;
+import com.example.backend.entity.Staff;
 import com.example.backend.entity.User;
 import com.example.backend.exception.InvalidAccountException;
+import com.example.backend.repository.StaffRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.AuthenticationService;
 import com.example.backend.service.JwtService;
@@ -25,6 +27,8 @@ import lombok.var;
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
 
+    private final StaffRepository staffRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
@@ -33,13 +37,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public User signup(SignUpRequest signUpRequest) {
         User user = new User();
-
         user.setUsername(signUpRequest.getUsername());
         user.setDistrict(signUpRequest.getDistrict());
         user.setWard(signUpRequest.getWard());
         user.setRole(signUpRequest.getRole());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        Staff staff = new Staff();
+        staff.setFullname(signUpRequest.getFullname());
+        staff.setDob(signUpRequest.getDob());
+        staff.setEmail(signUpRequest.getEmail());
+        staff.setPhoneNumber(signUpRequest.getPhoneNumber());
+        staff.setUsername(signUpRequest.getUsername());
+        staffRepository.save(staff);
+
+        return user;
     }
 
     public JwtAuthenticationReponse signin(SignInRequest signInRequest) {
