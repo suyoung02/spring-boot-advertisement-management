@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.ChangePasswordRequest;
@@ -49,5 +51,10 @@ public class AuthenticationController {
 
         authenticationService.changePassword(changePasswordRequest, connectedUser);
         return new ResponseEntity<>("Changed password success", HttpStatus.OK);
+    }
+
+    @PutMapping("/regenerate-otp")
+    public ResponseEntity<String> regenerateOtp(@RequestParam String username) {
+        return new ResponseEntity<>(authenticationService.regenerateOtp(username), HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.backend.service.impl;
 
 import java.security.Principal;
+import java.sql.Timestamp;
 import java.util.HashMap;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +21,10 @@ import com.example.backend.repository.StaffRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.AuthenticationService;
 import com.example.backend.service.JwtService;
+import com.example.backend.util.EmailUtil;
+import com.example.backend.util.OtpUtil;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 
@@ -37,6 +41,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtService jwtService;
 
+    private final OtpUtil otpUtil;
+
+    private final EmailUtil emailUtil;
+
     @Override
     public User signup(SignUpRequest signUpRequest) {
         // check if username already exists
@@ -44,9 +52,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new InvalidAccountException("Username already exists");
         }
 
-        // check if confirm password does not match to password
-        if (!signUpRequest.getConfirmPassword().equals(signUpRequest.getPassword())) {
-            throw new InvalidAccountException("Confirm password does not match to password");
+        // check if email already exists
+        if (isExistedEmail(signUpRequest.getEmail())) {
+            throw new InvalidAccountException("Email already exists");
         }
 
         User user = new User();
@@ -135,8 +143,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return true;
     }
 
+    public String regenerateOtp(String username) {
+        Staff staff = staffRepository.findByUsername(username)
+                .orElseThrow(() -> new InvalidAccountException("Invalid username"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new InvalidAccountException("Invalid username"));
+        String email = staff.getEmail();
+        String otp = otpUtil.generateOtp();
+        String fullname = staff.getFullname();
+
+        try {
+            emailUtil.sendOtpToEmail(email, otp, fullname);
+        } catch (MessagingException ex) {
+            throw new RuntimeException("Unable to send otp, please try again");
+        }
+
+        user.setOtp(otp);
+        user.setExpiredOtp(new Timestamp(System.currentTimeMillis() + OtpUtil.EXPIRE_OTP));
+
+        return "Otp sent to your email ".concat(emailUtil.hashEmail(email));
+    }
+
     private boolean isExistedUsername(String username) {
         User user = userRepository.findByUsername(username).orElse(null);
         return user != null ? true : false;
+    }
+
+    private boolean isExistedEmail(String email) {
+        Staff staff = staffRepository.findByEmail(email).orElse(null);
+
+        return staff != null ? true : false;
     }
 }

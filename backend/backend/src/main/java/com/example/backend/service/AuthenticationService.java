@@ -17,4 +17,6 @@ public interface AuthenticationService {
     JwtAuthenticationReponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 
     boolean changePassword(ChangePasswordRequest changePasswordRequest, Principal connectedUser);
+
+    String regenerateOtp(String username);
 }

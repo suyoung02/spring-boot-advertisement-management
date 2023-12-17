@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,6 +41,12 @@ public class User implements UserDetails {
 
     @Column(name = "refresh_token")
     private String refreshToken;
+
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "expired_otp")
+    private Timestamp expiredOtp;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

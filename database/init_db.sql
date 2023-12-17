@@ -83,6 +83,8 @@ CREATE TABLE USER(
     ward NVARCHAR(20),
     district NVARCHAR(20),
     refresh_token VARCHAR(255),
+    otp CHAR(6),
+    expired_otp TIMESTAMP,
     PRIMARY KEY (username)
 ); 
 
@@ -95,6 +97,7 @@ CREATE TABLE STAFF(
     username VARCHAR(20) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT UC_STAFF_username UNIQUE(username),
+    CONSTRAINT UC_STAFF_email UNIQUE(email),
     CONSTRAINT FK_STAFF_ACCOUNT FOREIGN KEY (username) REFERENCES USER(username)
 );
 
