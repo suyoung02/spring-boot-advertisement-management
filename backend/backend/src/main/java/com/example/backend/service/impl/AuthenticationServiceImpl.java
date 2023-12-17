@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.ChangePasswordRequest;
+import com.example.backend.dto.ForgotPasswordRequest;
 import com.example.backend.dto.JwtAuthenticationReponse;
 import com.example.backend.dto.RefreshTokenRequest;
 import com.example.backend.dto.SignInRequest;
@@ -123,17 +124,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
         // check if the current password is incorrect
-        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
+        if (!isMatchedOldPassword(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             throw new InvalidAccountException("Wrong password");
         }
 
         // check if the current password is same new password
-        if (changePasswordRequest.getCurrentPassword().equals(changePasswordRequest.getNewPassword())) {
+        if (isMatchedOldPassword(changePasswordRequest.getNewPassword(), user.getPassword())) {
             throw new InvalidAccountException("Should create a new password");
         }
 
         // check if confirm password does not match to new password
-        if (!changePasswordRequest.getConfirmPassword().equals(changePasswordRequest.getNewPassword())) {
+        if (!isMatchedNewPassword(changePasswordRequest.getNewPassword(), changePasswordRequest.getConfirmPassword())) {
             throw new InvalidAccountException("Confirm password does not match to new password");
         }
 
@@ -155,13 +156,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             emailUtil.sendOtpToEmail(email, otp, fullname);
         } catch (MessagingException ex) {
-            throw new RuntimeException("Unable to send otp, please try again");
+            throw new RuntimeException("Unable to send OTP, please try again");
         }
 
         user.setOtp(otp);
         user.setExpiredOtp(new Timestamp(System.currentTimeMillis() + OtpUtil.EXPIRE_OTP));
+        userRepository.save(user);
 
-        return "Otp sent to your email ".concat(emailUtil.hashEmail(email));
+        return "OTP sent to your email ".concat(emailUtil.hashEmail(email));
+    }
+
+    public String resetPassword(ForgotPasswordRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new InvalidAccountException("Invalid username"));
+
+        // check if confirm password does not match to new password
+        if (!isMatchedNewPassword(request.getNewPassword(), request.getConfirmPassword())) {
+            throw new InvalidAccountException("Confirm password does not match to new password");
+        }
+
+        // check if OTP is invalid
+        if (!isValidOtp(user, request.getOtp())) {
+            throw new InvalidAccountException("OTP went wrong");
+        }
+
+        // Save new password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return "Reset password successfully";
     }
 
     private boolean isExistedUsername(String username) {
@@ -173,5 +196,38 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Staff staff = staffRepository.findByEmail(email).orElse(null);
 
         return staff != null ? true : false;
+    }
+
+    private boolean isMatchedNewPassword(String newPassword, String confirmPassword) {
+        if (confirmPassword.equals(newPassword)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isMatchedOldPassword(String oldPassword, String newPassword) {
+        if (passwordEncoder.matches(oldPassword, newPassword)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isValidOtp(User user, String otp) {
+        if (user.getOtp() == null) {
+            return false;
+        }
+
+        // if expiring otp, return false
+        if (Long.compare(user.getExpiredOtp().getTime(), System.currentTimeMillis()) < 0) {
+            return false;
+        }
+
+        if (!user.getOtp().equals(otp)) {
+            return false;
+        }
+
+        return true;
     }
 }
