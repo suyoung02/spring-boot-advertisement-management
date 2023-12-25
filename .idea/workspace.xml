@@ -5,6 +5,55 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ad1cbdc-9adf-4cfa-84d3-0fc12f4fc68d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/config/EmailConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/config/JwtAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/config/SecurityConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/controller/AuthenticationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/dto/ChangePasswordRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/dto/ForgotPasswordRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/dto/JwtAuthenticationReponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/dto/RefreshTokenRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/dto/SignInRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/dto/SignUpRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/entity/Staff.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/enums/OurHttpCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/enums/Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/exception/ApiError.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/exception/InvalidAccountException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/exception/RestExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/repository/StaffRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/service/AuthenticationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/service/JwtService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/service/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/service/impl/AuthenticationServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/service/impl/JwtServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/util/EmailUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/src/main/java/com/example/backend/util/OtpUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/docs_db.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/init_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/.eslintrc.cjs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/.prettierrc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/postcss.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/vite.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/assets/react.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/main.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/vite-env.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/tailwind.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/tsconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/tsconfig.node.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/vite.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/yarn.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/src/main/resources/application.properties" afterDir="false" />
     </list>
@@ -86,6 +135,7 @@
       <workItem from="1703490024204" duration="81000" />
       <workItem from="1703490116195" duration="22000" />
       <workItem from="1703491166333" duration="53000" />
+      <workItem from="1703494792599" duration="38000" />
     </task>
     <servers />
   </component>
