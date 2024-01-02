@@ -1,11 +1,5 @@
-import { Home } from "./pages/Home";
-
 function App() {
-  return (
-    <div className="flex flex-col">
-      <Home />
-    </div>
-  );
+  return <div className="flex flex-col"></div>;
 }
 
 export default App;

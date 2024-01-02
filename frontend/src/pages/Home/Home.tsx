@@ -2,7 +2,7 @@ import { Map } from "./components/Map";
 
 const Home = () => {
   return (
-    <div>
+    <div className="App">
       <Map />
     </div>
   );
