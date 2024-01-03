@@ -37,7 +37,7 @@ export const apiRequest = async <
   return instance.request({
     ...config,
     headers: {
-      Accept: "application/json",
+      // Accept: "application/json",
       ...config.headers,
     },
     withCredentials: true,
