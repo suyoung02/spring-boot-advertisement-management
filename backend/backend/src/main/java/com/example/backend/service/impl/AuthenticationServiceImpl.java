@@ -27,7 +27,6 @@ import com.example.backend.util.OtpUtil;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 
 @Service
 @RequiredArgsConstructor
