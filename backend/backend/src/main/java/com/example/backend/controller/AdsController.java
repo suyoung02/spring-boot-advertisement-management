@@ -1,9 +1,10 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.AddPanelRequest;
 import com.example.backend.dto.AddPositionRequest;
+import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.AdsPosition;
 import com.example.backend.service.AdsService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class AdsController {
 
     @GetMapping("/getAllPosition")
     public ResponseEntity<List<AdsPosition>> getAllPosition(){
+        System.out.println(1);
         List<AdsPosition> result = adsService.getAllPosition();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -62,5 +64,28 @@ public class AdsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/getAllPanel")
+    public List<AdsPanel> getAllPanels(){
+        System.out.println(1);
+        return adsService.getAllPanels();
+    }
+
+    @PostMapping("/addNewPanel")
+    public ResponseEntity<String> addNewPanel(@Valid @RequestBody AddPanelRequest newPanel){
+        System.out.println(newPanel);
+        try{
+            if(adsService.addNewPanel(newPanel)){
+                return new ResponseEntity<>("panel", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

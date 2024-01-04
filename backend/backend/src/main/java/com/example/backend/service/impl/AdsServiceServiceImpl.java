@@ -1,12 +1,16 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.dto.AddPanelRequest;
 import com.example.backend.dto.AddPositionRequest;
+import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.AdsPosition;
-import com.example.backend.repository.AdsRepository;
+import com.example.backend.repository.AdsPanelRepository;
+import com.example.backend.repository.AdsPositionRepository;
 import com.example.backend.service.AdsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +18,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdsServiceServiceImpl implements AdsService {
 
-    private final AdsRepository adsRepository;
+    private final AdsPositionRepository adsPositionRepository;
+
+    private final AdsPanelRepository adsPanelRepository;
 
     public List<AdsPosition> getAllPosition(){
-        return adsRepository.findAll();
+        return adsPositionRepository.findAll();
     }
 
     public AdsPosition addNewPosition(AddPositionRequest newPosition){
@@ -29,19 +35,19 @@ public class AdsServiceServiceImpl implements AdsService {
         ads.setLocation_type(newPosition.getLocation_type());
         ads.setPlanning_status(newPosition.getPlanning_status());
         ads.setProvince(newPosition.getProvince());
-        return adsRepository.save(ads);
+        return adsPositionRepository.save(ads);
     }
 
     public Boolean deletePosition(Integer id){
-        if(adsRepository.existsById(id)) {
-            adsRepository.deleteById(id);
+        if(adsPositionRepository.existsById(id)) {
+            adsPositionRepository.deleteById(id);
             return true;
         }
         return false;
     }
 
     public AdsPosition updatePosition(Integer id, AddPositionRequest newPosition) {
-        Optional<AdsPosition> adsOptional  = adsRepository.findById(id);
+        Optional<AdsPosition> adsOptional  = adsPositionRepository.findById(id);
         if (adsOptional.isPresent()) {
             AdsPosition ads = adsOptional.get();
             // Thực hiện các hành động với ads
@@ -52,10 +58,41 @@ public class AdsServiceServiceImpl implements AdsService {
             ads.setDistrict(newPosition.getDistrict());
             ads.setLocation_type(newPosition.getLocation_type());
             ads.setPlanning_status(newPosition.getPlanning_status());
-            adsRepository.save(ads);
+            adsPositionRepository.save(ads);
             return ads;
         } else {
            throw new RuntimeException("Ads position id not found");
         }
+    }
+    public  List<AdsPanel> getAllPanels(){
+        return adsPanelRepository.findAll();
+    }
+
+    public Boolean addNewPanel(AddPanelRequest newPanel) {
+        // Bước 1: Lấy AdsPosition từ cơ sở dữ liệu bằng ID
+        Optional<AdsPosition> adsPositionOptional = adsPositionRepository.findById(newPanel.getAds_position());
+
+        if (adsPositionOptional.isPresent()) {
+            AdsPosition adsPosition = adsPositionOptional.get();
+
+            // Bước 2: Tạo một AdsPanel mới
+            AdsPanel panel = new AdsPanel();
+            panel.setContract_expiration(newPanel.getContract_expiration());
+            panel.setSize(newPanel.getSize());
+            panel.setAds_type(newPanel.getAds_type());
+
+            // Bước 3: Liên kết AdsPanel với AdsPosition
+            panel.setAds_position(adsPosition);
+
+            // Bước 4: Thêm AdsPanel vào tập hợp của AdsPosition (nếu cần)
+            adsPosition.getPanels().add(panel);
+
+            // Bước 5: Lưu lại AdsPosition để cập nhật thay đổi trong cơ sở dữ liệu
+            adsPositionRepository.saveAndFlush(adsPosition);
+
+            return true;
+        }
+
+        return false; // Trả về false nếu AdsPosition không tồn tại
     }
 }

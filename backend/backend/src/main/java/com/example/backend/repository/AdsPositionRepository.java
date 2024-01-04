@@ -3,5 +3,5 @@ package com.example.backend.repository;
 import com.example.backend.entity.AdsPosition;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AdsRepository extends JpaRepository<AdsPosition, Integer> {
+public interface AdsPositionRepository extends JpaRepository<AdsPosition, Integer> {
 }

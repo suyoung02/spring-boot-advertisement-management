@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -36,6 +37,6 @@ public class AdsPosition {
     @Column(name ="planning_status")
     private String planning_status;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ads_position")
-    private List<AdsPanel> panels = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ads_position", fetch = FetchType.LAZY)
+    private Collection<AdsPanel> panels = new ArrayList<>();
 }
