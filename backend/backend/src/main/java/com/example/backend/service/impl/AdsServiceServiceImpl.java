@@ -82,7 +82,7 @@ public class AdsServiceServiceImpl implements AdsService {
             panel.setAds_type(newPanel.getAds_type());
 
             // Bước 3: Liên kết AdsPanel với AdsPosition
-            panel.setAds_position(adsPosition);
+            panel.setAds_position(adsPosition.getId());
 
             // Bước 4: Thêm AdsPanel vào tập hợp của AdsPosition (nếu cần)
             adsPosition.getPanels().add(panel);

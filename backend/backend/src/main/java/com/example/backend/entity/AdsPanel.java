@@ -27,6 +27,6 @@ public class AdsPanel {
     private Date contract_expiration;
 
 
-    @Column(name="id_ads_position")
+    @Column(name="ads_position")
     private Integer ads_position;
 }
