@@ -10,7 +10,6 @@ import com.example.backend.service.AdsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +23,13 @@ public class AdsServiceServiceImpl implements AdsService {
 
     public List<AdsPosition> getAllPosition(){
         return adsPositionRepository.findAll();
+    }
+
+    public Optional<AdsPosition> getDetailPosition(Integer id){
+        if(adsPositionRepository.existsById(id)){
+            return adsPositionRepository.findById(id);
+        }
+        return null;
     }
 
     public AdsPosition addNewPosition(AddPositionRequest newPosition){
@@ -41,6 +47,14 @@ public class AdsServiceServiceImpl implements AdsService {
     public Boolean deletePosition(Integer id){
         if(adsPositionRepository.existsById(id)) {
             adsPositionRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean deletePanel(Integer id){
+        if(adsPanelRepository.existsById(id)) {
+            adsPanelRepository.deleteById(id);
             return true;
         }
         return false;
@@ -64,35 +78,40 @@ public class AdsServiceServiceImpl implements AdsService {
            throw new RuntimeException("Ads position id not found");
         }
     }
+
+    public AdsPanel updatePanel(Integer Id, AddPanelRequest newPosition){
+        Optional<AdsPanel> adsOptional  = adsPanelRepository.findById(Id);
+        if (adsOptional.isPresent()) {
+            AdsPanel ads = adsOptional.get();
+            // Thực hiện các hành động với ads
+            ads.setAds_position(newPosition.getAds_position());
+            ads.setAds_type(newPosition.getAds_type());
+            ads.setSize(newPosition.getSize());
+            ads.setContract_expiration(newPosition.getContract_expiration());
+            return ads;
+        } else {
+            throw new RuntimeException("Ads position id not found");
+        }
+    }
+
+    public Optional<AdsPanel> getDetailPanel(Integer id){
+        if(adsPanelRepository.existsById(id)){
+            return adsPanelRepository.findById(id);
+        }
+        return null;
+    }
+
     public  List<AdsPanel> getAllPanels(){
         return adsPanelRepository.findAll();
     }
 
     public Boolean addNewPanel(AddPanelRequest newPanel) {
-        // Bước 1: Lấy AdsPosition từ cơ sở dữ liệu bằng ID
-        Optional<AdsPosition> adsPositionOptional = adsPositionRepository.findById(newPanel.getAds_position());
-
-        if (adsPositionOptional.isPresent()) {
-            AdsPosition adsPosition = adsPositionOptional.get();
-
-            // Bước 2: Tạo một AdsPanel mới
-            AdsPanel panel = new AdsPanel();
-            panel.setContract_expiration(newPanel.getContract_expiration());
-            panel.setSize(newPanel.getSize());
-            panel.setAds_type(newPanel.getAds_type());
-
-            // Bước 3: Liên kết AdsPanel với AdsPosition
-            panel.setAds_position(adsPosition.getId());
-
-            // Bước 4: Thêm AdsPanel vào tập hợp của AdsPosition (nếu cần)
-            adsPosition.getPanels().add(panel);
-
-            // Bước 5: Lưu lại AdsPosition để cập nhật thay đổi trong cơ sở dữ liệu
-            adsPositionRepository.saveAndFlush(adsPosition);
-
-            return true;
-        }
-
-        return false; // Trả về false nếu AdsPosition không tồn tại
+        AdsPanel ads = new AdsPanel();
+        ads.setAds_type(newPanel.getAds_type());
+        ads.setSize(newPanel.getSize());
+        ads.setContract_expiration(newPanel.getContract_expiration());
+        ads.setAds_position(newPanel.getAds_position());
+        adsPanelRepository.save(ads);
+        return true;
     }
 }

@@ -37,6 +37,4 @@ public class AdsPosition {
     @Column(name ="planning_status")
     private String planning_status;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ads_position", fetch = FetchType.LAZY)
-    private Collection<AdsPanel> panels = new ArrayList<>();
 }
