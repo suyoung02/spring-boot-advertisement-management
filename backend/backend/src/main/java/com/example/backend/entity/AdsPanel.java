@@ -12,11 +12,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdsPanel {
-
-    @ManyToOne()
-    @JoinColumn(name="ads_position", nullable = false)
-    private AdsPosition ads_position;
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +27,6 @@ public class AdsPanel {
     private Date contract_expiration;
 
 
-//    @Column(name="ads_position")
-//    private Integer ads_position
+    @Column(name="id_ads_position")
+    private Integer ads_position;
 }
