@@ -35,8 +35,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        request -> request
-                                .requestMatchers("/api/v1/auth/**","/api-docs", "/swagger-ui/**").permitAll()
+                        request -> request.requestMatchers("/api/v1/auth/**", "/api-docs", "/swagger-ui/**", "/api/v1/ads/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"api/v1/contract/{id}").hasAuthority(Role.VHTT.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
