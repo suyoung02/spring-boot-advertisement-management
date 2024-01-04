@@ -21,14 +21,14 @@ import java.util.Optional;
 public class AdsController {
     private final AdsService adsService;
 
-    @GetMapping("/getAllPosition")
+    @GetMapping("/all/getAllPosition")
     public ResponseEntity<List<AdsPosition>> getAllPosition(){
         System.out.println(1);
         List<AdsPosition> result = adsService.getAllPosition();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/getDetailPosition/{id}")
+    @GetMapping("/all/getDetailPosition/{id}")
     public ResponseEntity<?> getDetailPosition(@PathVariable(value = "id") Integer id){
         Optional<AdsPosition> position = adsService.getDetailPosition(id);
         if(position != null){
@@ -37,7 +37,7 @@ public class AdsController {
         return new ResponseEntity<>("Id Not found", HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/addNewPosition")
+    @PostMapping("/vhtt/addNewPosition")
     public ResponseEntity<AdsPosition> addNewPosition(@Valid @RequestBody AddPositionRequest newPosition) {
         try {
             System.out.println(newPosition);
@@ -49,7 +49,7 @@ public class AdsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @DeleteMapping("/deletePosition/{id}")
+    @DeleteMapping("/vhtt/deletePosition/{id}")
     public ResponseEntity<String> deletePosition(@PathVariable(value = "id") Integer id){
         try{
             System.out.println(id);
@@ -64,7 +64,7 @@ public class AdsController {
         }
     }
 
-    @PutMapping("/updatePosition/{id}")
+    @PutMapping("/vhtt/updatePosition/{id}")
     public ResponseEntity<AdsPosition> updatePosition(@PathVariable(value = "id") Integer id, @Valid @RequestBody AddPositionRequest newPosition){
         try{
             AdsPosition result = adsService.updatePosition(id, newPosition);
@@ -77,14 +77,14 @@ public class AdsController {
 
     //Panel controller....................
 
-    @GetMapping("/getAllPanel")
+    @GetMapping("/all/getAllPanel")
     public ResponseEntity<List<AdsPanel>> getAllPanels(){
         List<AdsPanel> ads = adsService.getAllPanels();
         System.out.println(ads);
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
-    @GetMapping("/getDetailPanel/{id}")
+    @GetMapping("/all/getDetailPanel/{id}")
     public ResponseEntity<?> getDetailPanel(@PathVariable(value = "id") Integer id){
         Optional<AdsPanel> panel = adsService.getDetailPanel(id);
         if(panel != null){
@@ -93,7 +93,7 @@ public class AdsController {
         return new ResponseEntity<>("Id Not found", HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/addNewPanel")
+    @PostMapping("/vhtt/addNewPanel")
     public ResponseEntity<String> addNewPanel(@Valid @RequestBody AddPanelRequest newPanel){
         System.out.println(newPanel);
         try{
@@ -109,7 +109,7 @@ public class AdsController {
         }
     }
 
-    @DeleteMapping("/deletePanel")
+    @DeleteMapping("/vhtt/deletePanel")
     public ResponseEntity<String> deletePanel(@PathVariable(value = "id") Integer id){
         try{
             if(adsService.deletePanel(id)){
@@ -122,7 +122,7 @@ public class AdsController {
             return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
         }
     }
-    @PutMapping("/updatePanel")
+    @PutMapping("/vhtt/updatePanel")
     public ResponseEntity<AdsPanel> updatePanel(@PathVariable(value = "id") Integer id, @Valid @RequestBody AddPanelRequest newPosition){
         try{
             AdsPanel result = adsService.updatePanel(id, newPosition);
