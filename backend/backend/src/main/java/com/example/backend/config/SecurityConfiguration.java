@@ -37,6 +37,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         request -> request.requestMatchers("/api/v1/auth/**", "/api-docs", "/swagger-ui/**", "api/v1/ads/all/**").permitAll()
                                 .requestMatchers("/api/v1/ads/vhtt/**").hasAuthority(Role.VHTT.name())
+                                .requestMatchers("/api/v1/adsType/**").hasAuthority(Role.VHTT.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
