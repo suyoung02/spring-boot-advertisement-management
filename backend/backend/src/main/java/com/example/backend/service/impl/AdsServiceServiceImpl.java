@@ -1,12 +1,15 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.entity.AdsType;
 import com.example.backend.dto.AddPanelRequest;
 import com.example.backend.dto.AddPositionRequest;
 import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.AdsPosition;
 import com.example.backend.repository.AdsPanelRepository;
 import com.example.backend.repository.AdsPositionRepository;
+import com.example.backend.repository.AdsTypeRepository;
 import com.example.backend.service.AdsService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ public class AdsServiceServiceImpl implements AdsService {
     private final AdsPositionRepository adsPositionRepository;
 
     private final AdsPanelRepository adsPanelRepository;
+
+    private final AdsTypeRepository adsTypeRepository;
 
     public List<AdsPosition> getAllPosition(){
         return adsPositionRepository.findAll();
@@ -114,4 +119,39 @@ public class AdsServiceServiceImpl implements AdsService {
         adsPanelRepository.save(ads);
         return true;
     }
+
+    public List<AdsType> getAllType(){
+        return adsTypeRepository.findAll();
+    }
+
+    public AdsType addNewType(AdsType adsType){
+        return adsTypeRepository.save(adsType);
+    }
+    @Transactional
+    public Boolean deleteTypeAds(String title){
+        if(adsTypeRepository.existsAdsTypeByTitle(title)){
+            adsTypeRepository.deleteByTitle(title);
+             return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public Boolean updateAdsType(String title, AdsType updatedAdsType) {
+        if (adsTypeRepository.existsAdsTypeByTitle(title)) {
+            AdsType existingAdsType = adsTypeRepository.findByTitle(title);
+            if (!existingAdsType.getTitle().equals(updatedAdsType.getTitle())) {
+                AdsType detachedAdsType = new AdsType();
+                detachedAdsType.setTitle(updatedAdsType.getTitle());
+                adsTypeRepository.save(detachedAdsType);
+                adsTypeRepository.delete(existingAdsType);
+            } else {
+                existingAdsType.setTitle(updatedAdsType.getTitle());
+                adsTypeRepository.save(existingAdsType);
+            }
+            return true;
+        }
+        return false;
+    }
+
 }
