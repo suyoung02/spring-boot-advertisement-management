@@ -32,4 +32,12 @@ public class ContractRequest {
     private String state;
 
     private Integer staff;
+
+    private String ads_type;
+
+    private String size;
+
+    private Integer ads_position;
+
+    private String ads_img;
 }

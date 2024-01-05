@@ -1,12 +1,12 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.ContractRequest;
+import com.example.backend.entity.AdsImages;
+import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.Contract;
 import com.example.backend.entity.Staff;
 import com.example.backend.exception.AppException;
-import com.example.backend.repository.ContractRepository;
-import com.example.backend.repository.StaffRepository;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,15 @@ import java.util.Optional;
 @Service
 public class ContractService {
     private final ContractRepository contractRepository;
-    private final UserRepository userRepository;
+    private final AdsImagesRepository adsImagesRepository;
     private final StaffRepository staffRepository;
+    private final AdsPanelRepository adsPanelRepository;
     @Autowired
-    public ContractService(ContractRepository contractRepository, UserRepository userRepository, StaffRepository staffRepository) {
+    public ContractService(ContractRepository contractRepository, AdsImagesRepository adsImagesRepository, StaffRepository staffRepository, AdsPanelRepository adsPanelRepository) {
         this.contractRepository = contractRepository;
-        this.userRepository = userRepository;
+        this.adsImagesRepository = adsImagesRepository;
         this.staffRepository = staffRepository;
+        this.adsPanelRepository = adsPanelRepository;
     }
 
     public List<Contract> getAllContract() {
@@ -31,6 +33,19 @@ public class ContractService {
     }
 
     public void createContract(ContractRequest contractRequest, String username) {
+        AdsPanel adsPanel = new AdsPanel();
+        adsPanel.setAds_type(contractRequest.getAds_type());
+        adsPanel.setContract_expiration(contractRequest.getContract_expiration());
+        adsPanel.setSize(contractRequest.getSize());
+        adsPanel.setAds_position(contractRequest.getAds_position());
+        adsPanel = this.adsPanelRepository.save(adsPanel);
+
+        AdsImages adsImages = new AdsImages();
+        adsImages.setAds_panel(adsPanel.getId());
+        adsImages.setAds_image(contractRequest.getAds_img());
+        this.adsImagesRepository.save(adsImages);
+
+        contractRequest.setAds_panel(adsPanel.getId());
         Contract contract = new Contract();
         contract.setEnterprise_info(contractRequest.getEnterprise_info());
         contract.setEnterprise_email(contractRequest.getEnterprise_email());
@@ -62,11 +77,30 @@ public class ContractService {
         this.contractRepository.save(contract);
     }
 
-    public void deleteContract(Integer id) {
-        if (this.contractRepository.findById(id) == null) {
+    public void deleteContract(Integer id, String username) {
+        Optional<Contract> contracts = this.contractRepository.findById(id);
+        Contract contract = contracts.get();
+        if (contract == null) {
             throw new AppException(400, HttpStatus.BAD_REQUEST, "This contract is not exist");
         }
 
+        Optional<Staff> stafff = staffRepository.findByUsername(username);
+        Staff staff = stafff.get();
+
+        if (staff.getId() != contract.getStaff()) {
+            throw new AppException(403, HttpStatus.FORBIDDEN, "This contract is not your permission");
+        }
+
         this.contractRepository.deleteById(id);
+        this.adsPanelRepository.deleteById(contract.getAds_panel());
+    }
+
+    public void checkExpirationContract() {
+        List<Contract> ls = this.contractRepository.getExpireContract();
+        for (Contract contract : ls) {
+            contract.setState("Đã hết hạn");
+        }
+
+        this.contractRepository.saveAll(ls);
     }
 }

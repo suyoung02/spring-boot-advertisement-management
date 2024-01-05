@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.AddPanelRequest;
 import com.example.backend.dto.ContractRequest;
 import com.example.backend.entity.Contract;
 import com.example.backend.enums.Role;
@@ -60,12 +61,18 @@ public class ContractController {
 
         contractService.approveContract(contractId);
 
-        return new ResponseEntity<>("Delete contract success", HttpStatus.OK);
+        return new ResponseEntity<>("Approve contract success", HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> checkExpirationContract() {
+        contractService.checkExpirationContract();
+        return new ResponseEntity<>("Check expired contract success", HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteContract(@PathVariable (value = "id") String id,
-                                                 @Valid @RequestBody ContractRequest contractRequest) {
+                                                 Principal principal) {
 
         int contractId;
         try {
@@ -74,8 +81,10 @@ public class ContractController {
             throw new AppException(400, HttpStatus.BAD_REQUEST, "id should be integer");
         }
 
-        contractService.deleteContract(contractId);
+        contractService.deleteContract(contractId, principal.getName());
 
         return new ResponseEntity<>("Delete contract success", HttpStatus.OK);
     }
+
+
 }
