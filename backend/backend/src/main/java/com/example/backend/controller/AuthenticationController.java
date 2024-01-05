@@ -29,24 +29,24 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/signup")
+    @PostMapping("/primary/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         authenticationService.signup(signUpRequest);
 
         return new ResponseEntity<>("Registration success", HttpStatus.OK);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/vhtt/signin")
     public ResponseEntity<JwtAuthenticationReponse> signin(@RequestBody SignInRequest signInRequest) {
         return ResponseEntity.ok(authenticationService.signin(signInRequest));
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping("/primary/refresh-token")
     public ResponseEntity<JwtAuthenticationReponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 
-    @PatchMapping("/change-password")
+    @PatchMapping("/primary/change-password")
     public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
             Principal connectedUser) {
 
@@ -54,12 +54,12 @@ public class AuthenticationController {
         return new ResponseEntity<>("Changed password success", HttpStatus.OK);
     }
 
-    @PutMapping("/regenerate-otp")
+    @PutMapping("/primary/regenerate-otp")
     public ResponseEntity<String> regenerateOtp(@RequestParam String username) {
         return new ResponseEntity<>(authenticationService.regenerateOtp(username), HttpStatus.OK);
     }
 
-    @PatchMapping("/forgot-password")
+    @PatchMapping("/primary/forgot-password")
     public ResponseEntity<String> resetPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         return new ResponseEntity<>(authenticationService.resetPassword(request), HttpStatus.OK);
     }
