@@ -1,20 +1,6 @@
 package com.example.backend.service.impl;
 
-import java.security.Principal;
-import java.sql.Timestamp;
-import java.util.HashMap;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import com.example.backend.dto.ChangePasswordRequest;
-import com.example.backend.dto.ForgotPasswordRequest;
-import com.example.backend.dto.JwtAuthenticationReponse;
-import com.example.backend.dto.RefreshTokenRequest;
-import com.example.backend.dto.SignInRequest;
-import com.example.backend.dto.SignUpRequest;
+import com.example.backend.dto.*;
 import com.example.backend.entity.Staff;
 import com.example.backend.entity.User;
 import com.example.backend.exception.InvalidAccountException;
@@ -24,10 +10,16 @@ import com.example.backend.service.AuthenticationService;
 import com.example.backend.service.JwtService;
 import com.example.backend.util.EmailUtil;
 import com.example.backend.util.OtpUtil;
-
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.security.Principal;
+import java.sql.Timestamp;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
