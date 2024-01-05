@@ -1,8 +1,10 @@
 package com.example.backend.config;
 
+import com.example.backend.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,7 +35,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        request -> request.requestMatchers("/api/v1/auth/**", "/api-docs", "/swagger-ui/**", "/api/v1/ads/**").permitAll()
+                        request -> request.requestMatchers("/api/v1/auth/**", "/api-docs", "/swagger-ui/**", "api/v1/ads/all/**").permitAll()
+                                .requestMatchers("/api/v1/ads/vhtt/**").hasAuthority(Role.VHTT.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
