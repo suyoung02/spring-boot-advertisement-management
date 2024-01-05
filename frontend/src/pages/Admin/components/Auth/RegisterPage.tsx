@@ -29,13 +29,13 @@ const RegisterPage = () => {
         <h3 className="font-bold text-2xl text-center uppercase mb-4">
           Đăng ký tài khoản Sở VH-TT
         </h3>
-        <Input.Wrapper label="Username">
+        <Input.Wrapper withAsterisk label="Username">
           <Input leftSection={<IconUser />} placeholder="Username" />
         </Input.Wrapper>
-        <Input.Wrapper label="Email">
-          <Input leftSection={<IconMail />} placeholder="Email" />
+        <Input.Wrapper withAsterisk label="Email">
+          <Input type="email" leftSection={<IconMail />} placeholder="Email" />
         </Input.Wrapper>
-        <Input.Wrapper label="Thành phố">
+        <Input.Wrapper withAsterisk label="Thành phố">
           <Select
             leftSection={<IconBuilding />}
             data={formatData}

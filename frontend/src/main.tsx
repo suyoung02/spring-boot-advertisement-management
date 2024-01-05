@@ -1,6 +1,7 @@
 import {
   CreateAccount,
   DashboardPage,
+  ForgotPasswordPage,
   LoginPage,
   ManageUser,
   RegisterPage,
@@ -18,20 +19,29 @@ import "@mantine/core/styles.css";
 
 const router = createBrowserRouter([
   {
-    path: "/admin/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/admin/register",
-    element: <RegisterPage />,
-  },
-  {
     path: "/admin",
-    element: (
-      <AdminLayout title="Hệ thống quản lý">
-        <DashboardPage />
-      </AdminLayout>
-    ),
+    children: [
+      {
+        path: "",
+        element: (
+          <AdminLayout title="Hệ thống quản lý">
+            <DashboardPage />
+          </AdminLayout>
+        ),
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+    ],
   },
   {
     path: "/admin/users",

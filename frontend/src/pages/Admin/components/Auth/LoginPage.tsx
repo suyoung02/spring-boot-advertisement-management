@@ -1,5 +1,5 @@
 import { Button, Input, PasswordInput } from "@mantine/core";
-import { IconBrandGoogle, IconLock } from "@tabler/icons-react";
+import { IconBrandGoogle, IconLock, IconUser } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
 const LoginPage = () => {
@@ -9,8 +9,8 @@ const LoginPage = () => {
         <h3 className="font-bold text-2xl text-center uppercase">
           Đăng nhập hệ thống Quản lý
         </h3>
-        <Input.Wrapper label="Email">
-          <Input placeholder="Email" />
+        <Input.Wrapper withAsterisk label="Username">
+          <Input placeholder="Username" leftSection={<IconUser />} />
         </Input.Wrapper>
         <PasswordInput
           withAsterisk
@@ -18,12 +18,20 @@ const LoginPage = () => {
           label="Mật khẩu"
           placeholder="Mật khẩu"
         />
-        <Link
-          className="text-blue-500 underline text-right"
-          to="/admin/register"
-        >
-          Bạn muốn đăng ký tài khoản Sở VH-TT?
-        </Link>
+        <div className="flex justify-between">
+          <Link
+            className="text-neutral-700 underline text-right"
+            to="/admin/forgot-password"
+          >
+            Quên mật khẩu?
+          </Link>
+          <Link
+            className="text-blue-500 underline text-right"
+            to="/admin/register"
+          >
+            Đăng ký tài khoản Sở VH-TT?
+          </Link>
+        </div>
         <Button size="md" className="w-full mt-2">
           Đăng nhập
         </Button>
