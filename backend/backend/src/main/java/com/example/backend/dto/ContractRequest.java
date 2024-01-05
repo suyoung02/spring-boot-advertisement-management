@@ -30,4 +30,6 @@ public class ContractRequest {
 
     @NotNull
     private String state;
+
+    private Integer staff;
 }

@@ -40,4 +40,7 @@ public class Contract {
 
     @Column(name = "state")
     private String state;
+
+    @Column(name = "staff")
+    private Integer staff;
 }

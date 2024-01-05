@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,8 +43,8 @@ public class ContractController {
     }
 
     @PostMapping("")
-    public ResponseEntity<String> createContract(@Valid @RequestBody ContractRequest contractRequest) {
-        contractService.createContract(contractRequest);
+    public ResponseEntity<String> createContract(@Valid @RequestBody ContractRequest contractRequest, Principal principal) {
+        contractService.createContract(contractRequest,principal.getName());
 
         return new ResponseEntity<>("Create contract success", HttpStatus.OK);
     }
