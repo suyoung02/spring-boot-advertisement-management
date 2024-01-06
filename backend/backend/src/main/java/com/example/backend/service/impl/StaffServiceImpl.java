@@ -1,11 +1,15 @@
 package com.example.backend.service.impl;
 
+import java.lang.reflect.Field;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import com.example.backend.dto.StaffDto;
 import com.example.backend.entity.Staff;
@@ -39,8 +43,51 @@ public class StaffServiceImpl implements StaffService {
         return staffDto;
     }
 
-    public String updatePersonalStaff(Principal user) {
-        return null;
+    public String updatePersonalStaffByFields(Principal connectedUser, Map<String, Object> fields) {
+        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        Staff staff = staffRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
+
+        fields.forEach((key, value) -> {
+            try {
+                Field field = ReflectionUtils.findField(Staff.class, key);
+                field.setAccessible(true);
+
+                switch (key) {
+                    case "fullname": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "dob": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "email": {
+                        // check email is exist
+                        Staff checkStaff = staffRepository.findByEmail(String.valueOf(value)).orElse(null);
+                        if (checkStaff == null)
+                            ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "phone_number": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        });
+
+        staffRepository.save(staff);
+
+        return "Your update success";
     }
 
     // for only VHTT
@@ -71,8 +118,65 @@ public class StaffServiceImpl implements StaffService {
         return StaffMapper.toStaffDto(staff, user);
     }
 
-    public String updateStaff(int id) {
-        return null;
+    public String updateStaffByFields(int id, Map<String, Object> fields) {
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
+
+        fields.forEach((key, value) -> {
+            try {
+                Field field = ReflectionUtils.findField(Staff.class, key);
+                field.setAccessible(true);
+
+                switch (key) {
+                    case "role": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "ward": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "district": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "fullname": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "dob": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "email": {
+                        // check email is exist
+                        Staff checkStaff = staffRepository.findByEmail(String.valueOf(value)).orElse(null);
+                        if (checkStaff == null)
+                            ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    case "phone_number": {
+                        ReflectionUtils.setField(field, staff, value);
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        });
+
+        staffRepository.save(staff);
+
+        return "Your update success";
     }
 
     public String removeStaff(int id) {
