@@ -486,10 +486,10 @@
     react-textarea-autosize "8.5.3"
     type-fest "^3.13.1"
 
-"@mantine/dates@^7.3.1":
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-7.3.1.tgz#2f1dedd78c8d7ef81263f601d92d4e9505789626"
-  integrity sha512-OI2qs5MgdYkwI7n+KuQ1tj9OhHloO0ozVOTSYyF/bgEfawCrd4TM76IcvIbfcTpmTLly1FflqFTM45+KVoQtbQ==
+"@mantine/dates@^7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-7.4.0.tgz#ad8368329d0dc995588fde59c85fb42ba1a860f9"
+  integrity sha512-KNRVMSUW4sIk8U5SM2+4PRLqndWNaMtTabENPZUVA/Zl99yk6tDsNsu/CuinE1K5LQo9H6RJho0FRGzmzEsTwA==
   dependencies:
     clsx "2.0.0"
 
@@ -511,12 +511,12 @@
   resolved "https://registry.yarnpkg.com/@mantine/modals/-/modals-7.3.1.tgz#a71e2344f585f4ec5ecd3b7fa532cea7012edb26"
   integrity sha512-NJ377SqDLeB1UZ12TIC+FHVdkcVSts3TXwzyfp5/0IielP2s/m786M3ZbYIFpNOqltOB3/by+/+XT/idMQJuGg==
 
-"@mantine/notifications@^7.3.1":
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-7.3.1.tgz#0e69fa981bc0cd2ca32819a3564d8df9864a9016"
-  integrity sha512-9q/Kxzc18hx5PZW4uUSoYRKBlVZPojmbS6DFrua9T684MyDz2a4Hhj6d90i+MwDIu39p6C6i3pl8FLoPqeb0ww==
+"@mantine/notifications@^7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-7.4.0.tgz#0ce605ade39aaaed626dc62850751fa672e0009e"
+  integrity sha512-nRXYIcJpqqKxwYs2r17IBZ8uQZK57x6K2hkzOQ+ZFviO5rejxl4ip+fC+LUhIi3P7D1YSxyoZwumT73gSPz9Xw==
   dependencies:
-    "@mantine/store" "7.3.1"
+    "@mantine/store" "7.4.0"
     react-transition-group "4.4.5"
 
 "@mantine/nprogress@^7.3.1":
@@ -530,6 +530,11 @@
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/@mantine/store/-/store-7.3.1.tgz#924e16e9e1af90cc0b383b656d90a39462cdeec1"
   integrity sha512-B4kFI0ZhZTftlMvD5d8P0y1ATKFAMIA5MT4j0gNUgYEKMl1KkM/dT3kBPC2/32jz4GM9t2UL+D3CvkTwSX/BsA==
+
+"@mantine/store@7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@mantine/store/-/store-7.4.0.tgz#70e28c53fd3474d787c3613d7f9322991b182a71"
+  integrity sha512-sSaBj6qVU0e5ml70/8e3A9pwAMBL5yKWNdnhw20b+74j85+FUDhDy8bEGZfyS0BtYPGVoxj5yF8/uZhxnDXpbg==
 
 "@mantine/tiptap@^7.3.1":
   version "7.3.1"
@@ -2166,6 +2171,11 @@ react-dom@^18.2.0:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
+
+react-hook-form@^7.49.2:
+  version "7.49.2"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.49.2.tgz#6fb2742e1308020f26cb1915c7012b6c07b11ade"
+  integrity sha512-TZcnSc17+LPPVpMRIDNVITY6w20deMdNi6iehTFLV1x8SqThXGwu93HjlUVU09pzFgZH7qZOvLMM7UYf2ShAHA==
 
 react-is@^16.13.1:
   version "16.13.1"
