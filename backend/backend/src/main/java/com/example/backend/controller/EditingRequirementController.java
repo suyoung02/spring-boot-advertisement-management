@@ -55,4 +55,18 @@ public class EditingRequirementController {
 
         return new ResponseEntity<>("Approve request success", HttpStatus.OK);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteEditingRequirement(@PathVariable (value = "id") String id) {
+        int editingId;
+        try {
+            editingId = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            throw new AppException(400, HttpStatus.BAD_REQUEST, "id should be integer");
+        }
+
+        editingRequirementService.deleteEditingRequirement(editingId);
+
+        return new ResponseEntity<>("Delete request success", HttpStatus.OK);
+    }
 }

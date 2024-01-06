@@ -62,4 +62,8 @@ public class EditingRequirementService {
 
         this.editingRequirementRepository.save(editingRequirement);
     }
+
+    public void deleteEditingRequirement(Integer id) {
+        this.editingRequirementRepository.deleteById(id);
+    }
 }
