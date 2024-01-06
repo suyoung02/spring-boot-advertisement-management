@@ -64,7 +64,7 @@ public class ContractController {
         return new ResponseEntity<>("Approve contract success", HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("check-expiration")
     public ResponseEntity<String> checkExpirationContract() {
         contractService.checkExpirationContract();
         return new ResponseEntity<>("Check expired contract success", HttpStatus.OK);
