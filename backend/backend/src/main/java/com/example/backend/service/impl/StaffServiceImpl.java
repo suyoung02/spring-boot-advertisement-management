@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.dto.StaffDto;
 import com.example.backend.entity.Staff;
 import com.example.backend.entity.User;
+import com.example.backend.enums.Role;
 import com.example.backend.exception.InvalidAccountException;
 import com.example.backend.mapper.StaffMapper;
 import com.example.backend.repository.StaffRepository;
@@ -63,7 +64,7 @@ public class StaffServiceImpl implements StaffService {
                 .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
 
         // VHTT staff must not get info
-        if (user.getRole().name().equals("VHTT")) {
+        if (user.getRole().name().equals(Role.VHTT.name())) {
             throw new InvalidAccountException("Invalid staff");
         }
 
@@ -75,6 +76,18 @@ public class StaffServiceImpl implements StaffService {
     }
 
     public String removeStaff(int id) {
-        return null;
+        Staff staff = staffRepository.findById(id).orElseThrow(() -> new InvalidAccountException("Invalid staff"));
+        User user = userRepository.findByUsername(staff.getUsername())
+                .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
+
+        // must not remove the VHTT staff
+        if (user.getRole().name().equals(Role.VHTT.name())) {
+            throw new InvalidAccountException("Invalid staff");
+        }
+
+        staffRepository.delete(staff);
+        userRepository.delete(user);
+
+        return "Staff has been removed";
     }
 }
