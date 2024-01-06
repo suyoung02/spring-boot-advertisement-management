@@ -4,6 +4,9 @@ import {
   DashboardPage,
   ForgotPasswordPage,
   LoginPage,
+  ManagePanel,
+  ManagePosition,
+  ManageType,
   ManageUser,
   RegisterPage,
   UserDetail,
@@ -19,6 +22,7 @@ import './index.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
+import { ModalsProvider } from '@mantine/modals';
 
 const router = createBrowserRouter([
   {
@@ -68,7 +72,28 @@ const router = createBrowserRouter([
       },
     ],
   },
-
+  {
+    path: '/admin/ads',
+    element: (
+      <AdminLayout title="Quản lý quảng cáo">
+        <Outlet />
+      </AdminLayout>
+    ),
+    children: [
+      {
+        path: 'type',
+        element: <ManageType />,
+      },
+      {
+        path: 'position',
+        element: <ManagePosition />,
+      },
+      {
+        path: 'panel',
+        element: <ManagePanel />,
+      },
+    ],
+  },
   {
     path: '/',
     element: <HomePage />,
@@ -86,10 +111,12 @@ const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <MantineProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <Notifications />
-      </QueryClientProvider>
+      <ModalsProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <Notifications />
+        </QueryClientProvider>
+      </ModalsProvider>
     </MantineProvider>
   </React.StrictMode>,
 );

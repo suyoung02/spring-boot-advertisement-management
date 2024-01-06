@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 import {
   IconFileAnalytics,
   IconGauge,
@@ -7,9 +7,9 @@ import {
   IconNotes,
   IconPresentationAnalytics,
   IconUsers,
-} from "@tabler/icons-react";
-import { LinksGroup, Logo } from "@/components/NavbarLinksGroup";
-import { UserButton } from "@/components/UserButton";
+} from '@tabler/icons-react';
+import { LinksGroup, Logo } from '@/components/NavbarLinksGroup';
+import { UserButton } from '@/components/UserButton';
 
 type Props = {
   children: ReactNode;
@@ -17,37 +17,37 @@ type Props = {
 };
 
 const mockdata = [
-  { label: "Dashboard", icon: IconGauge, link: "/admin" },
+  { label: 'Dashboard', icon: IconGauge, link: '/admin' },
   {
-    label: "Quản lý tài khoản",
+    label: 'Quản lý tài khoản',
     icon: IconUsers,
     initiallyOpened: true,
     links: [
-      { label: "Danh sách tài khoản", link: "/admin/users" },
-      { label: "Tạo tài khoản", link: "/admin/users/create-account" },
+      { label: 'Danh sách tài khoản', link: '/admin/users' },
+      { label: 'Tạo tài khoản', link: '/admin/users/create-account' },
     ],
   },
   {
-    label: "Quản lý quảng cáo",
+    label: 'Quản lý quảng cáo',
     icon: IconNotes,
     initiallyOpened: true,
     links: [
-      { label: "Loại quảng cáo", link: "/" },
-      { label: "Điểm quảng cáo", link: "/" },
-      { label: "Bảng quảng cáo", link: "/" },
+      { label: 'Loại quảng cáo', link: '/admin/ads/type' },
+      { label: 'Điểm quảng cáo', link: '/admin/ads/position' },
+      { label: 'Bảng quảng cáo', link: '/admin/ads/panel' },
     ],
   },
   {
-    label: "Quản lý báo cáo",
+    label: 'Quản lý báo cáo',
     icon: IconFileAnalytics,
   },
   {
-    label: "Yêu cầu",
+    label: 'Yêu cầu',
     icon: IconMail,
   },
-  { label: "Thống kê", icon: IconPresentationAnalytics },
+  { label: 'Thống kê', icon: IconPresentationAnalytics },
   {
-    label: "Đổi mật khẩu",
+    label: 'Đổi mật khẩu',
     icon: IconLock,
   },
 ];

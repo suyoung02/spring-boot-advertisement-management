@@ -1,12 +1,14 @@
 import { LoginRequest, loginApi } from '@/apis/user';
 import { useForm } from '@/hooks/useForm';
+import { setToken } from '@/stores/user';
 import { Button, PasswordInput, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconBrandGoogle, IconLock, IconUser } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const { fields, onError, onChangeField, error } = useForm<LoginRequest>({
     defaultState: {
       username: '',
@@ -23,12 +25,14 @@ const LoginPage = () => {
     },
   });
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (data: LoginRequest) => loginApi(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setToken(data.accessToken, data.refreshToken);
       notifications.show({
         message: 'Đăng nhập thành công',
       });
+      navigate('/admin');
     },
     onError: (e) => {
       notifications.show({
@@ -84,7 +88,12 @@ const LoginPage = () => {
             Đăng ký tài khoản Sở VH-TT?
           </Link>
         </div>
-        <Button onClick={onSubmit} size="md" className="w-full mt-2">
+        <Button
+          loading={isPending}
+          onClick={onSubmit}
+          size="md"
+          className="w-full mt-2"
+        >
           Đăng nhập
         </Button>
         <div className="flex items-center gap-2 py-2">
