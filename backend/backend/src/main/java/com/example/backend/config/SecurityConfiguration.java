@@ -35,9 +35,12 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        request -> request.requestMatchers("/api/v1/auth/**", "/api-docs", "/swagger-ui/**", "/api/v1/ads/**").permitAll()
-                                .requestMatchers(HttpMethod.POST,"api/v1/contract/{id}").hasAuthority(Role.VHTT.name())
-                                .requestMatchers("/api/v1/ads/vhtt/**", "/api/v1/auth/vhtt/**", "/api/v1/adsType/**")
+                        request -> request.requestMatchers("/api/v1/auth/normal/**", "/api-docs", "/swagger-ui/**",
+                                "api/v1/ads/all/**").permitAll()
+                                .requestMatchers("/api/v1/auth/all/**", "/api/v1/staff/all/**")
+                                .hasAnyAuthority(Role.VHTT.name(), Role.DISTRICT.name(), Role.WARD.name())
+                                .requestMatchers("/api/v1/ads/vhtt/**", "/api/v1/auth/vhtt/**", "/api/v1/adsType/**",
+                                        "/api/v1/staff/vhtt/**")
                                 .hasAuthority(Role.VHTT.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
