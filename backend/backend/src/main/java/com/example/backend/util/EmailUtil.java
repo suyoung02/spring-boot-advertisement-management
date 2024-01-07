@@ -41,6 +41,31 @@ public class EmailUtil {
         javaMailSender.send(mimeMessage);
     }
 
+    public void sendMessToEmail(String toEmail, String mess, String fullname) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+
+        mimeMessageHelper.setTo(toEmail);
+        mimeMessageHelper.setSubject("[Ads Management] Inform");
+        mimeMessageHelper.setText("""
+                <div>
+                    Hi %s,
+                </div>
+                <br/>
+                <div>
+                    This is your report result:
+                </div>
+                <div>
+                    <i>This is our solving result: %s</i>
+                </div>
+                <div>
+                    If you do not make this request, you can ignore this email.
+                </div>
+                """.formatted(fullname, mess), true);
+
+        javaMailSender.send(mimeMessage);
+    }
+
     public String hashEmail(String email) {
         String splitCharacter = "@";
         String[] emailParts = email.split(splitCharacter);
