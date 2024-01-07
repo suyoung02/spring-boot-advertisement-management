@@ -2,12 +2,12 @@ import axios, {
   type AxiosError,
   type AxiosRequestConfig,
   type AxiosResponse,
-} from "axios";
+} from 'axios';
 
-import { HTTP_STATUS_CODE } from "@/configs/constants";
-import { logout } from "@/stores/user";
+import { HTTP_STATUS_CODE } from '@/configs/constants';
+import { logout } from '@/stores/user';
 
-type AxiosRetry = AxiosError["config"] & { _retry: boolean };
+type AxiosRetry = AxiosError['config'] & { _retry: boolean };
 
 const instance = axios.create();
 
@@ -25,14 +25,14 @@ instance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export const apiRequest = async <
   Data = unknown,
-  Response = AxiosResponse<Data>
+  Response = AxiosResponse<Data>,
 >(
-  config: AxiosRequestConfig
+  config: AxiosRequestConfig,
 ): Promise<Response> => {
   return instance.request({
     ...config,
@@ -40,27 +40,26 @@ export const apiRequest = async <
       // Accept: "application/json",
       ...config.headers,
     },
-    withCredentials: true,
   });
 };
 
 export const apiGet = async <Data = unknown, Response = AxiosResponse<Data>>(
   url: string,
   params?: Record<string, unknown>,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<Response> => {
   const query = params
     ? `?${Object.keys(params)
         .map((key) =>
-          params[key] !== undefined ? `${key}=${params[key]}` : ""
+          params[key] !== undefined ? `${key}=${params[key]}` : '',
         )
         .filter(Boolean)
-        .join("&")}`
-    : "";
+        .join('&')}`
+    : '';
 
   return apiRequest<Data, Response>({
     url: `${url}${query}`,
-    method: "GET",
+    method: 'GET',
     ...config,
   });
 };
@@ -68,12 +67,12 @@ export const apiGet = async <Data = unknown, Response = AxiosResponse<Data>>(
 export const apiPost = async <Data = unknown, Response = AxiosResponse<Data>>(
   url: string,
   data?: Data,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) => {
   return apiRequest<Data, Response>({
     url,
     data: data ?? null,
-    method: "POST",
+    method: 'POST',
     ...config,
   });
 };
@@ -81,12 +80,12 @@ export const apiPost = async <Data = unknown, Response = AxiosResponse<Data>>(
 export const apiPut = async <Data = unknown, Response = AxiosResponse<Data>>(
   url: string,
   data?: Data,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) => {
   return apiRequest<Data, Response>({
     url,
     data: data ?? null,
-    method: "PUT",
+    method: 'PUT',
     ...config,
   });
 };
@@ -94,23 +93,23 @@ export const apiPut = async <Data = unknown, Response = AxiosResponse<Data>>(
 export const apiPatch = async <Data = unknown, Response = AxiosResponse<Data>>(
   url: string,
   data?: Data,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) => {
   return apiRequest<Data, Response>({
     url,
     data: data ?? null,
-    method: "PATCH",
+    method: 'PATCH',
     ...config,
   });
 };
 
 export const apiDelete = async <Data = unknown, Response = AxiosResponse<Data>>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) => {
   return apiRequest<Data, Response>({
     url,
-    method: "DELETE",
+    method: 'DELETE',
     ...config,
   });
 };
