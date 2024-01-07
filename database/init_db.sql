@@ -181,3 +181,35 @@ CREATE TABLE EDITING_REQUIREMENT(
     CONSTRAINT FK_EDITING_REQUIREMENT_ADS_PANEL FOREIGN KEY (ads_panel) REFERENCES ADS_PANEL (id),
     CONSTRAINT FK_EDITING_REQUIREMENT_STAFF FOREIGN KEY (staff) REFERENCES STAFF (id) ON DELETE CASCADE
 );
+
+CREATE TABLE WARD (
+    ward VARCHAR(20) NOT NULL,
+	PRIMARY KEY (ward)
+);
+insert into WARD(ward) value ('quận 1');
+insert into WARD(ward) value ('quận 2');
+insert into WARD(ward) value ('quận 3');
+insert into WARD(ward) value ('quận 4');
+insert into WARD(ward) value ('quận 5');
+insert into WARD(ward) value ('quận 6');
+
+
+CREATE TABLE DISTRICT (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    district VARCHAR(20) NOT NULL,
+    ward VARCHAR(20) NOT NULL,
+    CONSTRAINT FK_DISTRICT_WARD FOREIGN KEY (ward) REFERENCES WARD (ward)
+);
+
+insert into DISTRICT(ward,district) value ('quận 1','Bến Thành');
+insert into DISTRICT(ward,district) value ('quận 1','Bến Nghé');
+insert into DISTRICT(ward,district) value ('quận 1','Cầu Kho');
+insert into DISTRICT(ward,district) value ('quận 1','Cầu Ông Lãnh');
+insert into DISTRICT(ward,district) value ('quận 1','Đa Kao');
+insert into DISTRICT(ward,district) value ('quận 1','Nguyễn Cư Trinh');
+insert into DISTRICT(ward,district) value ('quận 6','Linh Trung');
+insert into DISTRICT(ward,district) value ('quận 6','Linh Xuân');
+insert into DISTRICT(ward,district) value ('quận 6','Bình Hưng Hòa');
+insert into DISTRICT(ward,district) value ('quận 6','Bình Hưng Hòa A');
+insert into DISTRICT(ward,district) value ('quận 6','Bình Hưng Hòa B');
+insert into DISTRICT(ward,district) value ('quận 6','Tân Thành');
