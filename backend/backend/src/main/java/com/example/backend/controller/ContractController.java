@@ -64,11 +64,11 @@ public class ContractController {
         return new ResponseEntity<>("Approve contract success", HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<String> checkExpirationContract() {
-        contractService.checkExpirationContract();
-        return new ResponseEntity<>("Check expired contract success", HttpStatus.OK);
-    }
+//    @PostMapping
+//    public ResponseEntity<String> checkExpirationContract() {
+//        contractService.checkExpirationContract();
+//        return new ResponseEntity<>("Check expired contract success", HttpStatus.OK);
+//    }
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteContract(@PathVariable (value = "id") String id,
