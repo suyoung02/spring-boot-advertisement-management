@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.AddPanelRequest;
 import com.example.backend.dto.AddPositionRequest;
+import com.example.backend.dto.AdsPanelWithImagesDTO;
 import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.AdsPosition;
 import com.example.backend.service.AdsService;
@@ -27,6 +28,7 @@ public class AdsController {
         List<AdsPosition> result = adsService.getAllPosition();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
 
     @GetMapping("/all/getDetailPosition/{id}")
     public ResponseEntity<?> getDetailPosition(@PathVariable(value = "id") Integer id) {
@@ -130,6 +132,12 @@ public class AdsController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/all/presenting-panel")
+    public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel(){
+        List<AdsPanelWithImagesDTO> panels = adsService.getAllPresentingPanel();
+        return new ResponseEntity<>(panels, HttpStatus.OK);
     }
 
 }
