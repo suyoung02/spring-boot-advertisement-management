@@ -7,76 +7,84 @@ USE ads_management;
 
 CREATE TABLE PROCESSING_STATUS(
 	title NVARCHAR(20),
+    color VARCHAR(10),
     icon VARCHAR(5),
     PRIMARY KEY (title)
 );
-INSERT INTO PROCESSING_STATUS VALUES ('Đã gửi', '📩');
-INSERT INTO PROCESSING_STATUS VALUES ('Đang xử lý', '✍️');
-INSERT INTO PROCESSING_STATUS VALUES ('Đã xử lý', '⌛');
+INSERT INTO PROCESSING_STATUS VALUES ('Đã gửi', 'blue', '📩');
+INSERT INTO PROCESSING_STATUS VALUES ('Đang xử lý', 'yellow', '✍️');
+INSERT INTO PROCESSING_STATUS VALUES ('Đã xử lý', 'green', '⌛');
 
 CREATE TABLE PLANNING_STATUS(
 	title NVARCHAR(20),
-    color VARCHAR(6),
+    color VARCHAR(10),
+    icon VARCHAR(5),
     PRIMARY KEY (title)
 );
-INSERT INTO PLANNING_STATUS VALUES ('Đã quy hoạch', 'green');
-INSERT INTO PLANNING_STATUS VALUES ('Đang quy hoạch', 'yellow');
-INSERT INTO PLANNING_STATUS VALUES ('Chưa quy hoạch', 'red');
+INSERT INTO PLANNING_STATUS VALUES ('Đã quy hoạch', 'green', '👍');
+INSERT INTO PLANNING_STATUS VALUES ('Đang quy hoạch', 'yellow', '🚧');
+INSERT INTO PLANNING_STATUS VALUES ('Chưa quy hoạch', 'red', '❗');
 
 CREATE TABLE INSTALLING_STATUS(
 	title NVARCHAR(20),
+    color VARCHAR(10),
     icon VARCHAR(5),
     PRIMARY KEY (title)
 );
-INSERT INTO INSTALLING_STATUS VALUES ('Chờ duyệt', '🔃');
-INSERT INTO INSTALLING_STATUS VALUES ('Đang hiện diện', '✔️');
-INSERT INTO INSTALLING_STATUS VALUES ('Đã hết hạn', '❌');
+INSERT INTO INSTALLING_STATUS VALUES ('Chờ duyệt', 'blue', '🔃');
+INSERT INTO INSTALLING_STATUS VALUES ('Đang hiện diện', 'green', '✔️');
+INSERT INTO INSTALLING_STATUS VALUES ('Đã hết hạn', 'red', '❌');
 
 CREATE TABLE REPORT_FORM(
 	title NVARCHAR(30),
+    color VARCHAR(10),
     icon VARCHAR(5),
     PRIMARY KEY (title)
 );
-INSERT INTO REPORT_FORM VALUES ('Tố giác sai phạm', '📞');
-INSERT INTO REPORT_FORM VALUES ('Đăng ký nội dung', '📝');
-INSERT INTO REPORT_FORM VALUES ('Đóng góp ý kiến', '📬');
-INSERT INTO REPORT_FORM VALUES ('Giải đáp thắc mắc', '✏️');
+INSERT INTO REPORT_FORM VALUES ('Tố giác sai phạm', 'red', '📞');
+INSERT INTO REPORT_FORM VALUES ('Đăng ký nội dung', 'white', '📝');
+INSERT INTO REPORT_FORM VALUES ('Đóng góp ý kiến', 'grey', '📬');
+INSERT INTO REPORT_FORM VALUES ('Giải đáp thắc mắc', 'yellow', '✏️');
 
 CREATE TABLE ADS_FORM(
 	title NVARCHAR(30),
+    color VARCHAR(10),
     icon VARCHAR(5),
     PRIMARY KEY (title)
 );
-INSERT INTO ADS_FORM VALUES ('Cổ động chính trị', '🏛️');
-INSERT INTO ADS_FORM VALUES ('Quảng cáo thương mại', '🏢');
-INSERT INTO ADS_FORM VALUES ('Xã hội hoá', '🏙️');
+INSERT INTO ADS_FORM VALUES ('Cổ động chính trị', 'grey', '🏛️');
+INSERT INTO ADS_FORM VALUES ('Quảng cáo thương mại', 'blue', '🏢');
+INSERT INTO ADS_FORM VALUES ('Xã hội hoá', 'white', '🏙️');
 
 CREATE TABLE LOCATION_TYPE(
 	title NVARCHAR(100),
+    color VARCHAR(10),
     icon VARCHAR(5),
     PRIMARY KEY (title)
 );
-INSERT INTO LOCATION_TYPE VALUES ('Đất công/Công viên/Hành lang an toàn giao thông', '🌳');
-INSERT INTO LOCATION_TYPE VALUES ('Đất tư nhân/Nhà ở riêng lẻ', '🏠');
-INSERT INTO LOCATION_TYPE VALUES ('Trung tâm thương mại', '🛒');
-INSERT INTO LOCATION_TYPE VALUES ('Chợ', '🍉');
-INSERT INTO LOCATION_TYPE VALUES ('Cây Xăng', '🔥');
-INSERT INTO LOCATION_TYPE VALUES ('Nhà chờ xe buýt', '🛑');
+INSERT INTO LOCATION_TYPE VALUES ('Đất công/Công viên/Hành lang an toàn giao thông', 'green', '🌳');
+INSERT INTO LOCATION_TYPE VALUES ('Đất tư nhân/Nhà ở riêng lẻ', 'white', '🏠');
+INSERT INTO LOCATION_TYPE VALUES ('Trung tâm thương mại', 'grey', '🛒');
+INSERT INTO LOCATION_TYPE VALUES ('Chợ', 'yellow', '🍉');
+INSERT INTO LOCATION_TYPE VALUES ('Cây Xăng', 'red', '🔥');
+INSERT INTO LOCATION_TYPE VALUES ('Nhà chờ xe buýt', 'blue', '🛑');
 
 CREATE TABLE ADS_TYPE(
 	title NVARCHAR(50),
+    color VARCHAR(10),
+    icon VARCHAR(5),
     PRIMARY KEY (title)
 );
-INSERT INTO ADS_TYPE VALUES ('Trụ bảng hiflex');
-INSERT INTO ADS_TYPE VALUES ('Trụ màn hình điện tử LED');
-INSERT INTO ADS_TYPE VALUES ('Trụ hộp đèn');
-INSERT INTO ADS_TYPE VALUES ('Bảng hiflex ốp tường');
-INSERT INTO ADS_TYPE VALUES ('Màn hình điện tử ốp tường');
-INSERT INTO ADS_TYPE VALUES ('Trụ treo băng rôn dọc');
-INSERT INTO ADS_TYPE VALUES ('Trụ treo băng rôn ngang');
-INSERT INTO ADS_TYPE VALUES ('Trụ/Cụm pano');
-INSERT INTO ADS_TYPE VALUES ('Cổng chào');
-INSERT INTO ADS_TYPE VALUES ('Trung tâm thương mại');
+INSERT INTO ADS_TYPE VALUES ('Trụ bảng hiflex', 'red', '📰');
+INSERT INTO ADS_TYPE VALUES ('Trụ màn hình điện tử LED', 'orange', '🚨');
+INSERT INTO ADS_TYPE VALUES ('Trụ hộp đèn', 'yellow', '💡');
+INSERT INTO ADS_TYPE VALUES ('Bảng hiflex ốp tường', 'green', '💲');
+INSERT INTO ADS_TYPE VALUES ('Màn hình điện tử ốp tường', 'blue', '🎫');
+INSERT INTO ADS_TYPE VALUES ('Trụ treo băng rôn dọc', 'indigo', '🚩');
+INSERT INTO ADS_TYPE VALUES ('Trụ treo băng rôn ngang', 'purple', '🏴');
+INSERT INTO ADS_TYPE VALUES ('Trụ/Cụm pano', 'pink', '🔴');
+INSERT INTO ADS_TYPE VALUES ('Cổng chào', 'white', '👋');
+INSERT INTO ADS_TYPE VALUES ('Trung tâm thương mại', 'grey', '🛒');
 
 /*
 	Generate main entities
