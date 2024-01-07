@@ -1,5 +1,7 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.dto.AdsPanelWithImagesDTO;
+import com.example.backend.entity.AdsImages;
 import com.example.backend.entity.AdsType;
 import com.example.backend.dto.AddPanelRequest;
 import com.example.backend.dto.AddPositionRequest;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -154,4 +157,11 @@ public class AdsServiceServiceImpl implements AdsService {
         return false;
     }
 
+    public List<AdsPanelWithImagesDTO> getAllPresentingPanel() {
+        List<Object[]> resultList = adsPanelRepository.getPanelWithContractAndImg();
+
+        return resultList.stream()
+                .map(objects -> new AdsPanelWithImagesDTO((AdsPanel) objects[0], (AdsImages) objects[1]))
+                .collect(Collectors.toList());
+    }
 }
