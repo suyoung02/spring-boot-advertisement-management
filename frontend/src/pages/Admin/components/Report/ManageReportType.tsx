@@ -19,7 +19,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
-const ManageType = () => {
+const ManageReportType = () => {
   const [editId, setEditId] = useState(-1);
   const [add, setAdd] = useState(false);
   const [title, setTitle] = useState('');
@@ -107,29 +107,31 @@ const ManageType = () => {
     deleteAds(title);
   };
 
-  const openModalDelete = (title: string) =>
+  const openModalDelete = (title: string) => {
     modals.openConfirmModal({
       title: `Bạn muốn xoá loại ${title} này?`,
       labels: { confirm: 'Xoá', cancel: 'Huỷ' },
       confirmProps: { color: 'red' },
       onConfirm: () => handleDelete(title),
     });
+  };
 
   return (
     <div className="p-8 pt-6">
+      <div className="font-bold mb-3 text-xl">Quản lý hình thức quảng cáo</div>
       <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
           <Table.Thead>
             <Table.Tr>
               <Table.Th className="w-[100px]">#</Table.Th>
-              <Table.Th>Ads type</Table.Th>
+              <Table.Th>Tên</Table.Th>
               <Table.Th className="flex justify-end">
                 <Button
                   color="teal"
                   onClick={() => setAdd(true)}
                   leftSection={<IconCirclePlus />}
                 >
-                  Tạo Ads type
+                  Tạo hình thức
                 </Button>
               </Table.Th>
             </Table.Tr>
@@ -257,4 +259,4 @@ const ManageType = () => {
   );
 };
 
-export default ManageType;
+export default ManageReportType;

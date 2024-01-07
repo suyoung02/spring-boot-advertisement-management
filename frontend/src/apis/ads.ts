@@ -1,6 +1,6 @@
 import type { Ads } from '@/types/ads';
-import { apiDelete, apiGet, apiPost, apiPut } from './api';
 import { API_URL } from '@/utils/env';
+import { apiDelete, apiGet, apiPost, apiPut } from './api';
 
 export const getAllAdsType = async () => {
   try {

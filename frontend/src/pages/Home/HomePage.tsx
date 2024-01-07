@@ -1,42 +1,43 @@
-import { ActionIcon, Button } from "@mantine/core";
+import { CURRENT_LOCATION } from '@/utils/location';
+import { ActionIcon, Button, LoadingOverlay } from '@mantine/core';
 import {
   GoogleMap,
   useLoadScript,
   type Libraries,
-  Marker,
-} from "@react-google-maps/api";
-import { IconCurrentLocation } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { Login } from "./components/Login";
-import { SearchBox } from "./components/SearchBox";
-import { useNavigate } from "react-router-dom";
+} from '@react-google-maps/api';
+import { IconCurrentLocation } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ServerError } from '../Error';
+import { AddPosition } from './components/AddAds';
+import { Login } from './components/Login';
+import { SearchBox } from './components/SearchBox';
 
-const libraries = ["places"] as Libraries;
+const libraries = ['places'] as Libraries;
 const mapContainerStyle = {
-  width: "100vw",
-  height: "100vh",
+  width: '100vw',
+  height: '100vh',
 };
 
 const HomePage = () => {
   const navigate = useNavigate();
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyAESSzwLBdEfkk_WpjVmHQ7_1s15q_S4rg",
+    googleMapsApiKey: 'AIzaSyAESSzwLBdEfkk_WpjVmHQ7_1s15q_S4rg',
     libraries,
   });
 
   const [opened, setOpened] = useState(false);
-  const [location, setLocation] = useState<{ lat: number; lng: number }>({
-    lat: 10.762622,
-    lng: 106.660172,
-  });
+  const [location, setLocation] = useState<{ lat: number; lng: number }>(
+    CURRENT_LOCATION,
+  );
 
   const handleCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude: lat, longitude: lng } }) => {
         const pos = { lat, lng };
         setLocation(pos);
-      }
+      },
     );
   };
 
@@ -45,12 +46,18 @@ const HomePage = () => {
   }, []);
 
   if (loadError) {
-    return <div>Error loading maps</div>;
+    return <ServerError />;
   }
 
   if (!isLoaded) {
-    return <div>Loading maps</div>;
+    return (
+      <div className="w-full h-full">
+        <LoadingOverlay visible zIndex={1000} />
+      </div>
+    );
   }
+
+  console.log({ location });
 
   return (
     <div className="relative">
@@ -61,7 +68,7 @@ const HomePage = () => {
             <Button onClick={() => setOpened(true)} color="teal">
               Đăng nhập
             </Button>
-            <Button onClick={() => navigate("/admin/login")} variant="default">
+            <Button onClick={() => navigate('/admin/login')} variant="default">
               Truy cập trang quản lý
             </Button>
             <ActionIcon
@@ -77,13 +84,13 @@ const HomePage = () => {
         </div>
       </div>
       <GoogleMap
+        id="map"
         mapContainerStyle={mapContainerStyle}
         zoom={15}
         center={location}
-      >
-        {location && <Marker position={location} />}
-      </GoogleMap>
+      ></GoogleMap>
       <Login opened={opened} onClose={() => setOpened(false)} />
+      <AddPosition opened onClose={() => null} onChangeLocation={setLocation} />
     </div>
   );
 };

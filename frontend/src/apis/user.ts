@@ -14,7 +14,7 @@ export type LoginResponse = {
 export const loginApi = async (data: LoginRequest) => {
   try {
     const res = await apiPost<LoginRequest, ApiDataResponse<LoginResponse>>(
-      API_URL + '/auth/vhtt/signin',
+      API_URL + '/auth/normal/signin',
       data,
     );
 
@@ -40,7 +40,7 @@ export type RegisterRequest = {
 
 export const registerApi = async (data: RegisterRequest) => {
   try {
-    const res = await apiPost(API_URL + '/auth/primary/signup', data);
+    const res = await apiPost(API_URL + '/auth/vhtt/signup', data);
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
@@ -49,7 +49,7 @@ export const registerApi = async (data: RegisterRequest) => {
 };
 
 export const refreshTokenApi = async (token: string) => {
-  const res = await apiPost(API_URL + '/auth/primary/refresh-token', { token });
+  const res = await apiPost(API_URL + '/auth/normal/refresh-token', { token });
   return res.data;
 };
 
@@ -62,7 +62,7 @@ export type ForgetPasswordRequest = {
 
 export const forgotPasswordApi = async (data: ForgetPasswordRequest) => {
   try {
-    const res = await apiPatch(API_URL + '/auth/primary/forgot-password', data);
+    const res = await apiPatch(API_URL + '/auth/normal/forgot-password', data);
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
@@ -73,7 +73,7 @@ export const forgotPasswordApi = async (data: ForgetPasswordRequest) => {
 export const sendOtpApi = async (username: string) => {
   try {
     const res = await apiPut(
-      API_URL + `/auth/primary/regenerate-otp?username=${username}`,
+      API_URL + `/auth/normal/regenerate-otp?username=${username}`,
     );
 
     return res.data;
