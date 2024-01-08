@@ -1,8 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.AddPanelRequest;
-import com.example.backend.dto.AddPositionRequest;
-import com.example.backend.dto.AdsPanelWithImagesDTO;
+import com.example.backend.dto.*;
 import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.AdsPosition;
 import com.example.backend.service.AdsService;
@@ -23,18 +21,18 @@ public class AdsController {
     private final AdsService adsService;
 
     @GetMapping("/all/getAllPosition")
-    public ResponseEntity<List<AdsPosition>> getAllPosition() {
+    public ResponseEntity<List<AdsPositionResponse>> getAllPosition() {
         System.out.println(1);
-        List<AdsPosition> result = adsService.getAllPosition();
+        List<AdsPositionResponse> result = adsService.getAllPosition();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
     @GetMapping("/all/getDetailPosition/{id}")
     public ResponseEntity<?> getDetailPosition(@PathVariable(value = "id") Integer id) {
-        Optional<AdsPosition> position = adsService.getDetailPosition(id);
+        List<AdsPositionResponse> position = adsService.getDetailPosition(id);
         if (position != null) {
-            return new ResponseEntity<>(position, HttpStatus.OK);
+            return new ResponseEntity<>(position.get(0), HttpStatus.OK);
         }
         return new ResponseEntity<>("Id Not found", HttpStatus.NOT_FOUND);
     }
@@ -80,17 +78,17 @@ public class AdsController {
     // Panel controller....................
 
     @GetMapping("/all/getAllPanel")
-    public ResponseEntity<List<AdsPanel>> getAllPanels() {
-        List<AdsPanel> ads = adsService.getAllPanels();
+    public ResponseEntity< List<AdsPanelResponse>> getAllPanels() {
+        List<AdsPanelResponse> ads = adsService.getAllPanels();
         System.out.println(ads);
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
     @GetMapping("/all/getDetailPanel/{id}")
     public ResponseEntity<?> getDetailPanel(@PathVariable(value = "id") Integer id) {
-        Optional<AdsPanel> panel = adsService.getDetailPanel(id);
+        List<AdsPanelResponse> panel = adsService.getDetailPanel(id);
         if (panel != null) {
-            return new ResponseEntity<>(panel, HttpStatus.OK);
+            return new ResponseEntity<>(panel.get(0), HttpStatus.OK);
         }
         return new ResponseEntity<>("Id Not found", HttpStatus.NOT_FOUND);
     }

@@ -12,4 +12,10 @@ public class AdsType {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "color")
+    private String color;
+
+    @Column(name = "icon")
+    private String icon;
+
 }

@@ -1,12 +1,7 @@
 package com.example.backend.service.impl;
 
-import com.example.backend.dto.AdsPanelWithImagesDTO;
-import com.example.backend.entity.AdsImages;
-import com.example.backend.entity.AdsType;
-import com.example.backend.dto.AddPanelRequest;
-import com.example.backend.dto.AddPositionRequest;
-import com.example.backend.entity.AdsPanel;
-import com.example.backend.entity.AdsPosition;
+import com.example.backend.dto.*;
+import com.example.backend.entity.*;
 import com.example.backend.repository.AdsPanelRepository;
 import com.example.backend.repository.AdsPositionRepository;
 import com.example.backend.repository.AdsTypeRepository;
@@ -29,13 +24,20 @@ public class AdsServiceServiceImpl implements AdsService {
 
     private final AdsTypeRepository adsTypeRepository;
 
-    public List<AdsPosition> getAllPosition(){
-        return adsPositionRepository.findAll();
+    public List<AdsPositionResponse> getAllPosition(){
+        List<Object[]> list = adsPositionRepository.getPositionWithState();
+        System.out.println(list.get(0)[2]);
+        return list.stream()
+                .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1], (AdsForm) objects[2], (PlanningStatus) objects[3]))
+                .collect(Collectors.toList());
     }
 
-    public Optional<AdsPosition> getDetailPosition(Integer id){
+    public List<AdsPositionResponse> getDetailPosition(Integer id){
         if(adsPositionRepository.existsById(id)){
-            return adsPositionRepository.findById(id);
+            List<Object[]> list = adsPositionRepository.getDetailPositionWithState(id);
+            return list.stream()
+                    .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1], (AdsForm) objects[2], (PlanningStatus) objects[3]))
+                    .collect(Collectors.toList());
         }
         return null;
     }
@@ -49,6 +51,11 @@ public class AdsServiceServiceImpl implements AdsService {
         ads.setLocation_type(newPosition.getLocation_type());
         ads.setPlanning_status(newPosition.getPlanning_status());
         ads.setProvince(newPosition.getProvince());
+        ads.setPhoto(newPosition.getPhoto());
+        ads.setLatitude(newPosition.getLatitude());
+        ads.setLongitude(newPosition.getLongitude());
+        ads.setIsactived(newPosition.getIs_active());
+        ads.setPlace_id(newPosition.getPlace_id());
         return adsPositionRepository.save(ads);
     }
 
@@ -102,15 +109,22 @@ public class AdsServiceServiceImpl implements AdsService {
         }
     }
 
-    public Optional<AdsPanel> getDetailPanel(Integer id){
+    public List<AdsPanelResponse> getDetailPanel(Integer id){
         if(adsPanelRepository.existsById(id)){
-            return adsPanelRepository.findById(id);
+            List<Object[]> resultList = adsPanelRepository.getDetailPanelWithType(id);
+            return resultList.stream()
+                    .map(objects -> new AdsPanelResponse((AdsPanel) objects[0], (AdsType) objects[1], (AdsPosition) objects[2]))
+                    .collect(Collectors.toList());
         }
         return null;
     }
 
-    public  List<AdsPanel> getAllPanels(){
-        return adsPanelRepository.findAll();
+    public  List<AdsPanelResponse> getAllPanels(){
+        List<Object[]> resultList = adsPanelRepository.getAllPanelWithType();
+
+        return resultList.stream()
+                .map(objects -> new AdsPanelResponse((AdsPanel) objects[0], (AdsType) objects[1], (AdsPosition) objects[2]))
+                .collect(Collectors.toList());
     }
 
     public Boolean addNewPanel(AddPanelRequest newPanel) {
