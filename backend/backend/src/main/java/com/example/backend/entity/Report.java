@@ -49,4 +49,11 @@ public class Report {
     @Column(name = "solving")
     private String solving;
 
+    @Column(name = "ads_panel")
+    private Integer adsPanel;
+
+    @Column(name = "ads_position")
+    private Integer adsPosition;
+
+
 }
