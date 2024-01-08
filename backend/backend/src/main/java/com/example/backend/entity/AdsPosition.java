@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import com.example.backend.enums.IsActived;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -37,4 +38,18 @@ public class AdsPosition {
     @Column(name ="planning_status")
     private String planning_status;
 
+    @Column(name = "photo")
+    private String photo;
+
+    @Column(name = "place_id")
+    private String place_id;
+
+    @Column(name = "latidude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "is_active")
+    private IsActived isactived;
 }
