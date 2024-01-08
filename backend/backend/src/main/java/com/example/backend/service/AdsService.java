@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.dto.AddPanelRequest;
 import com.example.backend.dto.AddPositionRequest;
+import com.example.backend.dto.AdsPanelWithImagesDTO;
 import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.AdsPosition;
 import com.example.backend.entity.AdsType;
@@ -27,4 +28,6 @@ public interface AdsService {
     AdsType addNewType(AdsType adsType);
     Boolean deleteTypeAds(String title);
     Boolean updateAdsType(String title, AdsType adsType);
+
+    List<AdsPanelWithImagesDTO> getAllPresentingPanel();
 }
