@@ -51,6 +51,11 @@ public class AdsServiceServiceImpl implements AdsService {
         ads.setLocation_type(newPosition.getLocation_type());
         ads.setPlanning_status(newPosition.getPlanning_status());
         ads.setProvince(newPosition.getProvince());
+        ads.setPhoto(newPosition.getPhoto());
+        ads.setLatitude(newPosition.getLatitude());
+        ads.setLongitude(newPosition.getLongitude());
+        ads.setIsactived(newPosition.getIs_active());
+        ads.setPlace_id(newPosition.getPlace_id());
         return adsPositionRepository.save(ads);
     }
 
