@@ -34,4 +34,6 @@ public class AddReportRequest {
     private Integer adsPanel;
 
     private Integer adsPosition;
+
+    private String token;
 }
