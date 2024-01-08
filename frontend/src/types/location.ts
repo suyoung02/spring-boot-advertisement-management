@@ -15,3 +15,8 @@ export type District = {
   shortCodename: string;
   wards?: District[];
 };
+
+export type Location = {
+  lat: number;
+  lng: number;
+};

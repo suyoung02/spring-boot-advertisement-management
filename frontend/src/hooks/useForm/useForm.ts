@@ -77,7 +77,7 @@ const useForm = <T extends FieldValues>({
 }: Options<T>) => {
   const [fields, setFields] = useState<T>(defaultState);
   const [error, setError] = useState({} as Record<keyof T, string>);
-  const debounced = useRef({} as Record<keyof T, number>);
+  const debounced = useRef({} as Record<keyof T, NodeJS.Timeout>);
 
   const onChangeDebounce = (value: unknown, field: keyof T) => {
     const _config = config?.[field];
@@ -155,6 +155,7 @@ const useForm = <T extends FieldValues>({
 
   const reset = () => {
     setFields(defaultState);
+    setError({} as Record<keyof T, string>);
   };
 
   useEffect(() => {
