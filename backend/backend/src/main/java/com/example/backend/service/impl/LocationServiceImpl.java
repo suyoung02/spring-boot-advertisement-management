@@ -7,9 +7,6 @@ import com.example.backend.repository.DistrictRepository;
 import com.example.backend.repository.WardRepository;
 import com.example.backend.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,15 +34,14 @@ public class LocationServiceImpl implements LocationService {
         return districtRepository.findAllDistrictList(ward.getWard());
     }
 
-    
     @Override
     public void addWard(AddPositionRequest ward) {
         wardRepository.insertWard(ward.getWard());
     }
 
     @Override
-    public void updateWard(Ward updatedWard,Ward oldWard) {
-        wardRepository.updateWard(updatedWard.getWard(),oldWard.getWard());
+    public void updateWard(Ward updatedWard, Ward oldWard) {
+        wardRepository.updateWard(updatedWard.getWard(), oldWard.getWard());
     }
 
     @Override
@@ -58,7 +54,7 @@ public class LocationServiceImpl implements LocationService {
         return districtRepository.findById(id);
     }
 
-       @Override
+    @Override
     public Ward findWardByName(String ward) {
         return wardRepository.findWardByName(ward);
     }
@@ -70,7 +66,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void updateDistrict(Integer id, District updatedDistrict) {
-        districtRepository.updateWard(id,updatedDistrict.getDistrict(),updatedDistrict.getWard());
+        districtRepository.updateWard(id, updatedDistrict.getDistrict(), updatedDistrict.getWard());
     }
 
     @Override
