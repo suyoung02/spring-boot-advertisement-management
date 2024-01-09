@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.AddReportRequest;
 import com.example.backend.dto.ReCaptchaResponse;
 import com.example.backend.dto.ReportResponse;
+import com.example.backend.dto.SolvingReport;
 import com.example.backend.entity.Report;
 import com.example.backend.exception.AppException;
 import com.example.backend.service.ReportService;
@@ -52,11 +53,11 @@ public class ReportController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Report> updateReport(@PathVariable(value = "id") Integer id,
-            @Valid @RequestBody AddReportRequest newReport) {
+    public ResponseEntity<ReportResponse> updateReport(@PathVariable(value = "id") Integer id,
+            @Valid @RequestBody SolvingReport solution) {
 
         try {
-            Report result = reportService.updateReport(id, newReport);
+            ReportResponse result = (reportService.updateReport(id, solution)).get(0);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.AddReportRequest;
 import com.example.backend.dto.ReportResponse;
+import com.example.backend.dto.SolvingReport;
 import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.AdsPosition;
 import com.example.backend.entity.ProcessingStatus;
@@ -77,16 +78,16 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Report updateReport(Integer id, AddReportRequest newReport) {
+    public List<ReportResponse> updateReport(Integer id, SolvingReport solution) {
         Optional<Report> res = reportRepository.findById(id);
         if (res.isPresent()) {
 
             Report dbReport = res.get();
-            System.out.println(dbReport);
-            dbReport.setSolving(newReport.getSolving());
-            dbReport.setContent(newReport.getContent());
-            dbReport.setState(newReport.getState());
-            reportRepository.save(dbReport);
+
+            dbReport.setSolving(solution.getSolving());
+            dbReport.setState(solution.getProcessingStatus());
+
+            dbReport = reportRepository.save(dbReport);
             // send gmail
             String mess = dbReport.getSolving();
             String email = dbReport.getEmail();
@@ -96,7 +97,12 @@ public class ReportServiceImpl implements ReportService {
             } catch (MessagingException ex) {
                 throw new RuntimeException("Unable to send mess, please try again");
             }
-            return dbReport;
+
+            List<Object[]> list = reportRepository.getDetailReport(dbReport.getId());
+            return list.stream()
+                    .map(objects -> new ReportResponse((Report) objects[0], (ReportForm) objects[1],
+                            (ProcessingStatus) objects[2], (AdsPosition) objects[3], (AdsPanel) objects[4]))
+                    .collect(Collectors.toList());
         } else {
             throw new RuntimeException("Report id not found");
         }
