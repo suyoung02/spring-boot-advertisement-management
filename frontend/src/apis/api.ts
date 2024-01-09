@@ -5,7 +5,7 @@ import axios, {
 } from 'axios';
 
 import { HTTP_STATUS_CODE } from '@/configs/constants';
-import { logout } from '@/stores/user';
+import { getAccessToken, logout } from '@/stores/user';
 
 type AxiosRetry = AxiosError['config'] & { _retry: boolean };
 
@@ -34,10 +34,13 @@ export const apiRequest = async <
 >(
   config: AxiosRequestConfig,
 ): Promise<Response> => {
+  const token = getAccessToken();
+
   return instance.request({
     ...config,
     headers: {
-      // Accept: "application/json",
+      Accept: 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...config.headers,
     },
   });

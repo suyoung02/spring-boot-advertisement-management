@@ -1,10 +1,11 @@
 package com.example.backend.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "location_type")
@@ -17,9 +18,10 @@ public class LocationType {
     @Column(name = "color")
     private String color;
 
-    @Column(name = "icon")
+    @Lob
+    @Column(name = "icon", columnDefinition = "TEXT")
     private String icon;
 
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "location_type")
-//    private List<AdsPosition> locationTypes = new ArrayList<>();
+    // @OneToMany(cascade = CascadeType.ALL, mappedBy = "location_type")
+    // private List<AdsPosition> locationTypes = new ArrayList<>();
 }
