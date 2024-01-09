@@ -45,6 +45,8 @@ const PlaceSelect = ({ value, data, error, onChange }: Props) => {
 
   const activeItem = data.find((d) => d.value === value)?.description;
 
+  console.log(data.find((d) => d.value === value));
+
   return (
     <Combobox
       store={combobox}

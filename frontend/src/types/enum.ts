@@ -4,6 +4,11 @@ export enum Role {
   VHTT = 'VHTT',
 }
 
+export enum IS_ACTIVE {
+  TRUE = 'TRUE',
+  FALSE = 'FALSE',
+}
+
 export enum PositionStatus {
   ACTIVE = 'ACTIVE',
   IN_PROGRESS = 'IN_PROGRESS',

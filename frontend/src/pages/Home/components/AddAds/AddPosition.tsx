@@ -1,16 +1,20 @@
-import { getAllAdsType } from '@/apis/ads';
-import { addAdsPosition } from '@/apis/position';
 import { getLocationApi } from '@/apis/location';
+import {
+  AddAdsPositionRequest,
+  UpdateAdsPositionRequest,
+  addAdsPosition,
+  updateAdsPosition,
+} from '@/apis/position';
 import { useForm } from '@/hooks/useForm';
 import usePositionOptions from '@/hooks/usePositionOptions';
 import { Position } from '@/types/ads';
-import { LocationType, PositionStatus } from '@/types/enum';
 import { CURRENT_LOCATION } from '@/utils/location';
 import { Button, Drawer, Select, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import PlaceSelect, { Place } from './PlaceSelect';
+import { IS_ACTIVE } from '@/types/enum';
 
 type Props = {
   position?: Position;
@@ -48,13 +52,13 @@ const AddPosition = ({
   const { fields, onChangeField, onError, error } = useForm<AddAdsPositionForm>(
     {
       defaultState: {
-        province: position?.province || CITY,
-        ward: position?.ward || '',
-        district: position?.district || '',
-        location_type: position?.location_type || LocationType.PUBLIC_LAND,
-        planning_status: position?.planning_status || PositionStatus.NOT_YET,
-        ads_form: position?.ads_form || '',
-        address: position?.address || '',
+        province: position?.adsPosition.province || CITY,
+        ward: position?.adsPosition.ward || '',
+        district: position?.adsPosition.district || '',
+        location_type: position?.locationType.title || '',
+        planning_status: position?.planningStatus.title || '',
+        ads_form: position?.adsForm.title || '',
+        address: position?.adsPosition.address || '',
         place_id: '',
       },
       validate: {
@@ -78,11 +82,7 @@ const AddPosition = ({
     },
   );
 
-  const { locationType, positionStatus } = usePositionOptions();
-  const { data: adsTypes } = useQuery({
-    queryKey: ['getAllAdsType'],
-    queryFn: () => getAllAdsType(),
-  });
+  const { locationType, positionStatus, adsForm } = usePositionOptions();
 
   const rawData = useMemo(() => {
     return data?.find((city) => city.name === CITY);
@@ -147,7 +147,7 @@ const AddPosition = ({
   };
 
   const { mutate: addPosition } = useMutation({
-    mutationFn: (data: AddAdsPositionForm) => addAdsPosition(data),
+    mutationFn: (data: AddAdsPositionRequest) => addAdsPosition(data),
     onSuccess: () => {
       notifications.show({
         message: 'Tạo thành công',
@@ -163,7 +163,7 @@ const AddPosition = ({
   });
 
   const { mutate: updatePosition } = useMutation({
-    mutationFn: (data: AddAdsPositionForm) => addAdsPosition(data),
+    mutationFn: (data: UpdateAdsPositionRequest) => updateAdsPosition(data),
     onSuccess: () => {
       notifications.show({
         message: 'Tạo thành công',
@@ -195,7 +195,28 @@ const AddPosition = ({
   const onSubmit = () => {
     const err = onError();
     if (err) return;
-    position ? updatePosition({ ...position, ...fields }) : addPosition(fields);
+    const activePlace = places.find((p) => p.place_id === fields.place_id);
+    const data = {
+      address: fields.address,
+      ward: fields.ward,
+      district: fields.district,
+      province: fields.province,
+      location_type: fields.location_type,
+      ads_form: fields.ads_form,
+      planning_status: fields.planning_status,
+      photo: activePlace?.photo?.[0] || '',
+      place_id: fields.place_id,
+      latitude: activePlace?.lat as number,
+      longitude: activePlace?.lng as number,
+      is_active: IS_ACTIVE.TRUE,
+    };
+
+    position
+      ? updatePosition({
+          id: position.adsPosition.id,
+          ...data,
+        })
+      : addPosition(data);
   };
 
   return (
@@ -204,6 +225,7 @@ const AddPosition = ({
       opened={opened}
       onClose={onClose}
       title={position ? 'Cập nhật vị trí' : 'Tạo vị trí'}
+      size="lg"
     >
       <form className="flex flex-col gap-2">
         <Select
@@ -272,12 +294,9 @@ const AddPosition = ({
           error={error.planning_status}
         />
         <Select
-          label="Loại quảng cáo được phép"
-          data={adsTypes?.map((type) => ({
-            value: type.title,
-            label: type.title,
-          }))}
-          placeholder="Chọn loại quảng cáo được phép"
+          label="Hình thức quảng cáo"
+          data={adsForm}
+          placeholder="Hình thức loại quảng cáo"
           value={fields.ads_form}
           onChange={(value) => onChangeField('ads_form', value || '')}
           withAsterisk

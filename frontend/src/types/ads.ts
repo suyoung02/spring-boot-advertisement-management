@@ -22,28 +22,39 @@ export type PlanningStatus = {
   icon: string;
 };
 
-export type Position = {
-  id: number;
-  address: string;
-  ward: string;
-  district: string;
-  province: string;
-  location_type: LocationType;
-  ads_form: string;
-  planning_status: PlanningStatus;
-  name: string;
-  photo: string;
-};
-
 export type Panel = {
   id: number;
-  ads_type: string;
+  ads_type: AdsType;
   size: string;
   contract_expiration: Date;
   ads_position: number;
   quantity: number;
-  ads_form: string;
-  loaction_type: string;
+  ads_form: AdsForm;
+  loaction_type: LocationType;
   address: string;
   photo: string;
+};
+
+export type Position = {
+  adsPosition: AdsPosition;
+  locationType: AdsForm;
+  adsForm: AdsForm;
+  planningStatus: AdsForm;
+};
+
+export type AdsPosition = {
+  id: number;
+  name: string;
+  address: string;
+  ward: string;
+  district: string;
+  province: string;
+  locationType: string;
+  adsForm: string;
+  planningStatus: string;
+  photo: string;
+  placeID: string;
+  latitude: number;
+  longitude: number;
+  isactived: string;
 };

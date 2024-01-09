@@ -1,3 +1,9 @@
+export type ReportType = {
+  title: string;
+  color: string;
+  icon: string;
+};
+
 export type Report = {
   id: number;
   reportForm: string;

@@ -1,4 +1,6 @@
+import useGetPosition from '@/hooks/useGetPosition';
 import { ModalName, useControlStore } from '@/stores/control';
+import { Position } from '@/types/ads';
 import { ActionIcon, Button, LoadingOverlay } from '@mantine/core';
 import {
   GoogleMap,
@@ -11,7 +13,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ServerError } from '../Error';
 import { AddPosition } from './components/AddAds';
-import { PanelDetail, PositionDetail, Report } from './components/Ads';
+import { PanelDetail, PositionDetail } from './components/Ads';
 import { POSITION_MOCK } from './components/Ads/PositionDetail';
 import { Login } from './components/Login';
 import { SearchBox } from './components/SearchBox';
@@ -40,19 +42,21 @@ const HomePage = () => {
 
   const [mapRef, setMapRef] = useState<google.maps.Map>();
   const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState<Position | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [infoWindowData, setInfoWindowData] = useState<any>();
 
-  const markers = [
-    { address: 'Address1', lat: 18.5204, lng: 73.8567 },
-    { address: 'Address2', lat: 18.5314, lng: 73.8446 },
-    { address: 'Address3', lat: 18.5642, lng: 73.7769 },
-  ];
+  const { data: markers } = useGetPosition();
 
   const onMapLoad = (map: google.maps.Map) => {
     setMapRef(map);
     const bounds = new google.maps.LatLngBounds();
-    markers?.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+    markers?.forEach((position) =>
+      bounds.extend({
+        lat: position.adsPosition.latitude,
+        lng: position.adsPosition.longitude,
+      }),
+    );
     map.fitBounds(bounds);
   };
 
@@ -80,8 +84,9 @@ const HomePage = () => {
     handleCurrentLocation();
   }, [handleCurrentLocation]);
 
-  const handleViewPosition = () => {
+  const handleViewPosition = (position: Position) => {
     setIsOpen(false);
+    setPosition(position);
     setModal(ModalName.POSITION_DETAIL);
   };
 
@@ -114,6 +119,12 @@ const HomePage = () => {
             <Button onClick={() => setModal(ModalName.LOGIN)} color="teal">
               Đăng nhập
             </Button>
+            <Button
+              onClick={() => setModal(ModalName.ADD_POSITION)}
+              color="teal"
+            >
+              Tạo vị trí
+            </Button>
             <Button onClick={() => navigate('/admin/login')} variant="default">
               Truy cập trang quản lý
             </Button>
@@ -136,14 +147,19 @@ const HomePage = () => {
         onLoad={onMapLoad}
         // center={currentLocation}
       >
-        {markers.map(({ address, lat, lng }, ind) => (
+        {markers?.map(({ adsPosition }, ind) => (
           <MarkerF
             key={ind}
-            position={{ lat, lng }}
+            position={{ lat: adsPosition.latitude, lng: adsPosition.longitude }}
             onMouseOver={() => {
-              handleMarkerHover(ind, lat, lng, address);
+              handleMarkerHover(
+                ind,
+                adsPosition.latitude,
+                adsPosition.longitude,
+                adsPosition.address,
+              );
             }}
-            onClick={handleViewPosition}
+            onClick={() => handleViewPosition(markers[ind])}
           >
             {isOpen && infoWindowData?.id === ind && (
               <InfoWindow
@@ -174,22 +190,25 @@ const HomePage = () => {
         onClose={onCloseModal}
         onChangeLocation={setCurrentLocation}
       />
-      <PositionDetail
-        opened={modal === ModalName.POSITION_DETAIL}
-        onClose={onCloseModal}
-        onViewPanel={handleViewPanel}
-        onReport={handleReport}
-      />
+      {position && (
+        <PositionDetail
+          opened={modal === ModalName.POSITION_DETAIL}
+          onClose={onCloseModal}
+          onViewPanel={handleViewPanel}
+          onReport={handleReport}
+          id={position.adsPosition.id}
+        />
+      )}
       <PanelDetail
         opened={modal === ModalName.PANEL_DETAIL}
         onClose={onCloseModal}
         onReport={handleReport}
       />
-      <Report
+      {/* <Report
         opened={modal === ModalName.REPORT}
         onClose={onCloseModal}
         position={POSITION_MOCK as never}
-      />
+      /> */}
     </div>
   );
 };

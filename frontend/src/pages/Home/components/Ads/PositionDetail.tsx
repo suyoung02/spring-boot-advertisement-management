@@ -1,12 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
+import { getDetailAdsPosition } from '@/apis/position';
 import { classNames } from '@/utils/classNames';
-import { Button, Drawer } from '@mantine/core';
+import { getFullAddress } from '@/utils/location';
+import { Button, Drawer, LoadingOverlay } from '@mantine/core';
 import {
   IconAlertCircle,
   IconAlertOctagonFilled,
-  IconCheck,
+  IconCircleCheckFilled,
   IconInfoCircleFilled,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
 type Props = {
@@ -14,6 +17,7 @@ type Props = {
   onClose: () => void;
   onViewPanel?: () => void;
   onReport?: () => void;
+  id: number;
 };
 
 export const POSITION_MOCK = {
@@ -49,7 +53,18 @@ export const PANEL_MOCK = [
   },
 ];
 
-const PositionDetail = ({ onClose, onViewPanel, onReport, opened }: Props) => {
+const PositionDetail = ({
+  id,
+  onClose,
+  onViewPanel,
+  onReport,
+  opened,
+}: Props) => {
+  const { data: position, isLoading } = useQuery({
+    queryKey: ['getDetailAdsPosition', id],
+    queryFn: () => getDetailAdsPosition(id),
+  });
+
   return (
     <Drawer
       size="lg"
@@ -58,100 +73,133 @@ const PositionDetail = ({ onClose, onViewPanel, onReport, opened }: Props) => {
       onClose={onClose}
       title="Chi tiết điểm đặt quảng cáo"
     >
-      <div className="flex flex-col gap-4">
-        <div
-          className={classNames(
-            'pl-3 pr-4 py-4 gap-2 rounded-xl bg-red-100 text-red-600 flex',
-          )}
-        >
-          <div className="w-6">
-            <IconCheck />
-          </div>
+      <LoadingOverlay
+        visible={isLoading}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+      />
+      {!position ? (
+        <div className="p-4 rounded-xl bg-blue-100 text-blue-600 flex gap-2">
+          <IconAlertCircle />
           <div className="flex flex-col">
-            <div className="font-bold">
-              Thông tin địa điểm - {POSITION_MOCK.ads_form}
-            </div>
-            <div className="font-medium text-lg">{POSITION_MOCK.name}</div>
-            <div className="text-sm">{POSITION_MOCK.address}</div>
-            <div className="text-sm">{POSITION_MOCK.location_type}</div>
-            <div className="uppercase font-bold my-1">
-              {POSITION_MOCK.planning_status}
-            </div>
-            <img
-              alt="photo"
-              src={POSITION_MOCK.photo}
-              className="w-full h-auto"
-            />
-            <Button
-              onClick={onReport}
-              className="self-end mt-4"
-              color="red"
-              leftSection={<IconAlertOctagonFilled />}
-            >
-              Báo cáo vi phạm
-            </Button>
+            <div className="font-bold">Thông tin địa điểm </div>
+            <div className="font-medium">Chưa có dữ liệu</div>
+            <div className="text-sm">Vui lòng chọn địa điểm khác</div>
           </div>
         </div>
-        {!PANEL_MOCK.length && (
-          <div className="p-4 rounded-xl bg-blue-100 text-blue-600 flex gap-2">
-            <IconAlertCircle />
-            <div className="flex flex-col">
-              <div className="font-bold">Thông tin quảng cáo</div>
-              <div className="font-medium">Chưa có dữ liệu</div>
-              <div className="text-sm">Vui lòng chọn địa điểm khác</div>
-            </div>
-          </div>
-        )}
-        {PANEL_MOCK.map((panel, index) => (
-          <div key={index} className="p-4 rounded-xl border flex gap-2">
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div
+            style={{
+              color: position.planningStatus.color,
+              borderColor: position.planningStatus.color,
+            }}
+            className={classNames(
+              'pl-3 pr-4 py-4 gap-2 rounded-xl text-black bg-white border flex',
+            )}
+          >
             <div className="w-6">
-              <IconAlertCircle size={24} />
+              {(
+                <img
+                  alt={position.planningStatus.icon}
+                  className="w-full h-full object-cover"
+                />
+              ) && <IconCircleCheckFilled />}
             </div>
             <div className="flex flex-col">
               <div className="font-bold">
-                Thông tin quảng cáo - {panel.ads_type}
+                Thông tin địa điểm - {position.adsForm.title}
               </div>
-              <div className="font-medium mb-2">{panel.address}</div>
-              <div className="text-base">
-                Kích thước: <span className="font-medium">{panel.size}</span>
+              <div className="font-medium text-lg">
+                {position.adsPosition.name}
               </div>
-              <div className="text-base">
-                Số lượng: <span className="font-medium">{panel.quantity}</span>
+              <div className="text-sm">
+                {getFullAddress(position.adsPosition)}
               </div>
-              <div className="text-base">
-                Hình thức: <span className="font-medium">{panel.ads_form}</span>
+              <div className="text-sm">{position.locationType.title}</div>
+              <div className="uppercase font-bold my-1">
+                {position.planningStatus.title}
               </div>
-              <div className="text-base">
-                Phân loại:{' '}
-                <span className="font-medium">{panel.location_type}</span>
-              </div>
-              <div className="text-base">
-                Ngày hết hạn:{' '}
-                <span className="font-medium">
-                  {dayjs(panel.contract_expiration).format(
-                    'DD/MM/YYYY - HH:mm',
-                  )}
-                </span>
-              </div>
-              <div className="flex justify-between items-center mt-4">
-                <Button
-                  leftSection={<IconInfoCircleFilled />}
-                  onClick={onViewPanel}
-                >
-                  Thông tin
-                </Button>
-                <Button
-                  onClick={onReport}
-                  color="red"
-                  leftSection={<IconAlertOctagonFilled />}
-                >
-                  Báo cáo vi phạm
-                </Button>
-              </div>
+              {position.adsPosition.photo && (
+                <img
+                  alt="photo"
+                  src={position.adsPosition.photo}
+                  className="w-full h-auto"
+                />
+              )}
+              <Button
+                onClick={onReport}
+                className="self-end mt-4"
+                color="red"
+                leftSection={<IconAlertOctagonFilled />}
+              >
+                Báo cáo vi phạm
+              </Button>
             </div>
           </div>
-        ))}
-      </div>
+          {!PANEL_MOCK.length && (
+            <div className="p-4 rounded-xl bg-blue-100 text-blue-600 flex gap-2">
+              <IconAlertCircle />
+              <div className="flex flex-col">
+                <div className="font-bold">Thông tin quảng cáo</div>
+                <div className="font-medium">Chưa có dữ liệu</div>
+                <div className="text-sm">Vui lòng chọn địa điểm khác</div>
+              </div>
+            </div>
+          )}
+          {PANEL_MOCK.map((panel, index) => (
+            <div key={index} className="p-4 rounded-xl border flex gap-2">
+              <div className="w-6">
+                <IconAlertCircle size={24} />
+              </div>
+              <div className="flex flex-col">
+                <div className="font-bold">
+                  Thông tin quảng cáo - {panel.ads_type}
+                </div>
+                <div className="font-medium mb-2">{panel.address}</div>
+                <div className="text-base">
+                  Kích thước: <span className="font-medium">{panel.size}</span>
+                </div>
+                <div className="text-base">
+                  Số lượng:{' '}
+                  <span className="font-medium">{panel.quantity}</span>
+                </div>
+                <div className="text-base">
+                  Hình thức:{' '}
+                  <span className="font-medium">{panel.ads_form}</span>
+                </div>
+                <div className="text-base">
+                  Phân loại:{' '}
+                  <span className="font-medium">{panel.location_type}</span>
+                </div>
+                <div className="text-base">
+                  Ngày hết hạn:{' '}
+                  <span className="font-medium">
+                    {dayjs(panel.contract_expiration).format(
+                      'DD/MM/YYYY - HH:mm',
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <Button
+                    leftSection={<IconInfoCircleFilled />}
+                    onClick={onViewPanel}
+                  >
+                    Thông tin
+                  </Button>
+                  <Button
+                    onClick={onReport}
+                    color="red"
+                    leftSection={<IconAlertOctagonFilled />}
+                  >
+                    Báo cáo vi phạm
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </Drawer>
   );
 };

@@ -123,19 +123,21 @@ const Report = ({ onClose, opened, position, panel }: Props) => {
               Thông tin {type ? 'Điểm quảng cáo' : 'Bảng quảng cáo'}
             </div>
             <div className="font-medium mb-2">
-              {position?.name || panel?.ads_type}
+              {position?.adsPosition.name || panel?.ads_type.title}
             </div>
-            <div className="text-sm">{position?.address || panel?.address}</div>
+            <div className="text-sm">
+              {position?.adsPosition.address || panel?.address}
+            </div>
             <div className="text-base">
               Hình thức:{' '}
               <span className="font-medium">
-                {position?.ads_form || panel?.ads_form}
+                {position?.adsForm.title || panel?.ads_form.title}
               </span>
             </div>
             <div className="text-base">
               Phân loại:{' '}
               <span className="font-medium">
-                {position?.location_type || panel?.loaction_type}
+                {position?.locationType.title || panel?.loaction_type.title}
               </span>
             </div>
             {panel && (
