@@ -14,19 +14,17 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 @Controller
 @CrossOrigin
 public class MessageWebSocketController {
-    @Autowired
-    SimpMessagingTemplate simpMessagingTemplate;
-
     // Mapped as /app/application
     @MessageMapping("/application")
     @SendTo("/all/messages")
-    public MessageWebSocket send(@Payload MessageWebSocket message) throws Exception {
+    public MessageWebSocket sendReportToStaff(@Payload MessageWebSocket message) throws Exception {
         return message;
     }
 
     // Mapped as /app/private
     @MessageMapping("/private")
-    public void sendToSpecificPerson(@Payload MessageWebSocket message) {
-        simpMessagingTemplate.convertAndSendToUser(message.getToPerson(), "/person", message);
+    @SendTo("/person/messages")
+    public MessageWebSocket sendSolutionToPerson(@Payload MessageWebSocket message) throws Exception {
+        return message;
     }
 }
