@@ -35,8 +35,10 @@ public class AdsServiceServiceImpl implements AdsService {
     public List<AdsPositionResponse> getDetailPosition(Integer id){
         if(adsPositionRepository.existsById(id)){
             List<Object[]> list = adsPositionRepository.getDetailPositionWithState(id);
+            List<AdsPanel> panels = adsPanelRepository.getPositionDetailWithPanel(id);
+            System.out.println(panels);
             return list.stream()
-                    .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1], (AdsForm) objects[2], (PlanningStatus) objects[3]))
+                    .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1], (AdsForm) objects[2], (PlanningStatus) objects[3], panels))
                     .collect(Collectors.toList());
         }
         return null;
