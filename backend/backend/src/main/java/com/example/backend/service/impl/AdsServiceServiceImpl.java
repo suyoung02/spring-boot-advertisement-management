@@ -115,6 +115,7 @@ public class AdsServiceServiceImpl implements AdsService {
             ads.setAds_type(newPosition.getAds_type());
             ads.setSize(newPosition.getSize());
             ads.setContract_expiration(newPosition.getContract_expiration());
+            adsPanelRepository.save(ads);
             return ads;
         } else {
             throw new RuntimeException("Ads position id not found");
