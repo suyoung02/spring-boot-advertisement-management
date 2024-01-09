@@ -27,6 +27,6 @@ public class MessageWebSocketController {
     // Mapped as /app/private
     @MessageMapping("/private")
     public void sendToSpecificPerson(@Payload MessageWebSocket message) {
-        simpMessagingTemplate.convertAndSendToUser(message.getToPerson(), "/specific", message);
+        simpMessagingTemplate.convertAndSendToUser(message.getToPerson(), "/person", message);
     }
 }
