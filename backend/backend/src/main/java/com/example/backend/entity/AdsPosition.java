@@ -54,5 +54,6 @@ public class AdsPosition {
     private Double longitude;
 
     @Column(name = "is_active")
-    private IsActived isactived;
+    @Enumerated(EnumType.STRING)
+    private IsActived is_actived;
 }

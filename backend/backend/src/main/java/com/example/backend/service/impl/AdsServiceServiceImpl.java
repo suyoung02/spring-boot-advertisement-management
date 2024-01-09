@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.*;
 import com.example.backend.entity.*;
+import com.example.backend.enums.IsActived;
 import com.example.backend.repository.AdsFormRepository;
 import com.example.backend.repository.AdsPanelRepository;
 import com.example.backend.repository.AdsPositionRepository;
@@ -68,7 +69,7 @@ public class AdsServiceServiceImpl implements AdsService {
         ads.setPhoto(newPosition.getPhoto());
         ads.setLatitude(newPosition.getLatitude());
         ads.setLongitude(newPosition.getLongitude());
-        ads.setIsactived(newPosition.getIs_active());
+        ads.setIs_actived(IsActived.TRUE);
         ads.setPlace_id(newPosition.getPlace_id());
         return adsPositionRepository.save(ads);
     }

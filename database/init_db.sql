@@ -196,6 +196,7 @@ CREATE TABLE REPORT(
     device_id VARCHAR(20),
     image_1 VARCHAR(2083),
     image_2 VARCHAR(2083),
+    solving TEXT,
     ads_position INT,
     ads_panel INT,
     PRIMARY KEY (id),
