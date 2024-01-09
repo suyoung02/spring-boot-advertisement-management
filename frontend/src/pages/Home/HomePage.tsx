@@ -1,6 +1,6 @@
 import useGetPosition from '@/hooks/useGetPosition';
 import { ModalName, useControlStore } from '@/stores/control';
-import { Position } from '@/types/ads';
+import { AdsPanel, Position } from '@/types/ads';
 import { ActionIcon, Button, LoadingOverlay } from '@mantine/core';
 import {
   GoogleMap,
@@ -12,11 +12,13 @@ import { IconCurrentLocation } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ServerError } from '../Error';
-import { AddPosition } from './components/AddAds';
+import { AddPanel, AddPosition } from './components/AddAds';
 import { PanelDetail, PositionDetail } from './components/Ads';
-import { POSITION_MOCK } from './components/Ads/PositionDetail';
+
+import { getFullAddress } from '@/utils/location';
 import { Login } from './components/Login';
 import { SearchBox } from './components/SearchBox';
+import { PlaceDetail } from './components/Place';
 
 const mapContainerStyle = {
   width: '100vw',
@@ -43,6 +45,10 @@ const HomePage = () => {
   const [mapRef, setMapRef] = useState<google.maps.Map>();
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position | null>(null);
+  const [place, setPlace] = useState<google.maps.places.PlaceResult | null>(
+    null,
+  );
+  const [panel, setPanel] = useState<AdsPanel | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [infoWindowData, setInfoWindowData] = useState<any>();
 
@@ -90,12 +96,29 @@ const HomePage = () => {
     setModal(ModalName.POSITION_DETAIL);
   };
 
-  const handleViewPanel = () => {
+  const handleViewPanel = (panel: AdsPanel) => {
+    setPanel(panel);
     setModal(ModalName.PANEL_DETAIL);
   };
 
   const handleReport = () => {
     setModal(ModalName.REPORT);
+  };
+
+  const handleOnClick = (e: google.maps.MapMouseEvent) => {
+    if (!mapRef) return;
+
+    const request = {
+      placeId: (e as never)['placeId' as keyof typeof e],
+      fields: ['name', 'geometry', 'place_id', 'photos', 'formatted_address'],
+    };
+
+    const service = new google.maps.places.PlacesService(mapRef);
+    service.getDetails(request, (place, status) => {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        setPlace(place);
+      }
+    });
   };
 
   if (loadError) {
@@ -141,15 +164,15 @@ const HomePage = () => {
         </div>
       </div>
       <GoogleMap
-        id="map"
+        onClick={handleOnClick}
         mapContainerStyle={mapContainerStyle}
         zoom={15}
         onLoad={onMapLoad}
-        // center={currentLocation}
       >
-        {markers?.map(({ adsPosition }, ind) => (
+        {markers?.map(({ adsPosition, locationType, adsForm }, ind) => (
           <MarkerF
-            key={ind}
+            key={adsPosition.id}
+            icon={locationType.icon || adsForm.icon}
             position={{ lat: adsPosition.latitude, lng: adsPosition.longitude }}
             onMouseOver={() => {
               handleMarkerHover(
@@ -169,12 +192,12 @@ const HomePage = () => {
               >
                 <div>
                   <h3 className="font-bold text-base mb-1">
-                    {POSITION_MOCK.ads_form}
+                    {adsPosition.ads_form}
                   </h3>
-                  <h3 className="text-sm">{POSITION_MOCK.location_type}</h3>
-                  <h3 className="text-sm">{POSITION_MOCK.address}</h3>
+                  <h3 className="text-sm">{adsPosition.location_type}</h3>
+                  <h3 className="text-sm">{getFullAddress(adsPosition)}</h3>
                   <h3 className="text-sm font-bold uppercase mt-1">
-                    {POSITION_MOCK.planning_status}
+                    {adsPosition.planning_status}
                   </h3>
                 </div>
               </InfoWindow>
@@ -185,11 +208,24 @@ const HomePage = () => {
 
       <Login opened={modal === ModalName.LOGIN} onClose={onCloseModal} />
 
-      <AddPosition
-        opened={modal === ModalName.ADD_POSITION}
-        onClose={onCloseModal}
-        onChangeLocation={setCurrentLocation}
-      />
+      {modal === ModalName.ADD_POSITION && (
+        <AddPosition
+          opened
+          onClose={onCloseModal}
+          onChangeLocation={setCurrentLocation}
+          position={position || undefined}
+          place={place || undefined}
+          mapRef={mapRef}
+        />
+      )}
+      {modal === ModalName.ADD_PANEL && (
+        <AddPanel
+          opened
+          onClose={onCloseModal}
+          positionId={position?.adsPosition.id}
+          panel={panel || undefined}
+        />
+      )}
       {position && (
         <PositionDetail
           opened={modal === ModalName.POSITION_DETAIL}
@@ -199,11 +235,24 @@ const HomePage = () => {
           id={position.adsPosition.id}
         />
       )}
-      <PanelDetail
-        opened={modal === ModalName.PANEL_DETAIL}
-        onClose={onCloseModal}
-        onReport={handleReport}
-      />
+      {panel && (
+        <PanelDetail
+          opened={modal === ModalName.PANEL_DETAIL}
+          onClose={onCloseModal}
+          onReport={handleReport}
+          id={panel.id}
+        />
+      )}
+      {place && (
+        <PlaceDetail
+          place={place}
+          opened={!!place && !modal}
+          onClose={() => setPlace(null)}
+          onAddPosition={() => {
+            setModal(ModalName.ADD_POSITION);
+          }}
+        />
+      )}
       {/* <Report
         opened={modal === ModalName.REPORT}
         onClose={onCloseModal}

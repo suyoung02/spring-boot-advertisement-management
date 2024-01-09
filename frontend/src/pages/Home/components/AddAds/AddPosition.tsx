@@ -8,11 +8,11 @@ import {
 import { useForm } from '@/hooks/useForm';
 import usePositionOptions from '@/hooks/usePositionOptions';
 import { Position } from '@/types/ads';
-import { CURRENT_LOCATION } from '@/utils/location';
+import { CURRENT_LOCATION, getAddress } from '@/utils/location';
 import { Button, Drawer, Select, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import PlaceSelect, { Place } from './PlaceSelect';
 import { IS_ACTIVE } from '@/types/enum';
 
@@ -21,6 +21,8 @@ type Props = {
   opened: boolean;
   onClose: () => void;
   onChangeLocation?: (location: { lat: number; lng: number }) => void;
+  place?: google.maps.places.PlaceResult;
+  mapRef?: google.maps.Map;
 };
 
 const CITY = 'Thành phố Hồ Chí Minh';
@@ -41,6 +43,8 @@ const AddPosition = ({
   position,
   onClose,
   onChangeLocation,
+  place,
+  mapRef,
 }: Props) => {
   const [places, setPlaces] = useState<Place[]>([]);
   const { data } = useQuery({
@@ -49,17 +53,20 @@ const AddPosition = ({
     staleTime: Infinity,
   });
 
+  const placeAddress = getAddress(place?.formatted_address || '');
+
   const { fields, onChangeField, onError, error } = useForm<AddAdsPositionForm>(
     {
       defaultState: {
-        province: position?.adsPosition.province || CITY,
-        ward: position?.adsPosition.ward || '',
-        district: position?.adsPosition.district || '',
+        province:
+          position?.adsPosition.province || placeAddress.province || CITY,
+        ward: position?.adsPosition.ward || placeAddress.ward || '',
+        district: position?.adsPosition.district || placeAddress.district || '',
         location_type: position?.locationType.title || '',
         planning_status: position?.planningStatus.title || '',
         ads_form: position?.adsForm.title || '',
-        address: position?.adsPosition.address || '',
-        place_id: '',
+        address: position?.adsPosition.address || placeAddress.address || '',
+        place_id: position?.adsPosition.place_id || place?.place_id || '',
       },
       validate: {
         ward: ({ value, formValue }) => {
@@ -109,13 +116,14 @@ const AddPosition = ({
     );
   }, [districts, fields.district]);
 
-  const onBlur = () => {
+  const onBlur = useCallback(() => {
     if (!fields.address) return;
     const service = new window.google.maps.places.PlacesService(
-      new window.google.maps.Map(
-        document.getElementById('map') as HTMLElement,
-        { center: CURRENT_LOCATION, zoom: 15 },
-      ),
+      mapRef ??
+        new window.google.maps.Map(
+          document.getElementById('map') as HTMLElement,
+          { center: CURRENT_LOCATION, zoom: 15 },
+        ),
     );
 
     const request = {
@@ -128,9 +136,8 @@ const AddPosition = ({
       fields: ['name', 'geometry', 'place_id', 'photos', 'formatted_address'],
     };
 
-    service.findPlaceFromQuery(request, function (results, status) {
+    service.textSearch(request, function (results, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log({ results });
         const data =
           results?.map((res) => ({
             value: res.place_id || '',
@@ -144,7 +151,11 @@ const AddPosition = ({
         setPlaces(data);
       }
     });
-  };
+  }, [fields.address, fields.district, fields.province, fields.ward, mapRef]);
+
+  useEffect(() => {
+    position?.adsPosition.address && onBlur();
+  }, [onBlur, position]);
 
   const { mutate: addPosition } = useMutation({
     mutationFn: (data: AddAdsPositionRequest) => addAdsPosition(data),
@@ -197,6 +208,7 @@ const AddPosition = ({
     if (err) return;
     const activePlace = places.find((p) => p.place_id === fields.place_id);
     const data = {
+      name: activePlace?.label || '',
       address: fields.address,
       ward: fields.ward,
       district: fields.district,
@@ -265,6 +277,7 @@ const AddPosition = ({
           placeholder="Nhập địa chỉ"
           onChange={(e) => onChangeField('address', e.target.value)}
           withAsterisk
+          value={fields.address}
           error={error.address}
         />
 
@@ -303,7 +316,7 @@ const AddPosition = ({
           error={error.ads_form}
         />
         <Button onClick={onSubmit} className="mt-3">
-          Tạo vị trí
+          {position ? 'Cập nhật' : 'Tạo vị trí'}
         </Button>
       </form>
     </Drawer>

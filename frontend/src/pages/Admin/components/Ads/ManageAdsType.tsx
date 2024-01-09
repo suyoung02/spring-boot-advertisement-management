@@ -9,6 +9,7 @@ import { IconInput } from '@/components/IconInput';
 import { getImageUrl, storageRef, uploadFile } from '@/configs/firebase';
 import { useForm } from '@/hooks/useForm';
 import { AdsType } from '@/types/ads';
+import { classNames } from '@/utils/classNames';
 import { createFile } from '@/utils/stringToPath';
 import {
   ActionIcon,
@@ -277,7 +278,9 @@ const ManageAdsType = () => {
                     <Table.Td>
                       <div className="flex items-center gap-1">
                         <div
-                          className="w-8 h-8 border"
+                          className={classNames('w-8 h-8', {
+                            border: !!item.color,
+                          })}
                           style={{ background: item.color }}
                         />
                         <span>{item.color}</span>
@@ -309,7 +312,7 @@ const ManageAdsType = () => {
                     </Table.Td>
                     <Table.Td>
                       <ColorInput
-                        value={fields.color}
+                        value={fields.color || undefined}
                         placeholder="Ads color"
                         className="w-[150px]"
                         onChange={(value) => onChangeField('color', value)}

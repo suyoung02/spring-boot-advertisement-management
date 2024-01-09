@@ -48,7 +48,8 @@ public class AdsServiceServiceImpl implements AdsService {
             List<AdsPanel> panels = adsPanelRepository.getPositionDetailWithPanel(id);
             System.out.println(panels);
             return list.stream()
-                    .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1], (AdsForm) objects[2], (PlanningStatus) objects[3], panels))
+                    .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1],
+                            (AdsForm) objects[2], (PlanningStatus) objects[3], panels))
                     .collect(Collectors.toList());
         }
         return null;
@@ -56,6 +57,7 @@ public class AdsServiceServiceImpl implements AdsService {
 
     public AdsPosition addNewPosition(AddPositionRequest newPosition) {
         AdsPosition ads = new AdsPosition();
+        ads.setName(newPosition.getName());
         ads.setAddress(newPosition.getAddress());
         ads.setAds_form(newPosition.getAds_form());
         ads.setDistrict(newPosition.getDistrict());
@@ -92,6 +94,7 @@ public class AdsServiceServiceImpl implements AdsService {
         if (adsOptional.isPresent()) {
             AdsPosition ads = adsOptional.get();
             // Thực hiện các hành động với ads
+            ads.setName(newPosition.getName());
             ads.setAddress(newPosition.getAddress());
             ads.setAds_form(newPosition.getAds_form());
             ads.setProvince(newPosition.getProvince());
@@ -115,6 +118,7 @@ public class AdsServiceServiceImpl implements AdsService {
             ads.setAds_type(newPosition.getAds_type());
             ads.setSize(newPosition.getSize());
             ads.setContract_expiration(newPosition.getContract_expiration());
+            adsPanelRepository.save(ads);
             return ads;
         } else {
             throw new RuntimeException("Ads position id not found");

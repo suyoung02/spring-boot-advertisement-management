@@ -27,7 +27,6 @@ public class AdsController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
     @GetMapping("/all/getDetailPosition/{id}")
     public ResponseEntity<?> getDetailPosition(@PathVariable(value = "id") Integer id) {
         List<AdsPositionResponse> position = adsService.getDetailPosition(id);
@@ -78,7 +77,7 @@ public class AdsController {
     // Panel controller....................
 
     @GetMapping("/all/getAllPanel")
-    public ResponseEntity< List<AdsPanelResponse>> getAllPanels() {
+    public ResponseEntity<List<AdsPanelResponse>> getAllPanels() {
         List<AdsPanelResponse> ads = adsService.getAllPanels();
         System.out.println(ads);
         return new ResponseEntity<>(ads, HttpStatus.OK);
@@ -108,7 +107,7 @@ public class AdsController {
         }
     }
 
-    @DeleteMapping("/vhtt/deletePanel")
+    @DeleteMapping("/vhtt/deletePanel/{id}")
     public ResponseEntity<String> deletePanel(@PathVariable(value = "id") Integer id) {
         try {
             if (adsService.deletePanel(id)) {
@@ -121,7 +120,7 @@ public class AdsController {
         }
     }
 
-    @PutMapping("/vhtt/updatePanel")
+    @PutMapping("/vhtt/updatePanel/{id}")
     public ResponseEntity<AdsPanel> updatePanel(@PathVariable(value = "id") Integer id,
             @Valid @RequestBody AddPanelRequest newPosition) {
         try {
@@ -133,7 +132,7 @@ public class AdsController {
     }
 
     @GetMapping("/all/presenting-panel")
-    public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel(){
+    public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel() {
         List<AdsPanelWithImagesDTO> panels = adsService.getAllPresentingPanel();
         return new ResponseEntity<>(panels, HttpStatus.OK);
     }

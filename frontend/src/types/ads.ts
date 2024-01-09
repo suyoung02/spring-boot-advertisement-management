@@ -1,3 +1,5 @@
+import { IS_ACTIVE } from './enum';
+
 export type AdsType = {
   title: string;
   color: string;
@@ -22,24 +24,12 @@ export type PlanningStatus = {
   icon: string;
 };
 
-export type Panel = {
-  id: number;
-  ads_type: AdsType;
-  size: string;
-  contract_expiration: Date;
-  ads_position: number;
-  quantity: number;
-  ads_form: AdsForm;
-  loaction_type: LocationType;
-  address: string;
-  photo: string;
-};
-
 export type Position = {
   adsPosition: AdsPosition;
   locationType: AdsForm;
   adsForm: AdsForm;
   planningStatus: AdsForm;
+  panels: AdsPanel[];
 };
 
 export type AdsPosition = {
@@ -49,12 +39,26 @@ export type AdsPosition = {
   ward: string;
   district: string;
   province: string;
-  locationType: string;
-  adsForm: string;
-  planningStatus: string;
+  location_type: string;
+  ads_form: string;
+  planning_status: string;
   photo: string;
-  placeID: string;
+  place_id: string;
   latitude: number;
   longitude: number;
-  isactived: string;
+  isactived: IS_ACTIVE;
+};
+
+export type Panel = {
+  adsPanel: AdsPanel;
+  adsType: AdsType;
+  adsPosition: AdsPosition;
+};
+
+export type AdsPanel = {
+  id: number;
+  ads_type: string;
+  size: string;
+  contract_expiration: Date;
+  ads_position: number;
 };

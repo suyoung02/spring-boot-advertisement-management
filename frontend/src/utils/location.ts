@@ -13,3 +13,13 @@ export const getFullAddress = (position: Position['adsPosition']) => {
     position.province,
   ].join(', ');
 };
+
+export const getAddress = (fullAddress: string) => {
+  const [address, ward, district, province] = fullAddress.split(', ');
+  return {
+    address,
+    ward,
+    district,
+    province,
+  };
+};

@@ -26,6 +26,7 @@ export const getDetailAdsPosition = async (id: number) => {
 };
 
 export type AddAdsPositionRequest = {
+  name: string;
   address: string;
   ward: string;
   district: string;
@@ -42,10 +43,10 @@ export type AddAdsPositionRequest = {
 
 export const addAdsPosition = async (data: AddAdsPositionRequest) => {
   try {
-    const res = await apiPost<
-      AddAdsPositionRequest,
-      ApiDataResponse<Position[]>
-    >(API_URL + '/ads/vhtt/addNewPosition', data);
+    const res = await apiPost<AddAdsPositionRequest, ApiDataResponse<Position>>(
+      API_URL + '/ads/vhtt/addNewPosition',
+      data,
+    );
     return res.data;
   } catch {
     return null;
@@ -54,6 +55,7 @@ export const addAdsPosition = async (data: AddAdsPositionRequest) => {
 
 export type UpdateAdsPositionRequest = {
   id: number;
+  name: string;
   address: string;
   ward: string;
   district: string;
@@ -73,10 +75,10 @@ export const updateAdsPosition = async ({
   ...data
 }: UpdateAdsPositionRequest) => {
   try {
-    const res = await apiPut<
-      AddAdsPositionRequest,
-      ApiDataResponse<Position[]>
-    >(API_URL + `/ads/vhtt/updatePosition/${id}`, data);
+    const res = await apiPut<AddAdsPositionRequest, ApiDataResponse<boolean>>(
+      API_URL + `/ads/vhtt/updatePosition/${id}`,
+      data,
+    );
     return res.data;
   } catch {
     return null;
@@ -87,7 +89,7 @@ export const deleteAdsPosition = async (id: number) => {
   try {
     const res = await apiDelete<
       AddAdsPositionRequest,
-      ApiDataResponse<Position[]>
+      ApiDataResponse<boolean>
     >(API_URL + `/ads/vhtt/deletePosition/${id}`);
     return res.data;
   } catch {
@@ -99,6 +101,68 @@ export const getAllAdsPanel = async () => {
   try {
     const res = await apiGet<null, ApiDataResponse<Panel[]>>(
       API_URL + '/ads/all/getAllPanel',
+    );
+    return res.data;
+  } catch {
+    return null;
+  }
+};
+
+export type AddPanelRequest = {
+  ads_type: string;
+  size: string;
+  contract_expiration: Date;
+  ads_position: number;
+};
+
+export const addAdsPanel = async (data: AddPanelRequest) => {
+  try {
+    const res = await apiPost<AddPanelRequest, ApiDataResponse<Panel>>(
+      API_URL + '/ads/vhtt/addNewPanel',
+      data,
+    );
+    return res.data;
+  } catch {
+    return null;
+  }
+};
+
+export type UpdateAdsPanelRequest = {
+  id: number;
+  ads_type: string;
+  size: string;
+  contract_expiration: Date;
+  ads_position: number;
+};
+
+export const updateAdsPanel = async (data: UpdateAdsPanelRequest) => {
+  try {
+    const res = await apiPut<UpdateAdsPanelRequest, ApiDataResponse<Panel>>(
+      API_URL + `/ads/vhtt/updatePanel/${data.id}`,
+      data,
+    );
+    return res.data;
+  } catch {
+    return null;
+  }
+};
+
+export const deleteAdsPanel = async (id: number) => {
+  try {
+    const res = await apiDelete<
+      AddAdsPositionRequest,
+      ApiDataResponse<boolean>
+    >(API_URL + `/ads/vhtt/deletePanel/${id}`);
+    return res.data;
+  } catch {
+    return null;
+  }
+};
+
+export const getDetailAdsPanel = async (id: number) => {
+  try {
+    const res = await apiGet<null, ApiDataResponse<Panel>>(
+      API_URL + `/ads/all/getDetailPanel/${id}`,
     );
     return res.data;
   } catch {

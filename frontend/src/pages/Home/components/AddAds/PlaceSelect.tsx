@@ -1,5 +1,6 @@
 import { Combobox, InputBase, useCombobox } from '@mantine/core';
 import { IconMapPinFilled } from '@tabler/icons-react';
+import { useMemo } from 'react';
 
 export type Place = {
   value: string;
@@ -43,9 +44,9 @@ const PlaceSelect = ({ value, data, error, onChange }: Props) => {
     </Combobox.Option>
   );
 
-  const activeItem = data.find((d) => d.value === value)?.description;
-
-  console.log(data.find((d) => d.value === value));
+  const activeItem = useMemo(() => {
+    return data.find((d) => d.value === value)?.description;
+  }, [data, value]);
 
   return (
     <Combobox
