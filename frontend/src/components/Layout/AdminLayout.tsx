@@ -31,7 +31,7 @@ const mockdata = [
     icon: IconNotes,
     initiallyOpened: false,
     links: [
-      { label: 'Loại đất', link: '/admin/position/location_type' },
+      { label: 'Loại vị trí', link: '/admin/position/location_type' },
       { label: 'Trạng thái vị trí', link: '/admin/position/status' },
       { label: 'Điểm quảng cáo', link: '/admin/position' },
     ],

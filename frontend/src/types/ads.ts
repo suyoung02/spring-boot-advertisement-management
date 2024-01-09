@@ -1,7 +1,25 @@
-import type { LocationType, PositionStatus } from './enum';
-
-export type Ads = {
+export type AdsType = {
   title: string;
+  color: string;
+  icon: string;
+};
+
+export type AdsForm = {
+  title: string;
+  color: string;
+  icon: string;
+};
+
+export type LocationType = {
+  title: string;
+  color: string;
+  icon: string;
+};
+
+export type PlanningStatus = {
+  title: string;
+  color: string;
+  icon: string;
 };
 
 export type Position = {
@@ -12,7 +30,7 @@ export type Position = {
   province: string;
   location_type: LocationType;
   ads_form: string;
-  planning_status: PositionStatus;
+  planning_status: PlanningStatus;
   name: string;
   photo: string;
 };

@@ -1,12 +1,24 @@
 import {
-  UpdateAdsTypeRequest,
-  addAdsType,
-  deleteAdsType,
-  getAllAdsType,
-  updateAdsType,
+  UpdateAdsFormRequest,
+  addAdsForm,
+  deleteAdsForm,
+  getAllAdsForm,
+  updateAdsForm,
 } from '@/apis/ads';
-import { Ads } from '@/types/ads';
-import { ActionIcon, Button, Group, Input, Table, Text } from '@mantine/core';
+import { IconInput } from '@/components/IconInput';
+import { getImageUrl, storageRef, uploadFile } from '@/configs/firebase';
+import { useForm } from '@/hooks/useForm';
+import { AdsForm, AdsType } from '@/types/ads';
+import { createFile } from '@/utils/stringToPath';
+import {
+  ActionIcon,
+  Button,
+  ColorInput,
+  Group,
+  Input,
+  Table,
+  Text,
+} from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import {
@@ -19,18 +31,36 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
+type AdsTypeForm = Omit<AdsType, 'icon'> & {
+  icon: File | null;
+};
+
 const ManageAdsForm = () => {
   const [editId, setEditId] = useState(-1);
   const [add, setAdd] = useState(false);
-  const [title, setTitle] = useState('');
+  const { fields, onChangeField, reset, setFields } = useForm<AdsTypeForm>({
+    defaultState: {
+      title: '',
+      color: '#fff',
+      icon: null,
+    },
+    config: {
+      title: {
+        required: true,
+      },
+      color: {
+        required: true,
+      },
+    },
+  });
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['getAllAdsType'],
-    queryFn: () => getAllAdsType(),
+    queryKey: ['getAllAdsForm'],
+    queryFn: () => getAllAdsForm(),
   });
 
   const { mutate: update } = useMutation({
-    mutationFn: (data: UpdateAdsTypeRequest) => updateAdsType(data),
+    mutationFn: (data: UpdateAdsFormRequest) => updateAdsForm(data),
     onSuccess: () => {
       handleCancel();
       refetch();
@@ -46,7 +76,7 @@ const ManageAdsForm = () => {
   });
 
   const { mutate: addAds } = useMutation({
-    mutationFn: (data: Ads) => addAdsType(data),
+    mutationFn: (data: AdsForm) => addAdsForm(data),
     onSuccess: () => {
       handleCancel(true);
       refetch();
@@ -62,7 +92,7 @@ const ManageAdsForm = () => {
   });
 
   const { mutate: deleteAds } = useMutation({
-    mutationFn: (data: string) => deleteAdsType(data),
+    mutationFn: (data: string) => deleteAdsForm(data),
     onSuccess: () => {
       handleCancel();
       refetch();
@@ -77,29 +107,45 @@ const ManageAdsForm = () => {
     },
   });
 
-  const handleChange = (title: string) => {
-    setTitle(title);
-  };
-
   const handleCancel = (isAdd?: boolean) => {
-    setTitle('');
+    reset();
     setEditId(-1);
     isAdd && setAdd(false);
   };
 
-  const handleEdit = (index: number) => {
+  const handleEdit = async (index: number) => {
     if (!data) return;
+    setAdd(false);
     setEditId(index);
-    setTitle(data[index].title);
+    const img = data[index].icon && (await createFile(data[index].icon));
+    console.log(data[index]);
+    setFields({
+      title: data[index].title,
+      color: data[index].color,
+      icon: img || null,
+    });
   };
 
-  const handleUpdate = () => {
+  const uploadImage = async (file: File) => {
+    const ref = storageRef(`files/${file.name}`);
+    const res = await uploadFile(file, ref);
+    if (!res) return;
+    const url = await getImageUrl(res.ref);
+    return url;
+  };
+
+  const handleUpdate = async () => {
     if (!data) return;
-    update({ title: data[editId].title, newTitle: title });
+    const icon = fields.icon && (await uploadImage(fields.icon));
+    update({
+      title: data[editId].title,
+      adsForm: { ...fields, icon: icon || '' },
+    });
   };
 
-  const handleAdd = () => {
-    addAds({ title });
+  const handleAdd = async () => {
+    const icon = fields.icon && (await uploadImage(fields.icon));
+    addAds({ ...fields, icon: icon || '' });
   };
 
   const handleDelete = (title: string) => {
@@ -125,10 +171,16 @@ const ManageAdsForm = () => {
             <Table.Tr>
               <Table.Th className="w-[100px]">#</Table.Th>
               <Table.Th>Tên</Table.Th>
+              <Table.Th>Màu sắc</Table.Th>
+              <Table.Th>Icon</Table.Th>
               <Table.Th className="flex justify-end">
                 <Button
                   color="teal"
-                  onClick={() => setAdd(true)}
+                  onClick={() => {
+                    setAdd(true);
+                    setEditId(-1);
+                    reset();
+                  }}
                   leftSection={<IconCirclePlus />}
                 >
                   Tạo hình thức
@@ -142,9 +194,24 @@ const ManageAdsForm = () => {
                 <Table.Td className="w-[100px]" />
                 <Table.Td>
                   <Input
-                    value={title}
+                    value={fields.title}
                     placeholder="Ads title"
-                    onChange={(e) => handleChange(e.target.value)}
+                    onChange={(e) => onChangeField('title', e.target.value)}
+                  />
+                </Table.Td>
+                <Table.Td>
+                  <ColorInput
+                    value={fields.color}
+                    placeholder="Ads color"
+                    className="w-[150px]"
+                    onChange={(value) => onChangeField('color', value)}
+                  />
+                </Table.Td>
+                <Table.Td>
+                  <IconInput
+                    onChange={(e) => onChangeField('icon', e)}
+                    wrapperClass="flex-row-reverse justify-end"
+                    className="max-w-[150px] whitespace-nowrap text-ellipsis"
                   />
                 </Table.Td>
                 <Table.Td>
@@ -171,7 +238,7 @@ const ManageAdsForm = () => {
             )}
             {!isLoading && !data?.length && (
               <Table.Tr>
-                <Table.Td className="text-center" colSpan={3}>
+                <Table.Td className="text-center" colSpan={5}>
                   <Text fz="sm">Chưa có dữ liệu</Text>
                 </Table.Td>
               </Table.Tr>
@@ -186,6 +253,12 @@ const ManageAdsForm = () => {
                     <div className="w-[300px] h-6 bg-neutral-300 animate-pulse"></div>
                   </Table.Td>
                   <Table.Td>
+                    <div className="w-[50px] h-6 bg-neutral-300 animate-pulse"></div>
+                  </Table.Td>
+                  <Table.Td>
+                    <div className="w-[50px] h-6 bg-neutral-300 animate-pulse"></div>
+                  </Table.Td>
+                  <Table.Td>
                     <div className="w-[200px] ml-auto h-6 bg-neutral-300 animate-pulse"></div>
                   </Table.Td>
                 </Table.Tr>
@@ -193,20 +266,65 @@ const ManageAdsForm = () => {
 
             {data?.map((item, index) => (
               <Table.Tr key={index}>
-                <Table.Td className="w-[100px]">
-                  <Text fz="sm">{index + 1}</Text>
-                </Table.Td>
-                <Table.Td>
-                  {editId !== index ? (
-                    <Text fz="sm">{item.title}</Text>
-                  ) : (
-                    <Input
-                      value={title}
-                      placeholder="Ads title"
-                      onChange={(e) => handleChange(e.target.value)}
-                    />
-                  )}
-                </Table.Td>
+                {editId !== index ? (
+                  <>
+                    <Table.Td className="w-[100px]">
+                      <Text fz="sm">{index + 1}</Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text fz="sm">{item.title}</Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <div className="flex items-center gap-1">
+                        <div
+                          className="w-8 h-8 border"
+                          style={{ background: item.color }}
+                        />
+                        <span>{item.color}</span>
+                      </div>
+                    </Table.Td>
+                    <Table.Td>
+                      {item.icon && (
+                        <div className="w-8 h-8">
+                          <img
+                            alt="icon"
+                            src={item.icon}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                    </Table.Td>
+                  </>
+                ) : (
+                  <>
+                    <Table.Td className="w-[100px]">
+                      <Text fz="sm">{index + 1}</Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <Input
+                        value={fields.title}
+                        placeholder="Ads title"
+                        onChange={(e) => onChangeField('title', e.target.value)}
+                      />
+                    </Table.Td>
+                    <Table.Td>
+                      <ColorInput
+                        value={fields.color}
+                        placeholder="Ads color"
+                        className="w-[150px]"
+                        onChange={(value) => onChangeField('color', value)}
+                      />
+                    </Table.Td>
+                    <Table.Td>
+                      <IconInput
+                        value={fields.icon}
+                        onChange={(e) => onChangeField('icon', e)}
+                        wrapperClass="flex-row-reverse justify-end"
+                        className="max-w-[150px] whitespace-nowrap text-ellipsis"
+                      />
+                    </Table.Td>
+                  </>
+                )}
                 <Table.Td>
                   <Group gap={8} justify="flex-end">
                     {editId !== index ? (
