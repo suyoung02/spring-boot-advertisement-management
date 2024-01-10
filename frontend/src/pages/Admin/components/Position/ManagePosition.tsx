@@ -1,9 +1,5 @@
 import { getAllAdsPosition } from '@/apis/position';
-import {
-  locationTypeTitle,
-  positionStatusColors,
-  positionStatusTitle,
-} from '@/utils/ads';
+
 import { ActionIcon, Badge, Button, Group, Table, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { IconCirclePlus, IconPencil, IconTrash } from '@tabler/icons-react';
@@ -68,7 +64,7 @@ const ManagePosition = () => {
                   </Table.Td>
                 </Table.Tr>
               ))}
-
+            {/* 
             {data?.map((item) => (
               <Table.Tr key={item.id}>
                 <Table.Td className="w-[100px]">
@@ -112,7 +108,7 @@ const ManagePosition = () => {
                   </Group>
                 </Table.Td>
               </Table.Tr>
-            ))}
+            ))} */}
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>

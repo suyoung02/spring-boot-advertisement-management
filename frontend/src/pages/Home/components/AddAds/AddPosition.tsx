@@ -8,13 +8,13 @@ import {
 import { useForm } from '@/hooks/useForm';
 import usePositionOptions from '@/hooks/usePositionOptions';
 import { Position } from '@/types/ads';
+import { IS_ACTIVE } from '@/types/enum';
 import { CURRENT_LOCATION, getAddress } from '@/utils/location';
 import { Button, Drawer, Select, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PlaceSelect, { Place } from './PlaceSelect';
-import { IS_ACTIVE } from '@/types/enum';
 
 type Props = {
   position?: Position;

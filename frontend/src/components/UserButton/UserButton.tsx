@@ -1,25 +1,40 @@
-import { Avatar, Text, rem } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
+import { logout } from '@/stores/user';
+import { User } from '@/types/user';
+import { stringToHslColor } from '@/utils/avatar';
+import { Avatar, Text, rem } from '@mantine/core';
+import { IconLogout } from '@tabler/icons-react';
 
-const UserButton = () => {
+type Props = {
+  user: User;
+};
+
+const UserButton = ({ user }: Props) => {
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className="flex items-center justify-between gap-2">
-      <Avatar
-        src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-        radius="xl"
-      />
+      <Avatar color={stringToHslColor(user.fullname)} radius="xl">
+        {user.fullname
+          .split(' ')
+          .map((name) => name[0])
+          .slice(0, 2)}
+      </Avatar>
 
       <div style={{ flex: 1 }}>
         <Text size="sm" fw={500}>
-          Harriette Spoonlicker
+          {user.fullname}
         </Text>
 
         <Text c="dimmed" size="xs">
-          hspoonlicker@outlook.com
+          {user.role}
         </Text>
       </div>
 
-      <IconChevronRight
+      <IconLogout
+        className="cursor-pointer"
+        onClick={handleLogout}
         style={{ width: rem(14), height: rem(14) }}
         stroke={1.5}
       />

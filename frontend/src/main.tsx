@@ -12,6 +12,7 @@ import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/tiptap/styles.css';
 import '@mantine/carousel/styles.css';
+import AuthorizedLayout from './components/Layout/AuthorizedLayout';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,8 +27,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <MantineProvider>
       <ModalsProvider>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <Notifications />
+          <AuthorizedLayout>
+            <RouterProvider router={router} />
+            <Notifications />
+          </AuthorizedLayout>
         </QueryClientProvider>
       </ModalsProvider>
     </MantineProvider>

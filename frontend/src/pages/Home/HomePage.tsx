@@ -15,10 +15,13 @@ import { ServerError } from '../Error';
 import { AddPanel, AddPosition } from './components/AddAds';
 import { PanelDetail, PositionDetail } from './components/Ads';
 
-import { getFullAddress } from '@/utils/location';
+import { CURRENT_LOCATION, getFullAddress } from '@/utils/location';
 import { Login } from './components/Login';
 import { SearchBox } from './components/SearchBox';
 import { PlaceDetail } from './components/Place';
+import { Report } from './components/Report';
+import { useUserStore } from '@/stores/user';
+import { Role } from '@/types/enum';
 
 const mapContainerStyle = {
   width: '100vw',
@@ -41,6 +44,7 @@ const HomePage = () => {
   const modal = useControlStore.use.modal();
   const setModal = useControlStore.use.setModal();
   const onCloseModal = useControlStore.use.onCloseModal();
+  const user = useUserStore.use.user();
 
   const [mapRef, setMapRef] = useState<google.maps.Map>();
   const [isOpen, setIsOpen] = useState(false);
@@ -63,7 +67,7 @@ const HomePage = () => {
         lng: position.adsPosition.longitude,
       }),
     );
-    map.fitBounds(bounds);
+    markers && map.fitBounds(bounds);
   };
 
   const handleMarkerHover = (
@@ -139,15 +143,19 @@ const HomePage = () => {
         <div className="ml-auto px-4 flex justify-between items-center">
           <SearchBox />
           <div className="flex items-center gap-2">
-            <Button onClick={() => setModal(ModalName.LOGIN)} color="teal">
-              Đăng nhập
-            </Button>
-            <Button
-              onClick={() => setModal(ModalName.ADD_POSITION)}
-              color="teal"
-            >
-              Tạo vị trí
-            </Button>
+            {!user && (
+              <Button onClick={() => setModal(ModalName.LOGIN)} color="teal">
+                Xem report
+              </Button>
+            )}
+            {user?.role === Role.VHTT && (
+              <Button
+                onClick={() => setModal(ModalName.ADD_POSITION)}
+                color="teal"
+              >
+                Tạo vị trí
+              </Button>
+            )}
             <Button onClick={() => navigate('/admin/login')} variant="default">
               Truy cập trang quản lý
             </Button>
@@ -168,6 +176,7 @@ const HomePage = () => {
         mapContainerStyle={mapContainerStyle}
         zoom={15}
         onLoad={onMapLoad}
+        center={CURRENT_LOCATION}
       >
         {markers?.map(({ adsPosition, locationType, adsForm }, ind) => (
           <MarkerF
@@ -253,11 +262,14 @@ const HomePage = () => {
           }}
         />
       )}
-      {/* <Report
-        opened={modal === ModalName.REPORT}
-        onClose={onCloseModal}
-        position={POSITION_MOCK as never}
-      /> */}
+      {(position || panel) && (
+        <Report
+          opened={modal === ModalName.REPORT}
+          onClose={onCloseModal}
+          positionId={position?.adsPosition.id}
+          panelId={panel?.id}
+        />
+      )}
     </div>
   );
 };

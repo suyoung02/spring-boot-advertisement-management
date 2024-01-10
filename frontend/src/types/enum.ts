@@ -9,20 +9,8 @@ export enum IS_ACTIVE {
   FALSE = 'FALSE',
 }
 
-export enum PositionStatus {
-  ACTIVE = 'ACTIVE',
+export enum RequirementStatus {
+  SEND = 'SEND',
   IN_PROGRESS = 'IN_PROGRESS',
-  DEACTIVE = 'DEACTIVE',
-  NOT_YET = 'NOT_YET',
-}
-
-export enum LocationType {
-  PUBLIC_LAND = 'PUBLIC_LAND',
-  PRIVATE_LAND = 'PRIVATE_LAND',
-  SHOPPING_CENTER = 'SHOPPING_CENTER',
-  HOUSE = 'HOUSE',
-  MARKET = 'MARKET',
-  GAS_STATION = 'GAS_STATION',
-  PARK = 'PARK',
-  BUS_SHELTER = 'BUS_SHELTER',
+  DONE = 'DONE',
 }
