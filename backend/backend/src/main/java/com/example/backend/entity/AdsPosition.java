@@ -17,16 +17,16 @@ public class AdsPosition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name ="address")
+    @Column(name = "address")
     private String address;
 
-    @Column(name ="ward")
+    @Column(name = "ward")
     private String ward;
 
-    @Column(name ="district")
+    @Column(name = "district")
     private String district;
 
-    @Column(name="province")
+    @Column(name = "province")
     private String province;
 
     @Column(name = "location_type")
@@ -35,7 +35,7 @@ public class AdsPosition {
     @Column(name = "ads_form")
     private String ads_form;
 
-    @Column(name ="planning_status")
+    @Column(name = "planning_status")
     private String planning_status;
 
     @Column(name = "photo")
@@ -51,5 +51,6 @@ public class AdsPosition {
     private Double longitude;
 
     @Column(name = "is_active")
-    private IsActived isactived;
+    @Enumerated(EnumType.STRING)
+    private IsActived is_actived;
 }

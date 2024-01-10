@@ -1,15 +1,20 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.AddReportRequest;
+import com.example.backend.dto.ReportResponse;
+import com.example.backend.dto.SolvingReport;
 import com.example.backend.entity.Report;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ReportService {
-    List<Report> getAllReport();
-    Optional<Report> getDetailReport(Integer id);
+    List<ReportResponse> getAllReport();
+
+    List<ReportResponse> getDetailReport(Integer id);
+
     Report saveReport(Report newReport);
-    Report addReport(AddReportRequest newReport);
-    Report updateReport(Integer id, AddReportRequest newReport);
+
+    List<ReportResponse> addReport(AddReportRequest newReport);
+
+    List<ReportResponse> updateReport(Integer id, SolvingReport solution);
 }

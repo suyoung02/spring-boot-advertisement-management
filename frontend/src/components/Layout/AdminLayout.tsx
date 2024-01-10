@@ -1,15 +1,14 @@
-import { type ReactNode } from "react";
+import { LinksGroup, Logo } from '@/components/NavbarLinksGroup';
+import { UserButton } from '@/components/UserButton';
 import {
+  IconBadgeAd,
   IconFileAnalytics,
-  IconGauge,
-  IconLock,
   IconMail,
   IconNotes,
   IconPresentationAnalytics,
   IconUsers,
-} from "@tabler/icons-react";
-import { LinksGroup, Logo } from "@/components/NavbarLinksGroup";
-import { UserButton } from "@/components/UserButton";
+} from '@tabler/icons-react';
+import { type ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
@@ -17,39 +16,53 @@ type Props = {
 };
 
 const mockdata = [
-  { label: "Dashboard", icon: IconGauge, link: "/admin" },
   {
-    label: "Quản lý tài khoản",
+    label: 'Quản lý tài khoản',
     icon: IconUsers,
-    initiallyOpened: true,
+    initiallyOpened: false,
     links: [
-      { label: "Danh sách tài khoản", link: "/admin/users" },
-      { label: "Tạo tài khoản", link: "/admin/users/create-account" },
+      { label: 'Danh sách tài khoản', link: '/admin/users' },
+      { label: 'Tạo tài khoản', link: '/admin/users/create-account' },
+      { label: 'Tài khoản', link: '/admin/account' },
     ],
   },
   {
-    label: "Quản lý quảng cáo",
+    label: 'Quản lý vị trí',
     icon: IconNotes,
-    initiallyOpened: true,
+    initiallyOpened: false,
     links: [
-      { label: "Loại quảng cáo", link: "/" },
-      { label: "Điểm quảng cáo", link: "/" },
-      { label: "Bảng quảng cáo", link: "/" },
+      { label: 'Loại vị trí', link: '/admin/position/location_type' },
+      { label: 'Trạng thái vị trí', link: '/admin/position/status' },
+      { label: 'Điểm quảng cáo', link: '/admin/position' },
     ],
   },
   {
-    label: "Quản lý báo cáo",
+    label: 'Quản lý quảng cáo',
+    icon: IconBadgeAd,
+    initiallyOpened: false,
+    links: [
+      { label: 'Loại bảng quảng cáo', link: '/admin/ads/type' },
+      { label: 'Hình thức quảng cáo', link: '/admin/ads/form' },
+      { label: 'Bảng quảng cáo', link: '/admin/ads/panel' },
+    ],
+  },
+  {
+    label: 'Quản lý báo cáo',
     icon: IconFileAnalytics,
+    links: [
+      { label: 'Loại báo cáo', link: '/admin/report/type' },
+      { label: 'Báo cáo', link: '/admin/report' },
+    ],
   },
   {
-    label: "Yêu cầu",
+    label: 'Quản lý yêu cầu',
     icon: IconMail,
+    links: [
+      { label: 'Yêu cầu bảng quảng cáo', link: '/admin/require/panel' },
+      { label: 'Yêu cầu điểm quảng cáo', link: '/admin/require/position' },
+    ],
   },
-  { label: "Thống kê", icon: IconPresentationAnalytics },
-  {
-    label: "Đổi mật khẩu",
-    icon: IconLock,
-  },
+  { label: 'Thống kê', icon: IconPresentationAnalytics },
 ];
 
 const AdminLayout = ({ title, children }: Props) => {
@@ -59,14 +72,16 @@ const AdminLayout = ({ title, children }: Props) => {
 
   return (
     <div className="flex">
-      <div className="w-[300px] border-r h-screen p-4 flex flex-col justify-between">
+      <div className="w-[300px] border-r h-screen py-4 flex flex-col justify-between relative">
         <div>
-          <div className="mb-4 pb-4 border-b">
+          <div className="pb-4 border-b">
             <Logo style={{ width: 120 }} />
           </div>
-          <div className="flex flex-col gap-5 font-medium">{links}</div>
+          <div className="flex py-4 flex-col gap-5 font-medium h-[calc(100vh-130px)] overflow-y-scroll px-4 hide-scrollbar">
+            {links}
+          </div>
         </div>
-        <div className="">
+        <div className="pt-4 px-4 border-t">
           <UserButton />
         </div>
       </div>
