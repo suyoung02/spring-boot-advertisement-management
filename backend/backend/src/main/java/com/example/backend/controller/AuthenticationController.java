@@ -3,9 +3,13 @@ package com.example.backend.controller;
 import java.security.Principal;
 
 import org.apache.log4j.Logger;
+import com.example.backend.service.impl.LogoutServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +35,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final LogoutServiceImpl logoutService;
+
     private static final Logger logger = Logger.getLogger(AuthenticationController.class);
     @PostMapping("/vhtt/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
@@ -74,5 +80,11 @@ public class AuthenticationController {
     public ResponseEntity<String> resetPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         logger.info("Request received for reset password");
         return new ResponseEntity<>(authenticationService.resetPassword(request), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
+        logoutService.logout(httpServletRequest, httpServletResponse, authentication);
+        return new ResponseEntity<>("Logout success", HttpStatus.OK);
     }
 }
