@@ -33,7 +33,7 @@ public class PlanningStatusController {
     public ResponseEntity<List<PlanningStatus>> getAll() {
         logger.info("Request received for getAllPlanningStatus");
         List<PlanningStatus> result = adsService.getAllPlanningStatus();
-        String logmsg = String.format("Retrieved planning status: {}", result);
+        String logmsg = String.format("Retrieved planning status: %s", result);
         logger.debug(logmsg);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -47,7 +47,7 @@ public class PlanningStatusController {
         }
 
         PlanningStatus result = adsService.addNewPlanningStatus(planningStatus);
-        String log = String.format("Planning status added successfully: {}", result);
+        String log = String.format("Planning status added successfully: %s", result);
         logger.info(log);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -60,7 +60,7 @@ public class PlanningStatusController {
             throw new InvalidAccountException("Invalid title");
         } else {
             if (adsService.deletePlanningStatus(title)) {
-                String log = String.format("Planning status deleted successfully: {}", title);
+                String log = String.format("Planning status deleted successfully: %s", title);
                 logger.info(log);
                 return new ResponseEntity<>("Deleted", HttpStatus.OK);
             }
@@ -78,7 +78,7 @@ public class PlanningStatusController {
             throw new InvalidAccountException("Invalid title");
         } else {
             if (adsService.updatePlanningStatus(title, planningStatus)) {
-                String log = String.format("Planning status updated successfully: {}", title);
+                String log = String.format("Planning status updated successfully: %s", title);
                 logger.info(log);
                 return new ResponseEntity<>("Updated", HttpStatus.OK);
             }
