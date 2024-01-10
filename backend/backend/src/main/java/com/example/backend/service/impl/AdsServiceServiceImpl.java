@@ -36,7 +36,6 @@ public class AdsServiceServiceImpl implements AdsService {
 
     public List<AdsPositionResponse> getAllPosition() {
         List<Object[]> list = adsPositionRepository.getPositionWithState();
-        System.out.println(list.get(0)[2]);
         return list.stream()
                 .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1],
                         (AdsForm) objects[2], (PlanningStatus) objects[3]))
