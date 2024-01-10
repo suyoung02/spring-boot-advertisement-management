@@ -36,7 +36,7 @@ public class AuthenticationController {
     public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         logger.info("Request received for signup");
         authenticationService.signup(signUpRequest);
-        String log = String.format("Signup success: {}", signUpRequest);
+        String log = String.format("Signup success:%s", signUpRequest);
         logger.debug(log);
         return new ResponseEntity<>("Registration success", HttpStatus.OK);
     }
@@ -44,7 +44,7 @@ public class AuthenticationController {
     @PostMapping("/normal/signin")
     public ResponseEntity<JwtAuthenticationReponse> signin(@RequestBody SignInRequest signInRequest) {
         logger.info("Request received for signin");
-        logger.info("Signin success: {}");
+        logger.info("Signin success:%s");
         return ResponseEntity.ok(authenticationService.signin(signInRequest));
     }
 

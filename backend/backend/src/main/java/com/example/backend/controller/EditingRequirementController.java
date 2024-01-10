@@ -43,7 +43,7 @@ public class EditingRequirementController {
     public ResponseEntity<String> createEditingRequirement(@RequestBody EditingRequirementRequest editingRequirement, Principal principal) {
         logger.info("Request received for createEditingRequirement");
         editingRequirementService.createEditingRequirement(editingRequirement, principal.getName());
-        String log = String.format("EditingRequirement added successfully: {}", editingRequirement);
+        String log = String.format("EditingRequirement added successfully: %s", editingRequirement);
         logger.debug(log);
         return new ResponseEntity<>("Create Request success", HttpStatus.OK);
     }
