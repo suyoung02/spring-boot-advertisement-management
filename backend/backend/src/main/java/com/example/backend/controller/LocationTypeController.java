@@ -33,7 +33,7 @@ public class LocationTypeController {
     public ResponseEntity<List<LocationType>> getAll() {
         logger.info("Request received for getAllLocationTypes");
         List<LocationType> result = adsService.getAllLocationTypes();
-        String logmsg = String.format("Retrieved location types: {}", result);
+        String logmsg = String.format("Retrieved location types: %s", result);
         logger.debug(logmsg);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -47,7 +47,7 @@ public class LocationTypeController {
         }
 
         LocationType result = adsService.addNewLocationType(locationType);
-        String log = String.format("Location type added successfully: {}", result);
+        String log = String.format("Location type added successfully: %s", result);
         logger.info(log);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

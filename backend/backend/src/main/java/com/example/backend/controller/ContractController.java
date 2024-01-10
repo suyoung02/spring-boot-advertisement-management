@@ -51,7 +51,7 @@ public class ContractController {
     public ResponseEntity<String> createContract(@Valid @RequestBody ContractRequest contractRequest, Principal principal) {
         logger.info("Request received for createContract");
         contractService.createContract(contractRequest,principal.getName());
-        String log = String.format("Contract added successfully: {}", contractRequest);
+        String log = String.format("Contract added successfully:%s", contractRequest);
         logger.debug(log);
         return new ResponseEntity<>("Create contract success", HttpStatus.OK);
     }
@@ -66,7 +66,7 @@ public class ContractController {
             logger.error(e);
             throw new AppException(400, HttpStatus.BAD_REQUEST, "id should be integer");
         }
-        String log = String.format("Contract: {} is approved", contractId);
+        String log = String.format("Contract:%s is approved", contractId);
         logger.info(log);
         contractService.approveContract(contractId);
 
@@ -93,7 +93,7 @@ public class ContractController {
             logger.error(e);
             throw new AppException(400, HttpStatus.BAD_REQUEST, "id should be integer");
         }
-        String log = String.format("Contract: {} is deleted", contractId);
+        String log = String.format("Contract:%s is deleted", contractId);
         logger.info(log);
         contractService.deleteContract(contractId, principal.getName());
 

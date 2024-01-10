@@ -29,7 +29,7 @@ public class LocationController {
     public ResponseEntity<List<Ward>> getAllWards() {
         logger.info("Request received for getAllWards");
         List<Ward> wards = locationService.getAllWards();
-        String logmsg = String.format("Retrieved wards: {}", wards);
+        String logmsg = String.format("Retrieved wards: %s", wards);
         logger.debug(logmsg);
         return new ResponseEntity<>(wards, HttpStatus.OK);
     }
@@ -39,7 +39,7 @@ public class LocationController {
         logger.info("Request received for getAllDistricts");
         List<District> districts = locationService.getAllDistricts(wardName);
         System.out.println(districts);
-        String logmsg = String.format("Retrieved districts: {}", districts);
+        String logmsg = String.format("Retrieved districts: %s", districts);
         logger.debug(logmsg);
         return new ResponseEntity<>(districts, HttpStatus.OK);
     }
@@ -50,7 +50,7 @@ public class LocationController {
         logger.info("Request received for add new ward");
         try {
             locationService.addWard(ward);
-            String log = String.format("Ward added successfully: {}", ward);
+            String log = String.format("Ward added successfully: %s", ward);
             logger.info(log);
             return new ResponseEntity<>("Ward added successfully", HttpStatus.CREATED);
         } catch (DataIntegrityViolationException  ex) {
@@ -118,7 +118,7 @@ public class LocationController {
     public ResponseEntity<District> getDistrictById(@PathVariable Integer id) {
         logger.info("Request received for getDistrictById");
         Optional<District> district = locationService.getDistrictById(id);
-        String logmsg = String.format("Retrieved district: {}", district);
+        String logmsg = String.format("Retrieved district: %s", district);
         logger.debug(logmsg);
         return district.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -128,7 +128,7 @@ public class LocationController {
     public ResponseEntity<String> addDistrict(@RequestBody District district) {
         logger.info("Request received for add new district");
         locationService.addDistrict(district);
-        String log = String.format("District added successfully: {}", district);
+        String log = String.format("District added successfully: %s", district);
         logger.info(log);
         return new ResponseEntity<>("District added successfully", HttpStatus.CREATED);
     }

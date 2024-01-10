@@ -35,7 +35,7 @@ public class AdsFormController {
     public ResponseEntity<List<AdsForm>> getAll() {
         logger.info("Request received for getAllAdsForms");
         List<AdsForm> result = adsService.getAllAdsForms();
-        String logmsg = String.format("Retrieved ads forms: {}", result);
+        String logmsg = String.format("Retrieved ads forms: %s", result);
         logger.debug(logmsg);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public class AdsFormController {
         }
 
         AdsForm result = adsService.addNewAdsForm(adsForm);
-        String log = String.format("Ads form added successfully: {}", result);
+        String log = String.format("Ads form added successfully: %s", result);
         logger.info(log);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

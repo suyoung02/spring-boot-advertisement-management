@@ -23,7 +23,7 @@ public class AdsTypeController {
     public ResponseEntity<List<AdsType>> getAllAdsType() {
         logger.info("Request received for getAllAdsType");
         List<AdsType> result = adsService.getAllType();
-        String logmsg = String.format("Retrieved ads type: {}", result);
+        String logmsg = String.format("Retrieved ads type:%s", result);
         logger.debug(logmsg);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -37,7 +37,7 @@ public class AdsTypeController {
         }
 
         AdsType result = adsService.addNewType(adsType);
-        String log = String.format("Ads type added successfully: {}", result);
+        String log = String.format("Ads type added successfully:%s", result);
         logger.info(log);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

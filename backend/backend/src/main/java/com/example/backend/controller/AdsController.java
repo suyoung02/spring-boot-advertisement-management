@@ -47,7 +47,8 @@ public class AdsController {
         try {
             System.out.println(newPosition);
             AdsPosition result = adsService.addNewPosition(newPosition);
-            logger.info("Add new position successfully");
+            String logmsg = String.format("Add new position: %s", result);
+            logger.info(logmsg);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e);
@@ -101,7 +102,7 @@ public class AdsController {
 
     @GetMapping("/all/getDetailPanel/{id}")
     public ResponseEntity<?> getDetailPanel(@PathVariable(value = "id") Integer id) {
-        String logMessage1 = String.format("Request received for getDetailPanel with id: {}", id);
+        String logMessage1 = String.format("Request received for getDetailPanel with id: %s", id);
         logger.info(logMessage1);
         List<AdsPanelResponse> panel = adsService.getDetailPanel(id);
         if (panel != null && !panel.isEmpty()) {
@@ -109,14 +110,14 @@ public class AdsController {
             logger.debug(logMessage);
             return new ResponseEntity<>(panel.get(0), HttpStatus.OK);
         }
-        String logMsg = String.format("Panel not found for id: {}", id);
+        String logMsg = String.format("Panel not found for id: %s", id);
         logger.warn(logMsg);
         return new ResponseEntity<>("Id Not found", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/vhtt/addNewPanel")
     public ResponseEntity<String> addNewPanel(@Valid @RequestBody AddPanelRequest newPanel) {
-        String logmsg = String.format("Request received for addNewPanel with panel: {}", newPanel);
+        String logmsg = String.format("Request received for addNewPanel with panel: %s", newPanel);
         logger.info(logmsg);
         try {
             if (adsService.addNewPanel(newPanel)) {
@@ -135,14 +136,14 @@ public class AdsController {
 
     @DeleteMapping("/vhtt/deletePanel/{id}")
     public ResponseEntity<String> deletePanel(@PathVariable(value = "id") Integer id) {
-        String logmsg = String.format("Request received for deletePanel with id: {}", id);
+        String logmsg = String.format("Request received for deletePanel with id: %s", id);
         logger.info(logmsg);
         try {
             if (adsService.deletePanel(id)) {
                 logger.info("Panel deleted successfully");
                 return new ResponseEntity<>("Deleted", HttpStatus.OK);
             }
-            String logmsg1 = String.format("Panel not found for id: {}", id);
+            String logmsg1 = String.format("Panel not found for id: %s", id);
             logger.warn(logmsg1);
             return new ResponseEntity<>("Id not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -154,7 +155,7 @@ public class AdsController {
     @PutMapping("/vhtt/updatePanel/{id}")
     public ResponseEntity<AdsPanel> updatePanel(@PathVariable(value = "id") Integer id,
             @Valid @RequestBody AddPanelRequest newPosition) {
-        String logmsg = String.format("Request received for updatePanel with id: {} and newPosition: {}", id,
+        String logmsg = String.format("Request received for updatePanel with id: %s and newPosition: %s", id,
                 newPosition);
         logger.info(logmsg);
         try {
@@ -171,7 +172,7 @@ public class AdsController {
     public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel() {
         logger.info("Request received for getAllPresentingPanel");
         List<AdsPanelWithImagesDTO> panels = adsService.getAllPresentingPanel();
-        String logMsg = String.format("Retrieved presenting panels: {}", panels);
+        String logMsg = String.format("Retrieved presenting panels: %s", panels);
         logger.debug(logMsg);
         return new ResponseEntity<>(panels, HttpStatus.OK);
     }
