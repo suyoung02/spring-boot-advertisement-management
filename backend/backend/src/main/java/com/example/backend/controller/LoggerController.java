@@ -17,6 +17,7 @@ public class LoggerController {
     public ResponseEntity<List<LogEntry>> getLogs(@RequestParam(value = "level") String level, @RequestParam(value = "date") String date) {
         List<LogEntry> list = new ArrayList<>();
         String folderPath = "C:\\Users\\vinhh\\IdeaProjects\\logs";
+
         try {
             Files.walk(Paths.get(folderPath))
                     .filter(Files::isRegularFile)
@@ -33,6 +34,7 @@ public class LoggerController {
             String strLine;
             while ((strLine = reader.readLine()) != null) {
                 String[] words = strLine.split("\\s", 5);
+                System.out.println(Arrays.toString(words));
                 LogEntry entry = new LogEntry(words[0], words[1], words[4], words[3]);
                 if(level.isEmpty() && !date.isEmpty()){
                     String[] time = entry.getTime().split(":", 2);
