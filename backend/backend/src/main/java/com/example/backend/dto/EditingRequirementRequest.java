@@ -2,6 +2,9 @@ package com.example.backend.dto;
 
 import java.util.Date;
 
+import lombok.Data;
+
+@Data
 public class EditingRequirementRequest {
     private String new_info;
 

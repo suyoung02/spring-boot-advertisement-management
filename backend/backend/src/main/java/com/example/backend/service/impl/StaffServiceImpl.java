@@ -35,10 +35,6 @@ public class StaffServiceImpl implements StaffService {
                 .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
         StaffDto staffDto = StaffMapper.toStaffDto(staff, user);
 
-        // does not show username and id
-        staffDto.setUsername(null);
-        staffDto.setId(null);
-
         return staffDto;
     }
 

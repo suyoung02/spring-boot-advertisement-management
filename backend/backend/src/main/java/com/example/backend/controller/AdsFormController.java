@@ -72,7 +72,6 @@ public class AdsFormController {
 
     @PutMapping("/update/{title}")
     public ResponseEntity<String> update(@PathVariable String title, @Valid @RequestBody AdsForm adsForm) {
-        System.out.println(title);
         logger.info("Request update ads form");
         if (title.length() == 0) {
             logger.warn("Invalid title");
