@@ -38,6 +38,7 @@ public class AuthenticationController {
     private final LogoutServiceImpl logoutService;
 
     private static final Logger logger = Logger.getLogger(AuthenticationController.class);
+
     @PostMapping("/vhtt/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         logger.info("Request received for signup");
@@ -82,8 +83,9 @@ public class AuthenticationController {
         return new ResponseEntity<>(authenticationService.resetPassword(request), HttpStatus.OK);
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
+    @PostMapping("/all/logout")
+    public ResponseEntity<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+            Authentication authentication) {
         logoutService.logout(httpServletRequest, httpServletResponse, authentication);
         return new ResponseEntity<>("Logout success", HttpStatus.OK);
     }

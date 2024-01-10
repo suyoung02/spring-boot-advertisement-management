@@ -120,35 +120,22 @@ public class StaffServiceImpl implements StaffService {
     public String updateStaffByFields(int id, Map<String, Object> fields) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
+        User user = userRepository.findByUsername(staff.getUsername())
+                .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
 
         fields.forEach((key, value) -> {
             try {
-                Field field = ReflectionUtils.findField(Staff.class, key);
-                field.setAccessible(true);
+                Field fieldStaff = ReflectionUtils.findField(Staff.class, key);
+                fieldStaff.setAccessible(true);
 
                 switch (key) {
-                    case "role": {
-                        ReflectionUtils.setField(field, staff, value);
-                        break;
-                    }
-
-                    case "ward": {
-                        ReflectionUtils.setField(field, staff, value);
-                        break;
-                    }
-
-                    case "district": {
-                        ReflectionUtils.setField(field, staff, value);
-                        break;
-                    }
-
                     case "fullname": {
-                        ReflectionUtils.setField(field, staff, value);
+                        ReflectionUtils.setField(fieldStaff, staff, value);
                         break;
                     }
 
                     case "dob": {
-                        ReflectionUtils.setField(field, staff, value);
+                        ReflectionUtils.setField(fieldStaff, staff, value);
                         break;
                     }
 
@@ -156,24 +143,53 @@ public class StaffServiceImpl implements StaffService {
                         // check email is exist
                         Staff checkStaff = staffRepository.findByEmail(String.valueOf(value)).orElse(null);
                         if (checkStaff == null)
-                            ReflectionUtils.setField(field, staff, value);
+                            ReflectionUtils.setField(fieldStaff, staff, value);
                         break;
                     }
 
                     case "phone_number": {
-                        ReflectionUtils.setField(field, staff, value);
+                        ReflectionUtils.setField(fieldStaff, staff, value);
                         break;
                     }
 
                     default:
                         break;
                 }
-            } catch (Exception e) {
-                e.getStackTrace();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
+
+            try {
+                Field fieldUser = ReflectionUtils.findField(User.class, key);
+                fieldUser.setAccessible(true);
+
+                switch (key) {
+                    case "role": {
+                        ReflectionUtils.setField(fieldUser, user, Role.valueOf(value.toString()));
+                        break;
+                    }
+
+                    case "ward": {
+                        ReflectionUtils.setField(fieldUser, user, value);
+                        break;
+                    }
+
+                    case "district": {
+                        ReflectionUtils.setField(fieldUser, user, value);
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+
         });
 
         staffRepository.save(staff);
+        userRepository.save(user);
 
         return "Your update success";
     }
