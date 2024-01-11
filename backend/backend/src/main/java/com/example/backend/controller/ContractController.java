@@ -100,5 +100,19 @@ public class ContractController {
         return new ResponseEntity<>("Delete contract success", HttpStatus.OK);
     }
 
-
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> rejectContract(@PathVariable (value = "id") String id) {
+        int contractId;
+        logger.info("Request received for rejectContract");
+        try {
+            contractId = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            logger.error(e);
+            throw new AppException(400, HttpStatus.BAD_REQUEST, "id should be integer");
+        }
+        String log = String.format("Contract:%s is rejected", contractId);
+        logger.info(log);
+        contractService.rejectContract(contractId);
+        return new ResponseEntity<>("Reject contract success", HttpStatus.OK);
+    }
 }

@@ -104,4 +104,14 @@ public class ContractService {
 
         this.contractRepository.saveAll(ls);
     }
+
+    public void rejectContract(Integer id) {
+        if(contractRepository.existsById(id)) {
+            Contract contract = contractRepository.findById(id).get();
+            contract.setState(ContractState.REJECTED.state);
+            contractRepository.save(contract);
+        } else {
+            throw new AppException(400, HttpStatus.FORBIDDEN, "This contract is not exist");
+        }
+    }
 }
