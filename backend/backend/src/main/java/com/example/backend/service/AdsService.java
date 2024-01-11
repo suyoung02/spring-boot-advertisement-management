@@ -68,4 +68,5 @@ public interface AdsService {
     Boolean updatePlanningStatus(String title, PlanningStatus planningStatus);
 
     List<AdsPanelWithImagesDTO> getAllPresentingPanel();
+     List<AdsPanelWithImagesDTO> getAllPanelWithPosition();
 }

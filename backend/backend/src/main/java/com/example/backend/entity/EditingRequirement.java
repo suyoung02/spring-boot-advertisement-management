@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.Date;
 
 @Entity
-@Table(name = "contract")
+@Table(name = "editing_requirement")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

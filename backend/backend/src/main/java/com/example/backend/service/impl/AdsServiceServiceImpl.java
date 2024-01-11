@@ -36,6 +36,7 @@ public class AdsServiceServiceImpl implements AdsService {
 
     public List<AdsPositionResponse> getAllPosition() {
         List<Object[]> list = adsPositionRepository.getPositionWithState();
+        System.out.println(list.size());
         return list.stream()
                 .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1],
                         (AdsForm) objects[2], (PlanningStatus) objects[3]))
@@ -310,9 +311,18 @@ public class AdsServiceServiceImpl implements AdsService {
 
     public List<AdsPanelWithImagesDTO> getAllPresentingPanel() {
         List<Object[]> resultList = adsPanelRepository.getPanelWithContractAndImg();
+        System.out.println(resultList.size());
+        return resultList.stream()
+                .map(objects -> new AdsPanelWithImagesDTO((AdsPosition) objects[0], (AdsPanel) objects[1],
+                        (AdsImages) objects[2], (Contract) objects[3]))
+                .collect(Collectors.toList());
+    }
+
+    public List<AdsPanelWithImagesDTO> getAllPanelWithPosition() {
+        List<Object[]> resultList = adsPanelRepository.getPositionWithPanelWithLoggined();
 
         return resultList.stream()
-                .map(objects -> new AdsPanelWithImagesDTO((AdsPanel) objects[0], (AdsImages) objects[1]))
+                .map(objects -> new AdsPanelWithImagesDTO((AdsPosition) objects[0], (AdsPanel) objects[1], (AdsImages) objects[2], (Contract) objects[3]))
                 .collect(Collectors.toList());
     }
 }
