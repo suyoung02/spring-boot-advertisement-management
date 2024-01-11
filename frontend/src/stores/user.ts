@@ -41,6 +41,7 @@ export const useUserStore = createSelectors(
 );
 
 export const logout = () => {
+  localStorage.clear();
   const reset = useUserStore.getState().reset;
   reset();
 };

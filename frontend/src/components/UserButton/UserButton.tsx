@@ -1,3 +1,4 @@
+import { logoutApi } from '@/apis/user';
 import { logout } from '@/stores/user';
 import { User } from '@/types/user';
 import { stringToHslColor } from '@/utils/avatar';
@@ -9,7 +10,8 @@ type Props = {
 };
 
 const UserButton = ({ user }: Props) => {
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutApi();
     logout();
   };
 

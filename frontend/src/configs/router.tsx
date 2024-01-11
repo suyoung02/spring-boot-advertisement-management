@@ -15,8 +15,8 @@ import {
   ManageRequirementAds,
   ManageRequirementPosition,
   ManageUser,
+  Profile,
   RegisterPage,
-  UserDetail,
 } from '@/pages/Admin';
 import { NotFound } from '@/pages/Error';
 import { HomePage } from '@/pages/Home';
@@ -78,10 +78,6 @@ export const router = createBrowserRouter([
         element: <CreateAccount />,
       },
       {
-        path: ':id',
-        element: <UserDetail />,
-      },
-      {
         path: '',
         element: <ManageUser />,
       },
@@ -90,6 +86,17 @@ export const router = createBrowserRouter([
         element: <NotFound />,
       },
     ],
+  },
+  {
+    path: '/admin/account',
+    element: (
+      <AdminLayout
+        role={[Role.VHTT, Role.DISTRICT, Role.WARD]}
+        title="Quản lý tài khoản"
+      >
+        <Profile />
+      </AdminLayout>
+    ),
   },
   {
     path: '/admin/ads',

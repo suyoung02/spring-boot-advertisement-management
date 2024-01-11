@@ -10,7 +10,7 @@ export enum IS_ACTIVE {
 }
 
 export enum RequirementStatus {
-  SEND = 'SEND',
+  REJECT = 'REJECT',
   IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
+  ACTIVE = 'ACTIVE',
 }

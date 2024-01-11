@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 const useGetPosition = () => {
   const { data, isLoading, refetch } = useQuery({
-    queryKey: [],
+    queryKey: ['getAllAdsPosition'],
     queryFn: () => getAllAdsPosition(),
   });
 

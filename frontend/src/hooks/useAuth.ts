@@ -4,9 +4,10 @@ import { useEffect } from 'react';
 
 const useAuth = () => {
   const setState = useUserStore.use.setState();
+  const accessToken = useUserStore.use.accessToken();
 
   useEffect(() => {
-    const isLogin = localStorage.getItem('accessToken');
+    const isLogin = !!accessToken;
     if (isLogin) {
       getMe()
         .then((res) => {
@@ -16,8 +17,7 @@ const useAuth = () => {
     } else {
       setState({ user: null, status: 'unauthorized' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [accessToken, setState]);
 };
 
 export default useAuth;

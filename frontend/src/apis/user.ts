@@ -26,6 +26,11 @@ export const loginApi = async (data: LoginRequest) => {
   }
 };
 
+export const logoutApi = async () => {
+  const res = await apiPost(API_URL + '/auth/logout');
+  return res.data;
+};
+
 export const getMe = async () => {
   try {
     const res = await apiGet<null, ApiDataResponse<User>>(

@@ -3,7 +3,7 @@ import { Role } from './enum';
 export type User = {
   id: number;
   fullname: string;
-  dob: string;
+  dob: Date;
   email: string;
   phoneNumber: string;
   username: string;

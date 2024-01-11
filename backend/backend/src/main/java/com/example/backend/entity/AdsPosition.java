@@ -41,7 +41,8 @@ public class AdsPosition {
     @Column(name = "planning_status")
     private String planning_status;
 
-    @Column(name = "photo")
+    @Lob
+    @Column(name = "photo", columnDefinition = "TEXT")
     private String photo;
 
     @Column(name = "place_id")

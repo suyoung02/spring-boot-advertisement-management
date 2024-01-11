@@ -121,10 +121,11 @@ const AdminLayout = ({ title, children, role }: Props) => {
     <LinksGroup {...item} key={item.label} />
   ));
 
+  // console.log('?????', role, user);
   if (!role && user) {
     return <Navigate to={user.role ? '/admin/users' : '/admin/position'} />;
   } else if (role && !role?.includes(user?.role as Role)) {
-    return <Navigate to="/admin/login" />;
+    return <Navigate to={user ? '/admin/account' : '/admin/login'} />;
   }
 
   if (!role) return children;

@@ -1,6 +1,6 @@
-import { getLocationApi } from '@/apis/location';
 import { RegisterRequest, registerApi } from '@/apis/user';
 import { useForm } from '@/hooks/useForm';
+import useLocationOptions, { CITY } from '@/hooks/useLocationOptions';
 import { Role } from '@/types/enum';
 import { Button, PasswordInput, Select, TextInput } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
@@ -14,18 +14,9 @@ import {
   IconUser,
   IconUserScan,
 } from '@tabler/icons-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
-
-const CITY = 'Thành phố Hồ Chí Minh';
+import { useMutation } from '@tanstack/react-query';
 
 const CreateAccount = () => {
-  const { data } = useQuery({
-    queryKey: ['getLocationApi', 3],
-    queryFn: () => getLocationApi(3),
-    staleTime: Infinity,
-  });
-
   const { fields, onError, onChangeField, error } = useForm<RegisterRequest>({
     defaultState: {
       username: '',
@@ -89,32 +80,9 @@ const CreateAccount = () => {
     },
   });
 
-  const rawData = useMemo(() => {
-    return data?.find((city) => city.name === CITY);
-  }, [data]);
-
-  console.log({ rawData });
-
-  const districts = useMemo(() => {
-    return (
-      rawData?.districts?.map((district) => ({
-        value: district.name,
-        label: district.name,
-        wards: district.wards || [],
-      })) || []
-    );
-  }, [rawData]);
-
-  const wards = useMemo(() => {
-    return (
-      districts
-        ?.find((d) => d.value === fields.district)
-        ?.wards.map((ward) => ({
-          value: ward.name,
-          label: ward.name,
-        })) || []
-    );
-  }, [districts, fields.district]);
+  const { districts, wards, cities } = useLocationOptions({
+    district: fields.district,
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: RegisterRequest) => registerApi(data),
@@ -209,7 +177,7 @@ const CreateAccount = () => {
             withAsterisk
             label="Thành phố"
             leftSection={<IconBuilding />}
-            data={[{ value: CITY, label: CITY }]}
+            data={cities}
             placeholder="Thành phố"
             value={CITY}
           />
@@ -224,7 +192,6 @@ const CreateAccount = () => {
             value={fields.district}
           />
           <Select
-            withAsterisk
             label="Phường/Xã"
             error={error.ward}
             onChange={(value) => onChangeField('ward', value || '')}

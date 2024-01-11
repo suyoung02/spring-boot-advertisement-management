@@ -12,7 +12,7 @@ import { IS_ACTIVE } from '@/types/enum';
 import { CURRENT_LOCATION, getAddress } from '@/utils/location';
 import { Button, Drawer, Select, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PlaceSelect, { Place } from './PlaceSelect';
 
@@ -46,6 +46,8 @@ const AddPosition = ({
   place,
   mapRef,
 }: Props) => {
+  const queryClient = useQueryClient();
+
   const [places, setPlaces] = useState<Place[]>([]);
   const { data } = useQuery({
     queryKey: ['getLocationApi', 3],
@@ -119,7 +121,7 @@ const AddPosition = ({
   const onBlur = useCallback(() => {
     if (!fields.address) return;
     const service = new window.google.maps.places.PlacesService(
-      mapRef ??
+      mapRef ||
         new window.google.maps.Map(
           document.getElementById('map') as HTMLElement,
           { center: CURRENT_LOCATION, zoom: 15 },
@@ -160,6 +162,7 @@ const AddPosition = ({
   const { mutate: addPosition } = useMutation({
     mutationFn: (data: AddAdsPositionRequest) => addAdsPosition(data),
     onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['getAllAdsPosition'] });
       notifications.show({
         message: 'Tạo thành công',
       });

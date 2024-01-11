@@ -1,27 +1,21 @@
 import useGetPosition from '@/hooks/useGetPosition';
 import { ModalName, useControlStore } from '@/stores/control';
 import { AdsPanel, Position } from '@/types/ads';
-import { ActionIcon, Button, LoadingOverlay } from '@mantine/core';
-import {
-  GoogleMap,
-  InfoWindow,
-  MarkerF,
-  useLoadScript,
-} from '@react-google-maps/api';
+import { ActionIcon, Button } from '@mantine/core';
+import { GoogleMap, InfoWindow, MarkerF } from '@react-google-maps/api';
 import { IconCurrentLocation } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ServerError } from '../Error';
 import { AddPanel, AddPosition } from './components/AddAds';
 import { PanelDetail, PositionDetail } from './components/Ads';
 
-import { CURRENT_LOCATION, getFullAddress } from '@/utils/location';
-import { Login } from './components/Login';
-import { SearchBox } from './components/SearchBox';
-import { PlaceDetail } from './components/Place';
-import { Report } from './components/Report';
 import { useUserStore } from '@/stores/user';
 import { Role } from '@/types/enum';
+import { CURRENT_LOCATION, getFullAddress } from '@/utils/location';
+import { Login } from './components/Login';
+import { PlaceDetail } from './components/Place';
+import { Report } from './components/Report';
+import { SearchBox } from './components/SearchBox';
 
 const mapContainerStyle = {
   width: '100vw',
@@ -30,14 +24,6 @@ const mapContainerStyle = {
 
 const HomePage = () => {
   const navigate = useNavigate();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [libraries] = useState<any>(['places']);
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyAESSzwLBdEfkk_WpjVmHQ7_1s15q_S4rg',
-    libraries,
-  });
 
   // const currentLocation = useControlStore.use.currentLocation();
   const setCurrentLocation = useControlStore.use.setCurrentLocation();
@@ -124,18 +110,6 @@ const HomePage = () => {
       }
     });
   };
-
-  if (loadError) {
-    return <ServerError />;
-  }
-
-  if (!isLoaded) {
-    return (
-      <div className="w-full h-full">
-        <LoadingOverlay visible zIndex={1000} />
-      </div>
-    );
-  }
 
   return (
     <div className="relative">

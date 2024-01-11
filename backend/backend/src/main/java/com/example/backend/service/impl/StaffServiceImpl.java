@@ -88,13 +88,15 @@ public class StaffServiceImpl implements StaffService {
     // for only VHTT
     public List<StaffDto> getAllStaffsWithoutVHTT() {
         List<StaffDto> listStaffDto = new ArrayList<>();
-        List<Staff> listStaff = staffRepository.findAllWithoutVHTT();
+        List<Staff> listStaff = staffRepository.findAll();
 
         for (Staff staff : listStaff) {
             User user = userRepository.findByUsername(staff.getUsername())
                     .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
 
-            listStaffDto.add(StaffMapper.toStaffDto(staff, user));
+            if (user.getRole() != Role.VHTT) {
+                listStaffDto.add(StaffMapper.toStaffDto(staff, user));
+            }
         }
 
         return listStaffDto;
@@ -116,7 +118,6 @@ public class StaffServiceImpl implements StaffService {
     public String updateStaffByFields(int id, Map<String, Object> fields) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
-
         fields.forEach((key, value) -> {
             try {
                 Field field = ReflectionUtils.findField(Staff.class, key);
@@ -168,7 +169,7 @@ public class StaffServiceImpl implements StaffService {
                 e.getStackTrace();
             }
         });
-
+        System.out.println(staff);
         staffRepository.save(staff);
 
         return "Your update success";

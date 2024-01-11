@@ -1,4 +1,4 @@
-import { Role } from '@/types/enum';
+import { RequirementStatus, Role } from '@/types/enum';
 
 export const stringToHslColor = (
   str: string,
@@ -18,4 +18,10 @@ export const ROLE_TITLE: Record<string, string> = {
   [Role.DISTRICT]: 'Cán bộ Quận',
   [Role.VHTT]: 'Sở VH-TT',
   [Role.WARD]: 'Cán bộ Phường',
+};
+
+export const STATUS_TITLE: Record<string, string> = {
+  [RequirementStatus.IN_PROGRESS]: 'Đang xử lý',
+  [RequirementStatus.ACTIVE]: 'Chấp nhận',
+  [RequirementStatus.REJECT]: 'Từ chối',
 };

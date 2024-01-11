@@ -2,35 +2,30 @@ import { getAllStaff } from '@/apis/staff';
 import { Role } from '@/types/enum';
 import { ROLE_TITLE, stringToHslColor } from '@/utils/avatar';
 import {
-  Avatar,
-  Badge,
-  Table,
-  Group,
-  Text,
   ActionIcon,
   Anchor,
+  Avatar,
+  Badge,
+  Group,
+  Table,
+  Text,
   rem,
-  Menu,
-  TextInput,
 } from '@mantine/core';
-import {
-  IconDots,
-  IconMessages,
-  IconNote,
-  IconPencil,
-  IconReportAnalytics,
-  IconSearch,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconPencil } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import UserDetail from './UserDetail';
 
-const jobColors: Record<string, string> = {
+// eslint-disable-next-line react-refresh/only-export-components
+export const JOB_COLORS: Record<string, string> = {
   [Role.DISTRICT]: 'blue',
   [Role.VHTT]: 'cyan',
   [Role.WARD]: 'pink',
-};
+} as const;
 
 const ManageUser = () => {
+  const [userId, setUserId] = useState<number>();
+
   const { data, isLoading } = useQuery({
     queryKey: ['getAllStaff'],
     queryFn: () => getAllStaff(),
@@ -38,17 +33,6 @@ const ManageUser = () => {
 
   return (
     <div className="p-8 pt-6">
-      <TextInput
-        className="mb-3"
-        placeholder="Search by any field"
-        mb="md"
-        leftSection={
-          <IconSearch
-            style={{ width: rem(16), height: rem(16) }}
-            stroke={1.5}
-          />
-        }
-      />
       <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
           <Table.Thead>
@@ -96,12 +80,17 @@ const ManageUser = () => {
                   </Group>
                 </Table.Td>
                 <Table.Td>
-                  <Badge color={jobColors[user.role]} variant="light">
+                  <Badge color={JOB_COLORS[user.role]} variant="light">
                     {ROLE_TITLE[user.role]}
                   </Badge>
                 </Table.Td>
                 <Table.Td>
-                  <Anchor component="button" size="sm">
+                  <Anchor
+                    title={user.email}
+                    className="w-[110px] line-clamp-1 text-ellipsis"
+                    component="button"
+                    size="sm"
+                  >
                     {user.email}
                   </Anchor>
                 </Table.Td>
@@ -112,81 +101,34 @@ const ManageUser = () => {
                   <Text fz="sm">{user.district}</Text>
                 </Table.Td>
                 <Table.Td>
-                  <Text fz="sm">{user.ward}</Text>
+                  <Text fz="sm">{user.ward || 'Tất cả'}</Text>
                 </Table.Td>
                 <Table.Td>
-                  <Group gap={0} justify="flex-end">
-                    <ActionIcon variant="subtle" color="gray">
-                      <IconPencil
-                        style={{ width: rem(16), height: rem(16) }}
-                        stroke={1.5}
-                      />
-                    </ActionIcon>
-                    <Menu
-                      transitionProps={{ transition: 'pop' }}
-                      withArrow
-                      position="bottom-end"
-                      withinPortal
-                    >
-                      <Menu.Target>
-                        <ActionIcon variant="subtle" color="gray">
-                          <IconDots
-                            style={{ width: rem(16), height: rem(16) }}
-                            stroke={1.5}
-                          />
-                        </ActionIcon>
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <Menu.Item
-                          leftSection={
-                            <IconMessages
-                              style={{ width: rem(16), height: rem(16) }}
-                              stroke={1.5}
-                            />
-                          }
-                        >
-                          Send message
-                        </Menu.Item>
-                        <Menu.Item
-                          leftSection={
-                            <IconNote
-                              style={{ width: rem(16), height: rem(16) }}
-                              stroke={1.5}
-                            />
-                          }
-                        >
-                          Add note
-                        </Menu.Item>
-                        <Menu.Item
-                          leftSection={
-                            <IconReportAnalytics
-                              style={{ width: rem(16), height: rem(16) }}
-                              stroke={1.5}
-                            />
-                          }
-                        >
-                          Analytics
-                        </Menu.Item>
-                        <Menu.Item
-                          leftSection={
-                            <IconTrash
-                              style={{ width: rem(16), height: rem(16) }}
-                              stroke={1.5}
-                            />
-                          }
-                          color="red"
-                        >
-                          Terminate contract
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                  </Group>
+                  <ActionIcon
+                    onClick={() => setUserId(user.id)}
+                    variant="subtle"
+                    color="gray"
+                  >
+                    <IconPencil
+                      style={{ width: rem(16), height: rem(16) }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
                 </Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
+      {userId && (
+        <UserDetail
+          opened
+          id={userId}
+          onClose={() => {
+            setUserId(undefined);
+          }}
+        />
+      )}
     </div>
   );
 };
