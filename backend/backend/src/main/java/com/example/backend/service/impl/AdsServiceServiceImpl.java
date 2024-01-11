@@ -131,7 +131,7 @@ public class AdsServiceServiceImpl implements AdsService {
             List<Object[]> resultList = adsPanelRepository.getDetailPanelWithType(id);
             return resultList.stream()
                     .map(objects -> new AdsPanelResponse((AdsPanel) objects[0], (AdsType) objects[1],
-                            (AdsPosition) objects[2]))
+                            (AdsPosition) objects[2], (Contract) objects[3]))
                     .collect(Collectors.toList());
         }
         return null;
@@ -142,7 +142,7 @@ public class AdsServiceServiceImpl implements AdsService {
 
         return resultList.stream()
                 .map(objects -> new AdsPanelResponse((AdsPanel) objects[0], (AdsType) objects[1],
-                        (AdsPosition) objects[2]))
+                        (AdsPosition) objects[2], (Contract) objects[3]))
                 .collect(Collectors.toList());
     }
 
