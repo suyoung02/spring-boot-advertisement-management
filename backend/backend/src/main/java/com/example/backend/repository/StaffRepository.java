@@ -15,6 +15,7 @@ public interface StaffRepository extends JpaRepository<Staff, Integer> {
 
     Optional<Staff> findByUsername(String username);
 
-    @Query(value = "SELECT s.* FROM STAFF s INNER JOIN User u ON s.username = u.username WHERE u.role <> 'VHTT'", nativeQuery = true)
-    List<Staff> findAllWithoutVHTT();
+    // @Query(value = "SELECT s.* FROM STAFF s INNER JOIN User u ON s.username =
+    // u.username WHERE u.role <> 'VHTT'", nativeQuery = true)
+    // List<Staff> findAllWithoutVHTT();
 }

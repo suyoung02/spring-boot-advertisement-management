@@ -1,14 +1,17 @@
 package com.example.backend.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Entity
-@Table(name="report")
+@Table(name = "report")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,11 +27,10 @@ public class Report {
     @Column(name = "fullname")
     private String fullName;
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-
-    @Column(name="phone_number")
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "content")
@@ -54,6 +56,5 @@ public class Report {
 
     @Column(name = "ads_position")
     private Integer adsPosition;
-
 
 }

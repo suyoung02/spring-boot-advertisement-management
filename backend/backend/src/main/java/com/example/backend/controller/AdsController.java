@@ -30,7 +30,6 @@ public class AdsController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
     @GetMapping("/all/getDetailPosition/{id}")
     public ResponseEntity<?> getDetailPosition(@PathVariable(value = "id") Integer id) {
         List<AdsPositionResponse> position = adsService.getDetailPosition(id);
@@ -49,7 +48,7 @@ public class AdsController {
         try {
             System.out.println(newPosition);
             AdsPosition result = adsService.addNewPosition(newPosition);
-            String logmsg =String.format("Add new position: %s", result);
+            String logmsg = String.format("Add new position: %s", result);
             logger.info(logmsg);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -156,8 +155,9 @@ public class AdsController {
 
     @PutMapping("/vhtt/updatePanel/{id}")
     public ResponseEntity<AdsPanel> updatePanel(@PathVariable(value = "id") Integer id,
-                                                @Valid @RequestBody AddPanelRequest newPosition) {
-        String logmsg = String.format("Request received for updatePanel with id: %s and newPosition: %s", id, newPosition);
+            @Valid @RequestBody AddPanelRequest newPosition) {
+        String logmsg = String.format("Request received for updatePanel with id: %s and newPosition: %s", id,
+                newPosition);
         logger.info(logmsg);
         try {
             AdsPanel result = adsService.updatePanel(id, newPosition);

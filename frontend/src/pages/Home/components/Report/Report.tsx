@@ -1,28 +1,51 @@
 import { CreateReportRequest, createReport } from '@/apis/report';
 import { useForm } from '@/hooks/useForm';
-import { Panel, Position } from '@/types/ads';
+import { classNames } from '@/utils/classNames';
 import { getMachineId } from '@/utils/device';
-import { Button, Drawer, Input, Select, TextInput } from '@mantine/core';
+import {
+  Button,
+  Drawer,
+  Input,
+  LoadingOverlay,
+  Select,
+  TextInput,
+} from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconAlertCircle } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
-import TextEditor from './TextEditor';
-import { classNames } from '@/utils/classNames';
+import TextEditor from '../Ads/TextEditor';
+import { getDetailAdsPanel, getDetailAdsPosition } from '@/apis/position';
+import { Panel, Position } from '@/types/ads';
+import { getFullAddress } from '@/utils/location';
 
 type Props = {
   opened: boolean;
   onClose: () => void;
-  position?: Position;
-  panel?: Panel;
+  positionId?: number;
+  panelId?: number;
 };
 
-const Report = ({ onClose, opened, position, panel }: Props) => {
-  const type = position ? 'position' : 'panel';
+const Report = ({ onClose, opened, positionId, panelId }: Props) => {
+  const type = positionId ? 'position' : 'panel';
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [show, setShow] = useState(false);
+
+  const { data, isLoading } = useQuery({
+    queryKey: [
+      type === 'position' ? 'getDetailAdsPosition' : 'getDetailAdsPanel',
+      panelId || positionId,
+    ],
+    queryFn: async () => {
+      const fn = type === 'position' ? getDetailAdsPosition : getDetailAdsPanel;
+      const id = panelId || positionId;
+      const res = await fn(id as number);
+      return res as Position & Panel;
+    },
+    enabled: !!positionId || !!panelId,
+  });
 
   const { fields, onError, onChangeField, error, reset } =
     useForm<CreateReportRequest>({
@@ -38,6 +61,8 @@ const Report = ({ onClose, opened, position, panel }: Props) => {
         image2: '',
         solving: '',
         token: '',
+        adsPanel: panelId,
+        adsPosition: positionId,
       },
       validate: {
         content: ({ value, formValue }) => {
@@ -113,6 +138,11 @@ const Report = ({ onClose, opened, position, panel }: Props) => {
       size="xl"
       styles={{ body: { padding: 0 } }}
     >
+      <LoadingOverlay
+        visible={isLoading}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+      />
       <div className="relative h-[calc(100vh-125px)] overflow-y-auto px-4 pb-6">
         <div className="p-4 rounded-xl border flex gap-2">
           <div className="w-6">
@@ -123,34 +153,33 @@ const Report = ({ onClose, opened, position, panel }: Props) => {
               Thông tin {type ? 'Điểm quảng cáo' : 'Bảng quảng cáo'}
             </div>
             <div className="font-medium mb-2">
-              {position?.name || panel?.ads_type}
+              {data?.adsPosition.name || data?.adsType.title}
             </div>
-            <div className="text-sm">{position?.address || panel?.address}</div>
+            <div className="text-sm">
+              {data?.adsPosition.address && getFullAddress(data.adsPosition)}
+            </div>
             <div className="text-base">
               Hình thức:{' '}
               <span className="font-medium">
-                {position?.ads_form || panel?.ads_form}
+                {data?.adsForm.title || data?.adsPosition.ads_form}
               </span>
             </div>
             <div className="text-base">
               Phân loại:{' '}
               <span className="font-medium">
-                {position?.location_type || panel?.loaction_type}
+                {data?.locationType.title || data?.adsPosition.location_type}
               </span>
             </div>
-            {panel && (
+            {data?.adsPanel && (
               <>
                 <div className="text-base">
-                  Kích thước: <span className="font-medium">{panel.size}</span>
-                </div>
-                <div className="text-base">
-                  Số lượng:{' '}
-                  <span className="font-medium">{panel.quantity}</span>
+                  Kích thước:{' '}
+                  <span className="font-medium">{data.adsPanel.size}</span>
                 </div>
                 <div className="text-base">
                   Ngày hết hạn:{' '}
                   <span className="font-medium">
-                    {dayjs(panel.contract_expiration).format(
+                    {dayjs(data.adsPanel.contract_expiration).format(
                       'DD/MM/YYYY - HH:mm',
                     )}
                   </span>

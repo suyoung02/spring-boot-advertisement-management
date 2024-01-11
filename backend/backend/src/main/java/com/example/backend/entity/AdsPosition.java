@@ -17,6 +17,9 @@ public class AdsPosition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "address")
     private String address;
 
@@ -38,7 +41,8 @@ public class AdsPosition {
     @Column(name = "planning_status")
     private String planning_status;
 
-    @Column(name = "photo")
+    @Lob
+    @Column(name = "photo", columnDefinition = "TEXT")
     private String photo;
 
     @Column(name = "place_id")

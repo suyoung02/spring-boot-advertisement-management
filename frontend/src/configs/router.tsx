@@ -15,11 +15,12 @@ import {
   ManageRequirementAds,
   ManageRequirementPosition,
   ManageUser,
+  Profile,
   RegisterPage,
-  UserDetail,
 } from '@/pages/Admin';
-import { HomePage } from '@/pages/Home';
 import { NotFound } from '@/pages/Error';
+import { HomePage } from '@/pages/Home';
+import { Role } from '@/types/enum';
 import { Outlet, createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter([
@@ -36,15 +37,27 @@ export const router = createBrowserRouter([
       },
       {
         path: 'login',
-        element: <LoginPage />,
+        element: (
+          <AdminLayout>
+            <LoginPage />
+          </AdminLayout>
+        ),
       },
       {
         path: 'register',
-        element: <RegisterPage />,
+        element: (
+          <AdminLayout>
+            <RegisterPage />
+          </AdminLayout>
+        ),
       },
       {
         path: 'forgot-password',
-        element: <ForgotPasswordPage />,
+        element: (
+          <AdminLayout>
+            <ForgotPasswordPage />
+          </AdminLayout>
+        ),
       },
       {
         path: '*',
@@ -55,7 +68,7 @@ export const router = createBrowserRouter([
   {
     path: '/admin/users',
     element: (
-      <AdminLayout title="Quản lý tài khoản">
+      <AdminLayout role={[Role.VHTT]} title="Quản lý tài khoản">
         <Outlet />
       </AdminLayout>
     ),
@@ -63,10 +76,6 @@ export const router = createBrowserRouter([
       {
         path: 'create-account',
         element: <CreateAccount />,
-      },
-      {
-        path: ':id',
-        element: <UserDetail />,
       },
       {
         path: '',
@@ -79,9 +88,23 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/admin/account',
+    element: (
+      <AdminLayout
+        role={[Role.VHTT, Role.DISTRICT, Role.WARD]}
+        title="Quản lý tài khoản"
+      >
+        <Profile />
+      </AdminLayout>
+    ),
+  },
+  {
     path: '/admin/ads',
     element: (
-      <AdminLayout title="Quản lý quảng cáo">
+      <AdminLayout
+        role={[Role.VHTT, Role.WARD, Role.DISTRICT]}
+        title="Quản lý quảng cáo"
+      >
         <Outlet />
       </AdminLayout>
     ),
@@ -106,23 +129,34 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin/position',
-    element: (
-      <AdminLayout title="Quản lý vị trí">
-        <Outlet />
-      </AdminLayout>
-    ),
+    element: <Outlet />,
     children: [
       {
         path: 'location_type',
-        element: <ManageLocationType />,
+        element: (
+          <AdminLayout role={[Role.VHTT]} title="Quản lý vị trí">
+            <ManageLocationType />
+          </AdminLayout>
+        ),
       },
       {
         path: 'status',
-        element: <ManagePositionStatus />,
+        element: (
+          <AdminLayout role={[Role.VHTT]} title="Quản lý vị trí">
+            <ManagePositionStatus />
+          </AdminLayout>
+        ),
       },
       {
         path: '',
-        element: <ManagePosition />,
+        element: (
+          <AdminLayout
+            role={[Role.VHTT, Role.WARD, Role.DISTRICT]}
+            title="Quản lý vị trí"
+          >
+            <ManagePosition />
+          </AdminLayout>
+        ),
       },
       {
         path: '*',
@@ -132,19 +166,26 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin/report',
-    element: (
-      <AdminLayout title="Quản lý báo cáo">
-        <Outlet />
-      </AdminLayout>
-    ),
+    element: <Outlet />,
     children: [
       {
         path: 'type',
-        element: <ManageReportType />,
+        element: (
+          <AdminLayout role={[Role.VHTT]} title="Quản lý vị trí">
+            <ManageReportType />
+          </AdminLayout>
+        ),
       },
       {
         path: '',
-        element: <ManageReport />,
+        element: (
+          <AdminLayout
+            role={[Role.VHTT, Role.WARD, Role.DISTRICT]}
+            title="Quản lý vị trí"
+          >
+            <ManageReport />
+          </AdminLayout>
+        ),
       },
       {
         path: '*',
@@ -155,7 +196,10 @@ export const router = createBrowserRouter([
   {
     path: '/admin/require',
     element: (
-      <AdminLayout title="Quản lý yêu cầu">
+      <AdminLayout
+        role={[Role.VHTT, Role.WARD, Role.DISTRICT]}
+        title="Quản lý yêu cầu"
+      >
         <Outlet />
       </AdminLayout>
     ),

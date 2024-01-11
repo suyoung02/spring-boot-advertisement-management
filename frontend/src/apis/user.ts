@@ -1,5 +1,6 @@
 import { API_URL } from '@/utils/env';
-import { apiPatch, apiPost, apiPut } from './api';
+import { apiGet, apiPatch, apiPost, apiPut } from './api';
+import { User } from '@/types/user';
 
 export type LoginRequest = {
   username: string;
@@ -22,6 +23,24 @@ export const loginApi = async (data: LoginRequest) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     throw new Error(e.response.data.error_description);
+  }
+};
+
+export const logoutApi = async () => {
+  const res = await apiPost(API_URL + '/auth/all/logout');
+  return res.data;
+};
+
+export const getMe = async () => {
+  try {
+    const res = await apiGet<null, ApiDataResponse<User>>(
+      API_URL + '/staff/all/get-individual',
+    );
+
+    return res.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    throw new Error(e);
   }
 };
 

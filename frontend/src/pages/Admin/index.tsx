@@ -14,4 +14,4 @@ export { default as ManageRequirementAds } from './components/Requirement/Manage
 export { default as ManageRequirementPosition } from './components/Requirement/ManageRequirementPosition';
 export { default as CreateAccount } from './components/User/CreateAccount';
 export { default as ManageUser } from './components/User/ManageUser';
-export { default as UserDetail } from './components/User/UserDetail';
+export { default as Profile } from './components/User/Profile';

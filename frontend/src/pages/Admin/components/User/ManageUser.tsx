@@ -1,197 +1,134 @@
+import { getAllStaff } from '@/apis/staff';
+import { Role } from '@/types/enum';
+import { ROLE_TITLE, stringToHslColor } from '@/utils/avatar';
 import {
-  Avatar,
-  Badge,
-  Table,
-  Group,
-  Text,
   ActionIcon,
   Anchor,
+  Avatar,
+  Badge,
+  Group,
+  Table,
+  Text,
   rem,
-  Menu,
-  TextInput,
-} from "@mantine/core";
-import {
-  IconDots,
-  IconMessages,
-  IconNote,
-  IconPencil,
-  IconReportAnalytics,
-  IconSearch,
-  IconTrash,
-} from "@tabler/icons-react";
+} from '@mantine/core';
+import { IconPencil } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import UserDetail from './UserDetail';
 
-const data = [
-  {
-    avatar:
-      "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
-    name: "Robert Wolfkisser",
-    job: "Engineer",
-    email: "rob_wolf@gmail.com",
-    phone: "+44 (452) 886 09 12",
-  },
-  {
-    avatar:
-      "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-7.png",
-    name: "Jill Jailbreaker",
-    job: "Engineer",
-    email: "jj@breaker.com",
-    phone: "+44 (934) 777 12 76",
-  },
-  {
-    avatar:
-      "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png",
-    name: "Henry Silkeater",
-    job: "Designer",
-    email: "henry@silkeater.io",
-    phone: "+44 (901) 384 88 34",
-  },
-  {
-    avatar:
-      "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
-    name: "Bill Horsefighter",
-    job: "Designer",
-    email: "bhorsefighter@gmail.com",
-    phone: "+44 (667) 341 45 22",
-  },
-  {
-    avatar:
-      "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-10.png",
-    name: "Jeremy Footviewer",
-    job: "Manager",
-    email: "jeremy@foot.dev",
-    phone: "+44 (881) 245 65 65",
-  },
-];
-
-const jobColors: Record<string, string> = {
-  engineer: "blue",
-  manager: "cyan",
-  designer: "pink",
-};
+// eslint-disable-next-line react-refresh/only-export-components
+export const JOB_COLORS: Record<string, string> = {
+  [Role.DISTRICT]: 'blue',
+  [Role.VHTT]: 'cyan',
+  [Role.WARD]: 'pink',
+} as const;
 
 const ManageUser = () => {
-  const rows = data.map((item) => (
-    <Table.Tr key={item.name}>
-      <Table.Td>
-        <Group gap="sm">
-          <Avatar size={30} src={item.avatar} radius={30} />
-          <Text fz="sm" fw={500}>
-            {item.name}
-          </Text>
-        </Group>
-      </Table.Td>
+  const [userId, setUserId] = useState<number>();
 
-      <Table.Td>
-        <Badge color={jobColors[item.job.toLowerCase()]} variant="light">
-          {item.job}
-        </Badge>
-      </Table.Td>
-      <Table.Td>
-        <Anchor component="button" size="sm">
-          {item.email}
-        </Anchor>
-      </Table.Td>
-      <Table.Td>
-        <Text fz="sm">{item.phone}</Text>
-      </Table.Td>
-      <Table.Td>
-        <Group gap={0} justify="flex-end">
-          <ActionIcon variant="subtle" color="gray">
-            <IconPencil
-              style={{ width: rem(16), height: rem(16) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
-          <Menu
-            transitionProps={{ transition: "pop" }}
-            withArrow
-            position="bottom-end"
-            withinPortal
-          >
-            <Menu.Target>
-              <ActionIcon variant="subtle" color="gray">
-                <IconDots
-                  style={{ width: rem(16), height: rem(16) }}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                leftSection={
-                  <IconMessages
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Send message
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconNote
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Add note
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconReportAnalytics
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Analytics
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconTrash
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                }
-                color="red"
-              >
-                Terminate contract
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
-      </Table.Td>
-    </Table.Tr>
-  ));
+  const { data, isLoading } = useQuery({
+    queryKey: ['getAllStaff'],
+    queryFn: () => getAllStaff(),
+  });
 
   return (
     <div className="p-8 pt-6">
-      <TextInput
-        className="mb-3"
-        placeholder="Search by any field"
-        mb="md"
-        leftSection={
-          <IconSearch
-            style={{ width: rem(16), height: rem(16) }}
-            stroke={1.5}
-          />
-        }
-      />
       <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Employee</Table.Th>
-              <Table.Th>Job title</Table.Th>
+              <Table.Th>Tên</Table.Th>
+              <Table.Th>Chức vụ</Table.Th>
               <Table.Th>Email</Table.Th>
-              <Table.Th>Phone</Table.Th>
+              <Table.Th>Số điện thoại</Table.Th>
+              <Table.Th>Quận</Table.Th>
+              <Table.Th>Phường</Table.Th>
               <Table.Th />
             </Table.Tr>
           </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+          <Table.Tbody>
+            {isLoading &&
+              [1, 2, 3].map((index) => (
+                <Table.Tr key={index}>
+                  {[1, 2, 3, 4, 5, 6].map((idx) => (
+                    <Table.Td key={`${index}_${idx}`} className="w-[120px]">
+                      <div className="h-6 w-5/6 bg-neutral-300 animate-pulse"></div>
+                    </Table.Td>
+                  ))}
+                  <Table.Td>
+                    <div className="w-[200px] ml-auto h-6 bg-neutral-300 animate-pulse"></div>
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            {data?.map((user) => (
+              <Table.Tr key={user.id}>
+                <Table.Td>
+                  <Group gap="sm">
+                    <Avatar
+                      size={30}
+                      radius={30}
+                      color={stringToHslColor(user.fullname)}
+                    >
+                      {user.fullname
+                        .split(' ')
+                        .map((name) => name[0])
+                        .slice(0, 2)}
+                    </Avatar>
+                    <Text fz="sm" fw={500}>
+                      {user.fullname}
+                    </Text>
+                  </Group>
+                </Table.Td>
+                <Table.Td>
+                  <Badge color={JOB_COLORS[user.role]} variant="light">
+                    {ROLE_TITLE[user.role]}
+                  </Badge>
+                </Table.Td>
+                <Table.Td>
+                  <Anchor
+                    title={user.email}
+                    className="w-[110px] line-clamp-1 text-ellipsis"
+                    component="button"
+                    size="sm"
+                  >
+                    {user.email}
+                  </Anchor>
+                </Table.Td>
+                <Table.Td>
+                  <Text fz="sm">{user.phoneNumber}</Text>
+                </Table.Td>
+                <Table.Td>
+                  <Text fz="sm">{user.district}</Text>
+                </Table.Td>
+                <Table.Td>
+                  <Text fz="sm">{user.ward || 'Tất cả'}</Text>
+                </Table.Td>
+                <Table.Td>
+                  <ActionIcon
+                    onClick={() => setUserId(user.id)}
+                    variant="subtle"
+                    color="gray"
+                  >
+                    <IconPencil
+                      style={{ width: rem(16), height: rem(16) }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
+      {userId && (
+        <UserDetail
+          opened
+          id={userId}
+          onClose={() => {
+            setUserId(undefined);
+          }}
+        />
+      )}
     </div>
   );
 };

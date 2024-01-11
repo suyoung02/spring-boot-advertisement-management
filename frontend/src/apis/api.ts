@@ -1,32 +1,32 @@
 import axios, {
-  type AxiosError,
+  // type AxiosError,
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
 
-import { HTTP_STATUS_CODE } from '@/configs/constants';
-import { getAccessToken, logout } from '@/stores/user';
+// import { HTTP_STATUS_CODE } from '@/configs/constants';
+import { getAccessToken } from '@/stores/user';
 
-type AxiosRetry = AxiosError['config'] & { _retry: boolean };
+// type AxiosRetry = AxiosError['config'] & { _retry: boolean };
 
 const instance = axios.create();
 
-instance.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRetry;
-    if (!originalRequest) return Promise.reject(error);
+// instance.interceptors.response.use(
+//   (response) => response,
+//   async (error: AxiosError) => {
+//     const originalRequest = error.config as AxiosRetry;
+//     if (!originalRequest) return Promise.reject(error);
 
-    const isUnauthorized =
-      error.response?.status === HTTP_STATUS_CODE.UNAUTHORIZED;
+//     const isUnauthorized =
+//       error.response?.status === HTTP_STATUS_CODE.UNAUTHORIZED;
 
-    if (isUnauthorized) {
-      logout();
-    }
+//     if (isUnauthorized) {
+//       logout();
+//     }
 
-    return Promise.reject(error);
-  },
-);
+//     return Promise.reject(error);
+//   },
+// );
 
 export const apiRequest = async <
   Data = unknown,

@@ -35,10 +35,6 @@ public class StaffServiceImpl implements StaffService {
                 .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
         StaffDto staffDto = StaffMapper.toStaffDto(staff, user);
 
-        // does not show username and id
-        staffDto.setUsername(null);
-        staffDto.setId(null);
-
         return staffDto;
     }
 
@@ -92,13 +88,15 @@ public class StaffServiceImpl implements StaffService {
     // for only VHTT
     public List<StaffDto> getAllStaffsWithoutVHTT() {
         List<StaffDto> listStaffDto = new ArrayList<>();
-        List<Staff> listStaff = staffRepository.findAllWithoutVHTT();
+        List<Staff> listStaff = staffRepository.findAll();
 
         for (Staff staff : listStaff) {
             User user = userRepository.findByUsername(staff.getUsername())
                     .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
 
-            listStaffDto.add(StaffMapper.toStaffDto(staff, user));
+            if (user.getRole() != Role.VHTT) {
+                listStaffDto.add(StaffMapper.toStaffDto(staff, user));
+            }
         }
 
         return listStaffDto;
@@ -187,7 +185,7 @@ public class StaffServiceImpl implements StaffService {
             }
 
         });
-
+        System.out.println(staff);
         staffRepository.save(staff);
         userRepository.save(user);
 
