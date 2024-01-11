@@ -5,6 +5,7 @@ import com.example.backend.entity.AdsImages;
 import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.Contract;
 import com.example.backend.entity.Staff;
+import com.example.backend.enums.ContractState;
 import com.example.backend.exception.AppException;
 import com.example.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class ContractService {
         }
         Contract old = this.contractRepository.getLatestContract(contract.getAds_panel());
         old.setState("Đã hết hạn");
-        contract.setState("Đang hiện diện");
+        contract.setState(ContractState.APPROVED.state);
 
         this.contractRepository.save(old);
         this.contractRepository.save(contract);
