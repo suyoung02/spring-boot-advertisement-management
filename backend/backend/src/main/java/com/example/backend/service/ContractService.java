@@ -71,7 +71,7 @@ public class ContractService {
             throw new AppException(400, HttpStatus.BAD_REQUEST, "This contract is not exist");
         }
         Contract old = this.contractRepository.getLatestContract(contract.getAds_panel());
-        old.setState("Đã hết hạn");
+        old.setState(ContractState.EXPIRED.state);
         contract.setState(ContractState.APPROVED.state);
 
         this.contractRepository.save(old);
