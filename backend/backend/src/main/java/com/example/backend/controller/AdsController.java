@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import org.apache.log4j.Logger;
@@ -169,12 +170,19 @@ public class AdsController {
     }
 
     @GetMapping("/all/presenting-panel")
-    public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel() {
+    public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel(Principal principal){
         logger.info("Request received for getAllPresentingPanel");
-        List<AdsPanelWithImagesDTO> panels = adsService.getAllPresentingPanel();
-        String logMsg = String.format("Retrieved presenting panels: %s", panels);
-        logger.debug(logMsg);
-        return new ResponseEntity<>(panels, HttpStatus.OK);
+        if(principal == null){
+            List<AdsPanelWithImagesDTO> panels = adsService.getAllPresentingPanel();
+            String logMsg = String.format("Retrieved presenting panels: %s without token", panels);
+            logger.debug(logMsg);
+            return new ResponseEntity<>(panels, HttpStatus.OK);
+        }
+        else {
+            String logMsg = String.format("Retrieved presenting panels: %s with token", principal.getName());
+            logger.debug(logMsg);
+            List<AdsPanelWithImagesDTO> panels = adsService.getAllPanelWithPosition();
+            return new ResponseEntity<>(panels, HttpStatus.OK);
+        }
     }
-
 }

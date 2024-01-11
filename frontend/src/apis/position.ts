@@ -1,12 +1,23 @@
 import { API_URL } from '@/utils/env';
 import { apiDelete, apiGet, apiPost, apiPut } from './api';
-import { Panel, Position } from '@/types/ads';
+import { Panel, Position, PresentingPanel } from '@/types/ads';
 import { IS_ACTIVE } from '@/types/enum';
 
 export const getAllAdsPosition = async () => {
   try {
     const res = await apiGet<null, ApiDataResponse<Position[]>>(
       API_URL + '/ads/all/getAllPosition',
+    );
+    return res.data;
+  } catch {
+    return null;
+  }
+};
+
+export const getAllPresentingPanel = async () => {
+  try {
+    const res = await apiGet<null, ApiDataResponse<PresentingPanel[]>>(
+      API_URL + '/ads/all/presenting-panel',
     );
     return res.data;
   } catch {

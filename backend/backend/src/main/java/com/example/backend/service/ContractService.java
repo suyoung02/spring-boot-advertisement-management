@@ -5,6 +5,7 @@ import com.example.backend.entity.AdsImages;
 import com.example.backend.entity.AdsPanel;
 import com.example.backend.entity.Contract;
 import com.example.backend.entity.Staff;
+import com.example.backend.enums.ContractState;
 import com.example.backend.exception.AppException;
 import com.example.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +71,8 @@ public class ContractService {
             throw new AppException(400, HttpStatus.BAD_REQUEST, "This contract is not exist");
         }
         Contract old = this.contractRepository.getLatestContract(contract.getAds_panel());
-        old.setState("Đã hết hạn");
-        contract.setState("Đang hiện diện");
+        old.setState(ContractState.EXPIRED.state);
+        contract.setState(ContractState.APPROVED.state);
 
         this.contractRepository.save(old);
         this.contractRepository.save(contract);
@@ -102,5 +103,15 @@ public class ContractService {
         }
 
         this.contractRepository.saveAll(ls);
+    }
+
+    public void rejectContract(Integer id) {
+        if(contractRepository.existsById(id)) {
+            Contract contract = contractRepository.findById(id).get();
+            contract.setState(ContractState.REJECTED.state);
+            contractRepository.save(contract);
+        } else {
+            throw new AppException(400, HttpStatus.FORBIDDEN, "This contract is not exist");
+        }
     }
 }

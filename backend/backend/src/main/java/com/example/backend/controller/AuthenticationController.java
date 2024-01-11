@@ -83,7 +83,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(authenticationService.resetPassword(request), HttpStatus.OK);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/all/logout")
     public ResponseEntity<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
             Authentication authentication) {
         logoutService.logout(httpServletRequest, httpServletResponse, authentication);

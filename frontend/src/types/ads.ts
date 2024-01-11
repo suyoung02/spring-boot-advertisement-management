@@ -62,3 +62,17 @@ export type AdsPanel = {
   contract_expiration: Date;
   ads_position: number;
 };
+
+export type Contract = {
+  id: number;
+  enterprise_info: string;
+  enterprise_email: string;
+  enterprise_phone_number: string;
+  contract_begin: Date;
+  contract_expiration: Date;
+  ads_panel: number;
+  state: string;
+  staff: number;
+};
+
+export type PresentingPanel = Position & { contract: Contract };

@@ -1651,3 +1651,56 @@
 2024-01-11:07:17 INFO  EditingRequirementController:40 - Request received for getAllPositionRequirement
 2024-01-11:07:32 INFO  EditingRequirementController:40 - Request received for getAllPositionRequirement
 2024-01-11:07:32 INFO  EditingRequirementController:40 - Request received for getAllPositionRequirement
+2024-01-11:45:47 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:45:47 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:45:47 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:45:47 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:45:47 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:45:47 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:46:12 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:12 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:12 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:12 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:12 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:46:12 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:46:22 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:22 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:22 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:22 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:22 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:46:22 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:46:31 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:31 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:31 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:31 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:46:31 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:46:31 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:47:24 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:47:24 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:47:25 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:47:25 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:48:07 INFO  AdsController:174 - Request received for getAllPresentingPanel
+2024-01-11:48:07 DEBUG AdsController:178 - Retrieved presenting panels: [] without token
+2024-01-11:49:33 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:33 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:33 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:33 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:33 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:49:33 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:49:36 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:36 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:36 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:49:37 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:37 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:37 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:49:38 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:38 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:38 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:49:39 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:40 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:40 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:40 INFO  StaffController:35 - Request received for get personal staff
+2024-01-11:49:40 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:49:40 INFO  StaffController:41 - Request received for get all staffs without VHTT
+2024-01-11:21:01 INFO  AdsController:174 - Request received for getAllPresentingPanel
+2024-01-11:21:01 DEBUG AdsController:178 - Retrieved presenting panels: [] without token

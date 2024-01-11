@@ -3,10 +3,10 @@ import {
   AddPanelRequest,
   UpdateAdsPanelRequest,
   addAdsPanel,
+  getAllAdsPosition,
   updateAdsPanel,
 } from '@/apis/position';
 import { useForm } from '@/hooks/useForm';
-import useGetPosition from '@/hooks/useGetPosition';
 import { AdsPanel } from '@/types/ads';
 import { getFullAddress } from '@/utils/location';
 import {
@@ -71,7 +71,10 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
     queryFn: () => getAllAdsType(),
   });
 
-  const { data: positions } = useGetPosition();
+  const { data: positions } = useQuery({
+    queryKey: ['getAllAdsPosition'],
+    queryFn: () => getAllAdsPosition(),
+  });
 
   const { mutate: addPanel, isPending: loading1 } = useMutation({
     mutationFn: (data: AddPanelRequest) => addAdsPanel(data),

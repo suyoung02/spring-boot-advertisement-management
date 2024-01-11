@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "position_requirement")
+@Table(name = "editing_requirement")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -28,15 +27,13 @@ public class PositionRequirement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Lob
-    @Column(name = "new_info", columnDefinition = "TEXT")
+    @Column(name = "new_info")
     private String new_info;
 
     @Column(name = "time_submit")
     private Date time_submit;
 
-    @Lob
-    @Column(name = "reason", columnDefinition = "TEXT")
+    @Column(name = "reason")
     private String reason;
 
     @Column(name = "status")

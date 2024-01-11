@@ -27,7 +27,7 @@ export const loginApi = async (data: LoginRequest) => {
 };
 
 export const logoutApi = async () => {
-  const res = await apiPost(API_URL + '/auth/logout');
+  const res = await apiPost(API_URL + '/auth/all/logout');
   return res.data;
 };
 

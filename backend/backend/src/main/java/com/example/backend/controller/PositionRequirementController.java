@@ -66,7 +66,7 @@ public class PositionRequirementController {
         positionRequirementService.updateEditingRequirement(editingRequirement, Integer.parseInt(id));
         String log = String.format("PositionRequirement update successfully: %s", editingRequirement);
         logger.debug(log);
-        return new ResponseEntity<>("Create Request success", HttpStatus.OK);
+        return new ResponseEntity<>("Update Request success", HttpStatus.OK);
     }
 
     @PostMapping("/approve/{id}")
