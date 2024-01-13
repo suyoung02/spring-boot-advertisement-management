@@ -111,7 +111,12 @@ const mockdata = [
       },
     ],
   },
-  { label: 'Thống kê', icon: IconPresentationAnalytics },
+  {
+    label: 'Thống kê',
+    icon: IconPresentationAnalytics,
+    link: '/admin/analytics',
+    role: [Role.VHTT, Role.DISTRICT, Role.WARD],
+  },
 ];
 
 const AdminLayout = ({ title, children, role }: Props) => {

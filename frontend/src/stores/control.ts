@@ -12,6 +12,7 @@ export enum ModalName {
   POSITION_DETAIL = 'POSITION_DETAIL',
   PANEL_DETAIL = 'PANEL_DETAIL',
   REPORT = 'REPORT',
+  REPORT_LIST = 'REPORT_LIST',
 }
 
 type State = {

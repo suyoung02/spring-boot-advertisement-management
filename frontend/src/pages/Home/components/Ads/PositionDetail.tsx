@@ -15,6 +15,7 @@ import {
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { useMemo } from 'react';
 
 type Props = {
   opened: boolean;
@@ -41,6 +42,17 @@ const PositionDetail = ({
   });
 
   const user = useUserStore.use.user();
+
+  const filterData = useMemo(() => {
+    if (!position) return position;
+    return {
+      ...position,
+      panelDetails: position.panelDetails.filter((panel) =>
+        !user ? panel.contract.state === 'Đang hiện diện' : true,
+      ),
+    };
+  }, [position, user]);
+
   const setModal = useControlStore.use.setModal();
 
   return (
@@ -56,7 +68,7 @@ const PositionDetail = ({
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
-      {!position ? (
+      {!filterData ? (
         <div className="p-4 rounded-xl bg-blue-100 text-blue-600 flex gap-2">
           <IconAlertCircle />
           <div className="flex flex-col">
@@ -70,8 +82,8 @@ const PositionDetail = ({
         <div className="flex flex-col gap-4">
           <div
             style={{
-              color: position.planningStatus.color,
-              borderColor: position.planningStatus.color,
+              color: filterData.planningStatus.color,
+              borderColor: filterData.planningStatus.color,
             }}
             className={classNames(
               'pl-3 pr-4 py-4 gap-2 rounded-xl text-black bg-white border flex',
@@ -80,29 +92,29 @@ const PositionDetail = ({
             <div className="w-6 h-6">
               {(
                 <img
-                  alt={position.planningStatus.icon}
+                  alt={filterData.planningStatus.icon}
                   className="w-full h-full object-cover"
                 />
               ) && <IconCircleCheckFilled />}
             </div>
             <div className="flex flex-col w-full">
               <div className="font-bold">
-                Thông tin địa điểm - {position.adsForm.title}
+                Thông tin địa điểm - {filterData.adsForm.title}
               </div>
               <div className="font-medium text-lg">
-                {position.adsPosition.name}
+                {filterData.adsPosition.name}
               </div>
               <div className="text-sm">
-                {getFullAddress(position.adsPosition)}
+                {getFullAddress(filterData.adsPosition)}
               </div>
-              <div className="text-sm">{position.locationType.title}</div>
+              <div className="text-sm">{filterData.locationType.title}</div>
               <div className="uppercase font-bold my-1">
-                {position.planningStatus.title}
+                {filterData.planningStatus.title}
               </div>
-              {position.adsPosition.photo && (
+              {filterData.adsPosition.photo && (
                 <img
                   alt="photo"
-                  src={position.adsPosition.photo}
+                  src={filterData.adsPosition.photo}
                   className="w-full h-auto"
                 />
               )}
@@ -114,7 +126,9 @@ const PositionDetail = ({
                   Chỉnh sửa
                 </Button>
                 <Button
-                  onClick={() => onReport?.({ position, panel: null })}
+                  onClick={() =>
+                    onReport?.({ position: filterData, panel: null })
+                  }
                   color="red"
                   leftSection={<IconAlertOctagonFilled />}
                 >
@@ -123,7 +137,7 @@ const PositionDetail = ({
               </div>
             </div>
           </div>
-          {!position.panels.length && (
+          {!filterData.panels.length && (
             <div className="p-4 rounded-xl bg-green-100 text-green-700 flex gap-3 items-center">
               <IconAlertCircle />
               <div className="flex flex-col">
@@ -140,7 +154,7 @@ const PositionDetail = ({
               </Button>
             </div>
           )}
-          {position.panelDetails.map((panel, index) => (
+          {filterData.panelDetails.map((panel, index) => (
             <div key={index} className="p-4 rounded-xl border flex gap-2">
               <div className="w-6">
                 <IconAlertCircle size={24} />
@@ -153,7 +167,7 @@ const PositionDetail = ({
                   <div className="font-medium mb-2">{panel.contract.state}</div>
                 )}
                 <div className="font-medium mb-2">
-                  {getFullAddress(position.adsPosition)}
+                  {getFullAddress(filterData.adsPosition)}
                 </div>
                 <div className="text-base">
                   Kích thước:{' '}
@@ -161,12 +175,14 @@ const PositionDetail = ({
                 </div>
                 <div className="text-base">
                   Hình thức:{' '}
-                  <span className="font-medium">{position.adsForm.title}</span>
+                  <span className="font-medium">
+                    {filterData.adsForm.title}
+                  </span>
                 </div>
                 <div className="text-base">
                   Phân loại:{' '}
                   <span className="font-medium">
-                    {position.locationType.title}
+                    {filterData.locationType.title}
                   </span>
                 </div>
                 <div className="text-base">

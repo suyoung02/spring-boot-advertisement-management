@@ -15,6 +15,8 @@ const UserButton = ({ user }: Props) => {
     logout();
   };
 
+  if (!user) return <></>;
+
   return (
     <div className="flex items-center justify-between gap-2">
       <Avatar color={stringToHslColor(user.fullname)} radius="xl">

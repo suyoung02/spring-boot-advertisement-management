@@ -21,3 +21,9 @@ export enum ContractStatus {
   ACTIVE = 'Đang hiện diện',
   EXPIRED = 'Đã hết hạn',
 }
+
+export enum ReportStatus {
+  IN_PROGRESS = 'Đang xử lý',
+  SOLVED = 'Đã giải quyết',
+  CANCEL = 'Đã huỷ',
+}

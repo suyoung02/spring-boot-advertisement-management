@@ -52,9 +52,9 @@ export const updateReport = async ({ id, ...data }: UpdateReportType) => {
   }
 };
 
-export const getDetailReport = async (id: string) => {
+export const getDetailReport = async (id: number) => {
   try {
-    const res = await apiDelete<null, ApiDataResponse<Report>>(
+    const res = await apiGet<null, ApiDataResponse<Report>>(
       API_URL + `/report/all/get-detail/${id}`,
     );
     return res.data;
@@ -64,10 +64,22 @@ export const getDetailReport = async (id: string) => {
   }
 };
 
-export const getAllReport = async (id: string) => {
+export const getReportDetail = async (id: string) => {
   try {
-    const res = await apiDelete<null, ApiDataResponse<Report>>(
+    const res = await apiGet<null, ApiDataResponse<Report>>(
       API_URL + `/report/all/get-detail/${id}`,
+    );
+    return res.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    throw new Error(e.response.data.error_description);
+  }
+};
+
+export const getAllReport = async () => {
+  try {
+    const res = await apiGet<null, ApiDataResponse<Report[]>>(
+      API_URL + `/report/all/get-all`,
     );
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

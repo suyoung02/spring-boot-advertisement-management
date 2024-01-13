@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "http://localhost:8080",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -10,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@googlemaps/markerclusterer": "^2.5.2",
     "@mantine/carousel": "^7.4.0",
     "@mantine/core": "^7.4.0",
     "@mantine/dates": "^7.4.0",
@@ -41,16 +43,20 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.49.2",
     "react-router-dom": "^6.21.1",
-    "socket.io-client": "^4.7.3",
+    "recharts": "^2.10.4",
+    "socket.io-client": "^4.7.4",
     "tailwind-merge": "^2.1.0",
     "use-places-autocomplete": "^4.0.1",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.54.10",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-google-recaptcha": "^2.1.8",
+    "@types/sockjs-client": "^1.5.4",
+    "@types/stompjs": "^2.3.9",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",
@@ -61,6 +67,8 @@
     "postcss-preset-mantine": "^1.11.1",
     "postcss-simple-vars": "^7.0.1",
     "react-google-recaptcha": "^3.1.0",
+    "sockjs-client": "^1.5.2",
+    "stompjs": "^2.3.3",
     "tailwindcss": "^3.3.6",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"

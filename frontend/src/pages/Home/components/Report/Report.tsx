@@ -7,6 +7,7 @@ import {
 import { TextEditor } from '@/components/TextEditor';
 import { useForm } from '@/hooks/useForm';
 import { PanelDetail, Position } from '@/types/ads';
+import { ReportStatus } from '@/types/enum';
 import { classNames } from '@/utils/classNames';
 import { getMachineId } from '@/utils/device';
 import { getFullAddress } from '@/utils/location';
@@ -66,7 +67,7 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
         email: '',
         phoneNumber: '',
         content: '',
-        state: '',
+        state: ReportStatus.IN_PROGRESS,
         deviceId: getMachineId(),
         image1: '',
         image2: '',
@@ -97,9 +98,6 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
         phoneNumber: {
           required: true,
         },
-        state: {
-          required: true,
-        },
         token: {
           required: true,
         },
@@ -121,6 +119,8 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
       });
     },
   });
+
+  console.log(error);
 
   const handleSubmit = async () => {
     setShow(false);
@@ -276,7 +276,7 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
             <TextEditor
               value={fields.content}
               onChange={(content) => onChangeField('content', content)}
-              images={[fields.image1, fields.image2]}
+              images={[fields.image1, fields.image2].filter((img) => !!img)}
               onChangeImage={(images) => {
                 onChangeField('image1', images[0] || '');
                 onChangeField('image2', images[1] || '');
@@ -302,7 +302,10 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
                 { hidden: !show },
               )}
               sitekey="6LdOsUkpAAAAAPWlSX-ZTkxDEI-09J6nhhBMdeAd"
-              onChange={(e) => e && setTimeout(() => setShow(false), 1000)}
+              onChange={(e) => {
+                onChangeField('token', e || '');
+                e && setTimeout(() => setShow(false), 1000);
+              }}
             />
 
             <Button w="100%" onClick={handleSubmit} size="lg">
