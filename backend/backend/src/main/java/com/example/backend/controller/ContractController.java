@@ -21,10 +21,12 @@ import java.util.stream.Collectors;
 
 @Controller
 @RestController
+@CrossOrigin
 @RequestMapping("api/v1/contract")
 public class ContractController {
     private final ContractService contractService;
     private static final Logger logger = Logger.getLogger(ContractController.class);
+
     @Autowired
     public ContractController(ContractService contractService) {
         this.contractService = contractService;
@@ -48,16 +50,17 @@ public class ContractController {
     }
 
     @PostMapping("")
-    public ResponseEntity<String> createContract(@Valid @RequestBody ContractRequest contractRequest, Principal principal) {
+    public ResponseEntity<String> createContract(@Valid @RequestBody ContractRequest contractRequest,
+            Principal principal) {
         logger.info("Request received for createContract");
-        contractService.createContract(contractRequest,principal.getName());
+        contractService.createContract(contractRequest, principal);
         String log = String.format("Contract added successfully:%s", contractRequest);
         logger.debug(log);
         return new ResponseEntity<>("Create contract success", HttpStatus.OK);
     }
 
     @PostMapping("{id}")
-    public ResponseEntity<String> approveContract(@PathVariable (value = "id") String id) {
+    public ResponseEntity<String> approveContract(@PathVariable(value = "id") String id) {
         int contractId;
         logger.info("Request received for approveContract");
         try {
@@ -82,8 +85,8 @@ public class ContractController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteContract(@PathVariable (value = "id") String id,
-                                                 Principal principal) {
+    public ResponseEntity<String> deleteContract(@PathVariable(value = "id") String id,
+            Principal principal) {
 
         int contractId;
         logger.info("Request received for deleteContract");
@@ -101,7 +104,7 @@ public class ContractController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> rejectContract(@PathVariable (value = "id") String id) {
+    public ResponseEntity<String> rejectContract(@PathVariable(value = "id") String id) {
         int contractId;
         logger.info("Request received for rejectContract");
         try {

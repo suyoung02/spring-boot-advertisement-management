@@ -1,6 +1,6 @@
 import useGetPosition from '@/hooks/useGetPosition';
 import { ModalName, useControlStore } from '@/stores/control';
-import { AdsPanel, Position } from '@/types/ads';
+import { Position, type PanelDetail as PanelDetailType } from '@/types/ads';
 import { ActionIcon, Button } from '@mantine/core';
 import { GoogleMap, InfoWindow, MarkerF } from '@react-google-maps/api';
 import { IconCurrentLocation } from '@tabler/icons-react';
@@ -38,7 +38,7 @@ const HomePage = () => {
   const [place, setPlace] = useState<google.maps.places.PlaceResult | null>(
     null,
   );
-  const [panel, setPanel] = useState<AdsPanel | null>(null);
+  const [panel, setPanel] = useState<PanelDetailType | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [infoWindowData, setInfoWindowData] = useState<any>();
 
@@ -86,7 +86,7 @@ const HomePage = () => {
     setModal(ModalName.POSITION_DETAIL);
   };
 
-  const handleViewPanel = (panel: AdsPanel) => {
+  const handleViewPanel = (panel: PanelDetailType) => {
     setPanel(panel);
     setModal(ModalName.PANEL_DETAIL);
   };
@@ -214,7 +214,11 @@ const HomePage = () => {
           opened={modal === ModalName.POSITION_DETAIL}
           onClose={onCloseModal}
           onViewPanel={handleViewPanel}
-          onReport={handleReport}
+          onReport={({ position, panel }) => {
+            handleReport();
+            setPanel(panel);
+            setPosition(position);
+          }}
           id={position.adsPosition.id}
         />
       )}
@@ -222,8 +226,12 @@ const HomePage = () => {
         <PanelDetail
           opened={modal === ModalName.PANEL_DETAIL}
           onClose={onCloseModal}
-          onReport={handleReport}
-          id={panel.id}
+          onReport={() => {
+            handleReport();
+            setPosition(null);
+            setPanel(panel);
+          }}
+          id={panel.adsPanel.id}
         />
       )}
       {place && (
@@ -241,7 +249,7 @@ const HomePage = () => {
           opened={modal === ModalName.REPORT}
           onClose={onCloseModal}
           positionId={position?.adsPosition.id}
-          panelId={panel?.id}
+          panelId={panel?.adsPanel.id}
         />
       )}
     </div>

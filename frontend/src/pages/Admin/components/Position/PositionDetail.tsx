@@ -1,16 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { getDetailAdsPosition } from '@/apis/position';
-import { ModalName, useControlStore } from '@/stores/control';
-import { useUserStore } from '@/stores/user';
-import type { PanelDetail, Position } from '@/types/ads';
+import { AddPanel } from '@/pages/Home/components/AddAds';
 import { classNames } from '@/utils/classNames';
 import { getFullAddress } from '@/utils/location';
 import { Button, Drawer, LoadingOverlay } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import {
   IconAlertCircle,
-  IconAlertOctagonFilled,
   IconCircleCheckFilled,
-  IconInfoCircleFilled,
   IconPencil,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
@@ -19,29 +16,19 @@ import dayjs from 'dayjs';
 type Props = {
   opened: boolean;
   onClose: () => void;
-  onViewPanel?: (panel: PanelDetail) => void;
-  onReport?: (data: {
-    position: Nullable<Position>;
-    panel: Nullable<PanelDetail>;
-  }) => void;
+  onEdit: () => void;
+  onReport?: () => void;
   id: number;
   place?: google.maps.places.PlaceResult;
 };
 
-const PositionDetail = ({
-  id,
-  onClose,
-  onViewPanel,
-  onReport,
-  opened,
-}: Props) => {
+const PositionDetail = ({ id, onClose, onEdit, opened }: Props) => {
   const { data: position, isLoading } = useQuery({
     queryKey: ['getDetailAdsPosition', id],
     queryFn: () => getDetailAdsPosition(id),
   });
 
-  const user = useUserStore.use.user();
-  const setModal = useControlStore.use.setModal();
+  const [_open, { open, close }] = useDisclosure();
 
   return (
     <Drawer
@@ -107,18 +94,8 @@ const PositionDetail = ({
                 />
               )}
               <div className="flex items-center mt-4 justify-between">
-                <Button
-                  onClick={() => setModal(ModalName.ADD_POSITION)}
-                  leftSection={<IconPencil />}
-                >
+                <Button onClick={onEdit} leftSection={<IconPencil />}>
                   Chỉnh sửa
-                </Button>
-                <Button
-                  onClick={() => onReport?.({ position, panel: null })}
-                  color="red"
-                  leftSection={<IconAlertOctagonFilled />}
-                >
-                  Báo cáo vi phạm
                 </Button>
               </div>
             </div>
@@ -131,33 +108,26 @@ const PositionDetail = ({
                 <div className="font-medium">Chưa có dữ liệu</div>
                 <div className="text-sm">Vui lòng chọn địa điểm khác</div>
               </div>
-              <Button
-                onClick={() => setModal(ModalName.ADD_PANEL)}
-                className="ml-auto"
-                color="green"
-              >
+              <Button onClick={open} className="ml-auto" color="green">
                 Tạo bảng quảng cáo
               </Button>
             </div>
           )}
-          {position.panelDetails.map((panel, index) => (
+          {position.panelDetails.map(({ adsPanel: panel, contract }, index) => (
             <div key={index} className="p-4 rounded-xl border flex gap-2">
               <div className="w-6">
                 <IconAlertCircle size={24} />
               </div>
               <div className="flex flex-col">
                 <div className="font-bold">
-                  Thông tin quảng cáo - {panel.adsType.title}
+                  Thông tin quảng cáo - {panel.ads_type}
                 </div>
-                {user?.role && (
-                  <div className="font-medium mb-2">{panel.contract.state}</div>
-                )}
+                <div className="font-medium mb-2">{contract.state}</div>
                 <div className="font-medium mb-2">
                   {getFullAddress(position.adsPosition)}
                 </div>
                 <div className="text-base">
-                  Kích thước:{' '}
-                  <span className="font-medium">{panel.adsPanel.size}</span>
+                  Kích thước: <span className="font-medium">{panel.size}</span>
                 </div>
                 <div className="text-base">
                   Hình thức:{' '}
@@ -172,7 +142,7 @@ const PositionDetail = ({
                 <div className="text-base">
                   Ngày bắt đầu:{' '}
                   <span className="font-medium">
-                    {dayjs(panel.contract.contract_begin).format(
+                    {dayjs(contract.contract_begin).format(
                       'DD/MM/YYYY - HH:mm',
                     )}
                   </span>
@@ -180,31 +150,24 @@ const PositionDetail = ({
                 <div className="text-base">
                   Ngày hết hạn:{' '}
                   <span className="font-medium">
-                    {dayjs(panel.contract.contract_expiration).format(
+                    {dayjs(contract.contract_expiration).format(
                       'DD/MM/YYYY - HH:mm',
                     )}
                   </span>
-                </div>
-                <div className="flex justify-between items-center mt-4">
-                  <Button
-                    leftSection={<IconInfoCircleFilled />}
-                    onClick={() => onViewPanel?.(panel)}
-                  >
-                    Thông tin
-                  </Button>
-                  <Button
-                    onClick={() => onReport?.({ position: null, panel })}
-                    color="red"
-                    leftSection={<IconAlertOctagonFilled />}
-                  >
-                    Báo cáo vi phạm
-                  </Button>
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <AddPanel
+        opened={_open}
+        onClose={() => {
+          close();
+        }}
+        positionId={position?.adsPosition.id}
+      />
     </Drawer>
   );
 };

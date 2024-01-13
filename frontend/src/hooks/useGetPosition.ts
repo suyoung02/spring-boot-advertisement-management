@@ -1,10 +1,10 @@
-import { getAllPresentingPanel } from '@/apis/position';
+import { getAllAdsPosition } from '@/apis/position';
 import { useQuery } from '@tanstack/react-query';
 
 const useGetPosition = () => {
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['getAllPresentingPanel'],
-    queryFn: () => getAllPresentingPanel(),
+    queryKey: ['getAllAdsPosition'],
+    queryFn: () => getAllAdsPosition(),
   });
 
   return { data, isLoading, refetch };

@@ -1,7 +1,15 @@
-import { CreateReportRequest, createReport } from '@/apis/report';
+import { getDetailAdsPanel, getDetailAdsPosition } from '@/apis/position';
+import {
+  CreateReportRequest,
+  createReport,
+  getAllReportType,
+} from '@/apis/report';
+import { TextEditor } from '@/components/TextEditor';
 import { useForm } from '@/hooks/useForm';
+import { PanelDetail, Position } from '@/types/ads';
 import { classNames } from '@/utils/classNames';
 import { getMachineId } from '@/utils/device';
+import { getFullAddress } from '@/utils/location';
 import {
   Button,
   Drawer,
@@ -16,10 +24,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
-import TextEditor from '../Ads/TextEditor';
-import { getDetailAdsPanel, getDetailAdsPosition } from '@/apis/position';
-import { Panel, Position } from '@/types/ads';
-import { getFullAddress } from '@/utils/location';
 
 type Props = {
   opened: boolean;
@@ -33,6 +37,13 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [show, setShow] = useState(false);
 
+  console.log(positionId, panelId);
+
+  const { data: reportTypes } = useQuery({
+    queryKey: ['getAllReportType'],
+    queryFn: () => getAllReportType(),
+  });
+
   const { data, isLoading } = useQuery({
     queryKey: [
       type === 'position' ? 'getDetailAdsPosition' : 'getDetailAdsPanel',
@@ -42,7 +53,7 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
       const fn = type === 'position' ? getDetailAdsPosition : getDetailAdsPanel;
       const id = panelId || positionId;
       const res = await fn(id as number);
-      return res as Position & Panel;
+      return res as Position & PanelDetail;
     },
     enabled: !!positionId || !!panelId,
   });
@@ -152,6 +163,44 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
             <div className="font-bold">
               Thông tin {type ? 'Điểm quảng cáo' : 'Bảng quảng cáo'}
             </div>
+            {data?.contract && (
+              <div className="shadow px-4 py-2 rounded-xl flex flex-col gap-0.5 mb-2 text-black">
+                <div className="text-base">
+                  Thông tin công ty:{' '}
+                  <span className="font-medium">
+                    {data.contract.enterprise_info}
+                  </span>
+                </div>
+                <div className="text-base">
+                  Email công ty:{' '}
+                  <span className="font-medium">
+                    {data.contract.enterprise_email}
+                  </span>
+                </div>
+                <div className="text-base">
+                  Số điện thoại:{' '}
+                  <span className="font-medium">
+                    {data.contract.enterprise_phone_number}
+                  </span>
+                </div>
+                <div className="text-base">
+                  Ngày bắt đầu:{' '}
+                  <span className="font-medium">
+                    {dayjs(data.contract.contract_begin).format(
+                      'DD/MM/YYYY - HH:mm',
+                    )}
+                  </span>
+                </div>
+                <div className="text-base">
+                  Ngày hết hạn:{' '}
+                  <span className="font-medium">
+                    {dayjs(data.contract.contract_expiration).format(
+                      'DD/MM/YYYY - HH:mm',
+                    )}
+                  </span>
+                </div>
+              </div>
+            )}
             <div className="font-medium mb-2">
               {data?.adsPosition.name || data?.adsType.title}
             </div>
@@ -161,36 +210,30 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
             <div className="text-base">
               Hình thức:{' '}
               <span className="font-medium">
-                {data?.adsForm.title || data?.adsPosition.ads_form}
+                {data?.adsForm?.title || data?.adsPosition.ads_form}
               </span>
             </div>
             <div className="text-base">
               Phân loại:{' '}
               <span className="font-medium">
-                {data?.locationType.title || data?.adsPosition.location_type}
+                {data?.locationType?.title || data?.adsPosition.location_type}
               </span>
             </div>
             {data?.adsPanel && (
-              <>
-                <div className="text-base">
-                  Kích thước:{' '}
-                  <span className="font-medium">{data.adsPanel.size}</span>
-                </div>
-                <div className="text-base">
-                  Ngày hết hạn:{' '}
-                  <span className="font-medium">
-                    {dayjs(data.adsPanel.contract_expiration).format(
-                      'DD/MM/YYYY - HH:mm',
-                    )}
-                  </span>
-                </div>
-              </>
+              <div className="text-base">
+                Kích thước:{' '}
+                <span className="font-medium">{data.adsPanel.size}</span>
+              </div>
             )}
           </div>
         </div>
         <div className="flex flex-col mt-2 gap-2">
           <Select
             withAsterisk
+            data={reportTypes?.map((type) => ({
+              value: type.title,
+              label: type.title,
+            }))}
             label="Hình thức báo cáo"
             placeholder="Hình thức báo cáo"
             value={fields.reportForm}

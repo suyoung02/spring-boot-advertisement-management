@@ -25,10 +25,6 @@ public class ContractRequest {
     @NotNull
     private Date contract_expiration;
 
-    @NotNull
-    private Integer ads_panel;
-
-    @NotNull
     private String state;
 
     private Integer staff;
@@ -37,7 +33,11 @@ public class ContractRequest {
 
     private String size;
 
+    private Integer ads_panel;
+
     private Integer ads_position;
 
     private String ads_img;
+
+    private String content;
 }

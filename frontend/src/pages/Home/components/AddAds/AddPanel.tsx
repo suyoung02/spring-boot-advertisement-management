@@ -1,13 +1,15 @@
 import { getAllAdsType } from '@/apis/ads';
+import { AddContractRequest, addContract } from '@/apis/contract';
 import {
-  AddPanelRequest,
   UpdateAdsPanelRequest,
-  addAdsPanel,
   getAllAdsPosition,
   updateAdsPanel,
 } from '@/apis/position';
+import { TextEditor } from '@/components/TextEditor';
 import { useForm } from '@/hooks/useForm';
-import { AdsPanel } from '@/types/ads';
+import { useUserStore } from '@/stores/user';
+import { PanelDetail } from '@/types/ads';
+import { Role } from '@/types/enum';
 import { getFullAddress } from '@/utils/location';
 import {
   Button,
@@ -17,27 +19,34 @@ import {
   InputBase,
   NumberInput,
   Select,
+  TextInput,
   useCombobox,
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 import { IconMapPinFilled, IconX } from '@tabler/icons-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 type Props = {
-  panel?: AdsPanel;
+  panel?: PanelDetail;
   opened: boolean;
   onClose: () => void;
   positionId?: number;
 };
 
-type AddPanelForm = {
+export type AddForm = {
+  enterprise_info: string;
+  enterprise_email: string;
+  enterprise_phone_number: string;
+  contract_begin: Date;
+  contract_expiration: Date;
   ads_type: string;
   width: number;
   height: number;
-  contract_expiration: Date;
-  ads_position: number | undefined;
+  ads_position?: number;
+  ads_img: string;
+  content: string;
 };
 
 const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
@@ -45,24 +54,40 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  console.log({ panel });
+  const queryClient = useQueryClient();
+  const user = useUserStore.use.user();
 
-  const size = panel?.size.split(' ');
+  const size = panel?.adsPanel.size.split(' ');
 
-  const { fields, onChangeField, onError, error } = useForm<AddPanelForm>({
+  const { fields, onChangeField, onError, error } = useForm<AddForm>({
     defaultState: {
-      ads_type: panel?.ads_type || '',
+      ads_type: panel?.adsPanel.ads_type || '',
       width: size?.[0] ? +size[0] : 1,
       height: size?.[2] ? +size[2] : 1,
-      contract_expiration: new Date(),
-      ads_position: panel?.ads_position || positionId,
+      contract_expiration: panel?.contract.contract_expiration || new Date(),
+      ads_position: panel?.adsPosition.id || positionId,
+      enterprise_info: panel?.contract.enterprise_info || '',
+      enterprise_email: panel?.contract.enterprise_email || '',
+      enterprise_phone_number: panel?.contract.enterprise_phone_number || '',
+      contract_begin: panel?.contract.contract_begin || new Date(),
+      ads_img: panel?.adsImages.ads_image || '',
+      content: panel?.adsPanel.content || '',
     },
     config: {
       ads_type: { required: true },
       width: { required: true },
       height: { required: true },
       contract_expiration: { required: true },
+      contract_begin: { required: true },
       ads_position: { required: true },
+      enterprise_phone_number: { required: true },
+      enterprise_info: { required: true },
+      enterprise_email: {
+        required: true,
+        pattern: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+      },
+      ads_img: { required: true },
+      content: { required: true },
     },
   });
 
@@ -77,7 +102,7 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
   });
 
   const { mutate: addPanel, isPending: loading1 } = useMutation({
-    mutationFn: (data: AddPanelRequest) => addAdsPanel(data),
+    mutationFn: (data: AddContractRequest) => addContract(data),
     onSuccess: () => {
       notifications.show({
         message: 'Tạo thành công',
@@ -94,7 +119,10 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
 
   const { mutate: updatePanel, isPending: loading2 } = useMutation({
     mutationFn: (data: UpdateAdsPanelRequest) => updateAdsPanel(data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      queryClient.refetchQueries({
+        queryKey: ['getDetailAdsPanel', variables.id],
+      });
       notifications.show({
         message: 'Tạo thành công',
       });
@@ -114,10 +142,11 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
 
   const onSubmit = () => {
     const err = onError();
+    console.log({ err });
     if (err) return;
     panel
       ? updatePanel({
-          id: panel.id,
+          id: panel.adsPanel.id,
           ...fields,
           size: `${fields.width} x ${fields.height}`,
           ads_position: fields.ads_position as number,
@@ -138,6 +167,33 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
       size="lg"
     >
       <form className="flex flex-col gap-2">
+        <TextInput
+          withAsterisk
+          label="Tên công ty"
+          placeholder="Tên công ty"
+          value={fields.enterprise_info}
+          error={error.enterprise_info}
+          onChange={(e) => onChangeField('enterprise_info', e.target.value)}
+        />
+        <TextInput
+          withAsterisk
+          label="Email công ty"
+          placeholder="Email công ty"
+          value={fields.enterprise_email}
+          error={error.enterprise_email}
+          onChange={(e) => onChangeField('enterprise_email', e.target.value)}
+        />
+        <TextInput
+          withAsterisk
+          label="Số điện thoại"
+          placeholder="Số điện thoại"
+          value={fields.enterprise_phone_number}
+          error={error.enterprise_phone_number}
+          onChange={(e) =>
+            onChangeField('enterprise_phone_number', e.target.value)
+          }
+        />
+
         <Select
           withAsterisk
           label="Loại quảng cáo"
@@ -197,6 +253,11 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
                         {item.adsForm.title}, {item.locationType.title},{' '}
                         {item.planningStatus.title}
                       </div>
+                      <div className="font-medium text-xs">
+                        {item.adsPosition.is_actived === 'TRUE'
+                          ? 'Đang hoạt động'
+                          : 'Chưa hoạt động'}
+                      </div>
                     </div>
                   </Combobox.Option>
                 ))
@@ -238,19 +299,46 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
         </div>
 
         <DateTimePicker
+          label="Ngày bắt đầu"
+          placeholder="Ngày bắt đầu"
+          value={new Date(fields.contract_begin)}
+          error={error.contract_begin}
+          onChange={(e) => onChangeField('contract_begin', e as Date)}
+        />
+
+        <DateTimePicker
           label="Ngày hết hạn"
           placeholder="Ngày hết hạn"
-          value={fields.contract_expiration}
+          value={new Date(fields.contract_expiration)}
           error={error.contract_expiration}
           onChange={(e) => onChangeField('contract_expiration', e as Date)}
         />
 
-        <Button
-          loading={loading1 || loading2}
-          onClick={onSubmit}
-          className="mt-3"
-        >
-          {panel ? 'Cập nhật' : 'Tạo bảng quảng cáo'}
+        <div>
+          <Input.Label required>Nội dụng</Input.Label>
+          {error.content && (
+            <div className="mb-2">
+              <Input.Error>{error.content}</Input.Error>
+            </div>
+          )}
+          <TextEditor
+            value={fields.content}
+            onChange={(content) => onChangeField('content', content)}
+            limitImages={1}
+            images={fields.ads_img ? [fields.ads_img] : []}
+            onChangeImage={(images) => {
+              console.log(images);
+              onChangeField('ads_img', images[0] || images[1] || '');
+            }}
+          />
+        </div>
+
+        <Button loading={loading1 || loading2} onClick={onSubmit}>
+          {panel
+            ? 'Cập nhật'
+            : user?.role === Role.VHTT
+            ? `Tạo bảng quảng cáo`
+            : 'Tạo yêu cầu đặt quảng cáo'}
         </Button>
       </form>
     </Drawer>

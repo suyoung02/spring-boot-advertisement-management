@@ -3,6 +3,7 @@ import { RequestUpdatePanel } from '@/components/RequestUpdate';
 
 import { ModalName, useControlStore } from '@/stores/control';
 import { useUserStore } from '@/stores/user';
+import { type PanelDetail } from '@/types/ads';
 import { Role } from '@/types/enum';
 import { classNames } from '@/utils/classNames';
 import { getFullAddress } from '@/utils/location';
@@ -11,7 +12,6 @@ import { useDisclosure } from '@mantine/hooks';
 import {
   IconAdCircleFilled,
   IconAlertCircle,
-  IconAlertOctagonFilled,
   IconPencil,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
@@ -24,7 +24,7 @@ type Props = {
   id: number;
 };
 
-const PanelDetail = ({ id, opened, onClose, onReport }: Props) => {
+const PanelDetail = ({ id, opened, onClose }: Props) => {
   const { data: panel, isLoading } = useQuery({
     queryKey: ['getDetailAdsPanel', id],
     queryFn: () => getDetailAdsPanel(id),
@@ -85,7 +85,7 @@ const PanelDetail = ({ id, opened, onClose, onReport }: Props) => {
               <div className="font-medium text-lg">
                 Loại quảng cáo: {panel.adsType.title}
               </div>
-              <div className="font-medium mb-2">
+              <div className="font-medium text-sm mb-1">
                 {getFullAddress(panel.adsPosition)}
               </div>
               <div className="shadow px-4 py-2 rounded-xl flex flex-col gap-0.5 mb-2 text-black">
@@ -141,7 +141,7 @@ const PanelDetail = ({ id, opened, onClose, onReport }: Props) => {
                 </span>
               </div>
               <div>
-                <div>Nội dung</div>
+                <div>Nội dung:</div>
                 <div
                   dangerouslySetInnerHTML={{ __html: panel.adsPanel.content }}
                 ></div>
@@ -156,13 +156,6 @@ const PanelDetail = ({ id, opened, onClose, onReport }: Props) => {
               <div className="flex items-center mt-4 justify-between">
                 <Button onClick={handleEdit} leftSection={<IconPencil />}>
                   Chỉnh sửa
-                </Button>
-                <Button
-                  onClick={onReport}
-                  color="red"
-                  leftSection={<IconAlertOctagonFilled />}
-                >
-                  Báo cáo vi phạm
                 </Button>
               </div>
             </div>

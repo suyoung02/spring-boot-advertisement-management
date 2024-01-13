@@ -8,13 +8,14 @@ import {
 import { useForm } from '@/hooks/useForm';
 import usePositionOptions from '@/hooks/usePositionOptions';
 import { Position } from '@/types/ads';
-import { IS_ACTIVE } from '@/types/enum';
+import { IS_ACTIVE, Role } from '@/types/enum';
 import { CURRENT_LOCATION, getAddress } from '@/utils/location';
 import { Button, Drawer, Select, TextInput } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PlaceSelect, { Place } from './PlaceSelect';
+import { useUserStore } from '@/stores/user';
 
 type Props = {
   position?: Position;
@@ -47,6 +48,7 @@ const AddPosition = ({
   mapRef,
 }: Props) => {
   const queryClient = useQueryClient();
+  const user = useUserStore.use.user();
 
   const [places, setPlaces] = useState<Place[]>([]);
   const { data } = useQuery({
@@ -62,8 +64,14 @@ const AddPosition = ({
       defaultState: {
         province:
           position?.adsPosition.province || placeAddress.province || CITY,
-        ward: position?.adsPosition.ward || placeAddress.ward || '',
-        district: position?.adsPosition.district || placeAddress.district || '',
+        ward:
+          user?.role !== Role.VHTT
+            ? user?.ward || ''
+            : position?.adsPosition.ward || placeAddress.ward || '',
+        district:
+          user?.role !== Role.VHTT
+            ? user?.district || ''
+            : position?.adsPosition.district || placeAddress.district || '',
         location_type: position?.locationType.title || '',
         planning_status: position?.planningStatus.title || '',
         ads_form: position?.adsForm.title || '',
@@ -223,7 +231,7 @@ const AddPosition = ({
       place_id: fields.place_id,
       latitude: activePlace?.lat as number,
       longitude: activePlace?.lng as number,
-      is_active: IS_ACTIVE.TRUE,
+      is_active: user?.role === Role.VHTT ? IS_ACTIVE.TRUE : IS_ACTIVE.FALSE,
     };
 
     position
@@ -251,6 +259,7 @@ const AddPosition = ({
           withAsterisk
         />
         <Select
+          disabled={user?.role !== Role.VHTT}
           label="Quận"
           data={districts}
           allowDeselect={false}
@@ -265,7 +274,11 @@ const AddPosition = ({
         />
         <Select
           data={wards}
-          disabled={!fields.district}
+          disabled={
+            !fields.district ||
+            user?.role === Role.WARD ||
+            (user?.role === Role.DISTRICT && !!user.ward)
+          }
           label="Phường"
           allowDeselect={false}
           placeholder="Chọn phường"
@@ -319,7 +332,11 @@ const AddPosition = ({
           error={error.ads_form}
         />
         <Button onClick={onSubmit} className="mt-3">
-          {position ? 'Cập nhật' : 'Tạo vị trí'}
+          {position
+            ? 'Cập nhật'
+            : user?.role === Role.VHTT
+            ? 'Tạo vị trí'
+            : 'Tạo yêu cầu vị trí'}
         </Button>
       </form>
     </Drawer>

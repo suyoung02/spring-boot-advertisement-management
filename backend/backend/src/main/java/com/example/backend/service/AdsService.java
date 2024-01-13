@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import java.security.Principal;
 import java.util.List;
 
 import com.example.backend.dto.AddPanelRequest;
@@ -29,7 +30,7 @@ public interface AdsService {
 
     AdsPanel updatePanel(Integer Id, AddPanelRequest newPosition);
 
-    List<AdsPanelResponse> getDetailPanel(Integer id);
+    List<AdsPanelWithImagesDTO> getDetailPanel(Integer id);
 
     List<AdsPanelResponse> getAllPanels();
 
@@ -68,5 +69,6 @@ public interface AdsService {
     Boolean updatePlanningStatus(String title, PlanningStatus planningStatus);
 
     List<AdsPanelWithImagesDTO> getAllPresentingPanel();
-     List<AdsPanelWithImagesDTO> getAllPanelWithPosition();
+
+    List<AdsPanelWithImagesDTO> getAllPanelWithPosition(Principal principal);
 }

@@ -3,17 +3,24 @@ package com.example.backend.service.impl;
 import com.example.backend.dto.*;
 import com.example.backend.entity.*;
 import com.example.backend.enums.IsActived;
+import com.example.backend.enums.Role;
+import com.example.backend.exception.InvalidAccountException;
 import com.example.backend.repository.AdsFormRepository;
 import com.example.backend.repository.AdsPanelRepository;
 import com.example.backend.repository.AdsPositionRepository;
 import com.example.backend.repository.AdsTypeRepository;
 import com.example.backend.repository.LocationTypeRepository;
 import com.example.backend.repository.PlanningStatusRepository;
+import com.example.backend.repository.StaffRepository;
 import com.example.backend.service.AdsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,12 +41,27 @@ public class AdsServiceServiceImpl implements AdsService {
 
     private final PlanningStatusRepository planningStatusRepository;
 
+    private final StaffRepository staffRepository;
+
     public List<AdsPositionResponse> getAllPosition() {
         List<Object[]> list = adsPositionRepository.getPositionWithState();
         System.out.println(list.size());
+
         return list.stream()
                 .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1],
-                        (AdsForm) objects[2], (PlanningStatus) objects[3]))
+                        (AdsForm) objects[2], (PlanningStatus) objects[3],
+                        adsPanelRepository.getPositionDetailWithPanel(((AdsPosition) objects[0]).getId()),
+                        getPanelOfPosition(((AdsPosition) objects[0]).getId())))
+                .collect(Collectors.toList());
+
+    }
+
+    private List<AdsPanelResponse> getPanelOfPosition(Integer id) {
+        List<Object[]> panels = adsPanelRepository.getDetailWithPanel(id);
+        System.out.println(panels);
+        return panels.stream()
+                .map(objects -> new AdsPanelResponse((AdsPanel) objects[0], (AdsType) objects[2],
+                        (Contract) objects[1]))
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +72,7 @@ public class AdsServiceServiceImpl implements AdsService {
             System.out.println(panels);
             return list.stream()
                     .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1],
-                            (AdsForm) objects[2], (PlanningStatus) objects[3], panels))
+                            (AdsForm) objects[2], (PlanningStatus) objects[3], panels, getPanelOfPosition(id)))
                     .collect(Collectors.toList());
         }
         return null;
@@ -69,7 +91,7 @@ public class AdsServiceServiceImpl implements AdsService {
         ads.setPhoto(newPosition.getPhoto());
         ads.setLatitude(newPosition.getLatitude());
         ads.setLongitude(newPosition.getLongitude());
-        ads.setIs_actived(IsActived.TRUE);
+        ads.setIs_actived(newPosition.getIs_active());
         ads.setPlace_id(newPosition.getPlace_id());
         return adsPositionRepository.save(ads);
     }
@@ -118,7 +140,6 @@ public class AdsServiceServiceImpl implements AdsService {
             ads.setAds_position(newPosition.getAds_position());
             ads.setAds_type(newPosition.getAds_type());
             ads.setSize(newPosition.getSize());
-            ads.setContract_expiration(newPosition.getContract_expiration());
             adsPanelRepository.save(ads);
             return ads;
         } else {
@@ -126,12 +147,12 @@ public class AdsServiceServiceImpl implements AdsService {
         }
     }
 
-    public List<AdsPanelResponse> getDetailPanel(Integer id) {
+    public List<AdsPanelWithImagesDTO> getDetailPanel(Integer id) {
         if (adsPanelRepository.existsById(id)) {
             List<Object[]> resultList = adsPanelRepository.getDetailPanelWithType(id);
             return resultList.stream()
-                    .map(objects -> new AdsPanelResponse((AdsPanel) objects[0], (AdsType) objects[1],
-                            (AdsPosition) objects[2], (Contract) objects[3]))
+                    .map(objects -> new AdsPanelWithImagesDTO((AdsPosition) objects[0], (AdsPanel) objects[1],
+                            (AdsImages) objects[2], (Contract) objects[3], (AdsType) objects[4]))
                     .collect(Collectors.toList());
         }
         return null;
@@ -150,7 +171,6 @@ public class AdsServiceServiceImpl implements AdsService {
         AdsPanel ads = new AdsPanel();
         ads.setAds_type(newPanel.getAds_type());
         ads.setSize(newPanel.getSize());
-        ads.setContract_expiration(newPanel.getContract_expiration());
         ads.setAds_position(newPanel.getAds_position());
         adsPanelRepository.save(ads);
         return true;
@@ -314,18 +334,26 @@ public class AdsServiceServiceImpl implements AdsService {
 
     public List<AdsPanelWithImagesDTO> getAllPresentingPanel() {
         List<Object[]> resultList = adsPanelRepository.getPanelWithContractAndImg();
-        System.out.println(resultList.size());
         return resultList.stream()
                 .map(objects -> new AdsPanelWithImagesDTO((AdsPosition) objects[0], (AdsPanel) objects[1],
-                        (AdsImages) objects[2], (Contract) objects[3]))
+                        (AdsImages) objects[2], (Contract) objects[3], (AdsType) objects[4]))
                 .collect(Collectors.toList());
     }
 
-    public List<AdsPanelWithImagesDTO> getAllPanelWithPosition() {
-        List<Object[]> resultList = adsPanelRepository.getPositionWithPanelWithLoggined();
+    public List<AdsPanelWithImagesDTO> getAllPanelWithPosition(Principal principal) {
+        var user = (User) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
+
+        if (user.getRole() == Role.VHTT) {
+            return this.getAllPresentingPanel();
+        }
+
+        Staff staff = staffRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
+        List<Object[]> resultList = adsPanelRepository.getPositionWithPanelWithLoggined(staff.getId());
 
         return resultList.stream()
-                .map(objects -> new AdsPanelWithImagesDTO((AdsPosition) objects[0], (AdsPanel) objects[1], (AdsImages) objects[2], (Contract) objects[3]))
+                .map(objects -> new AdsPanelWithImagesDTO((AdsPosition) objects[0], (AdsPanel) objects[1],
+                        (AdsImages) objects[2], (Contract) objects[3], (AdsType) objects[4]))
                 .collect(Collectors.toList());
     }
 }

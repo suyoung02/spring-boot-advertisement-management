@@ -1,7 +1,7 @@
+import { Panel, PanelDetail, Position } from '@/types/ads';
+import { IS_ACTIVE } from '@/types/enum';
 import { API_URL } from '@/utils/env';
 import { apiDelete, apiGet, apiPost, apiPut } from './api';
-import { Panel, Position, PresentingPanel } from '@/types/ads';
-import { IS_ACTIVE } from '@/types/enum';
 
 export const getAllAdsPosition = async () => {
   try {
@@ -16,7 +16,7 @@ export const getAllAdsPosition = async () => {
 
 export const getAllPresentingPanel = async () => {
   try {
-    const res = await apiGet<null, ApiDataResponse<PresentingPanel[]>>(
+    const res = await apiGet<null, ApiDataResponse<PanelDetail[]>>(
       API_URL + '/ads/all/presenting-panel',
     );
     return res.data;
@@ -55,7 +55,7 @@ export type AddAdsPositionRequest = {
 export const addAdsPosition = async (data: AddAdsPositionRequest) => {
   try {
     const res = await apiPost<AddAdsPositionRequest, ApiDataResponse<Position>>(
-      API_URL + '/ads/vhtt/addNewPosition',
+      API_URL + '/ads/all/addNewPosition',
       data,
     );
     return res.data;
@@ -172,7 +172,7 @@ export const deleteAdsPanel = async (id: number) => {
 
 export const getDetailAdsPanel = async (id: number) => {
   try {
-    const res = await apiGet<null, ApiDataResponse<Panel>>(
+    const res = await apiGet<null, ApiDataResponse<PanelDetail>>(
       API_URL + `/ads/all/getDetailPanel/${id}`,
     );
     return res.data;
