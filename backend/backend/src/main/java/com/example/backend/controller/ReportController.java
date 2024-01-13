@@ -42,18 +42,19 @@ public class ReportController {
         System.out.println(1);
         List<ReportResponse> result = reportService.getAllReport();
         System.out.println(result);
-        String logmsg =String.format("Get all report: %s", result);
+        String logmsg = String.format("Get all report: %s", result);
         logger.info(logmsg);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/all/get-detail/{id}")
-    public ResponseEntity<ReportResponse> getDetailReport(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<ReportResponse> getDetailReport(@PathVariable(value = "id") String id) {
         logger.info("Access get detail report API");
-        List<ReportResponse> report = reportService.getDetailReport(id);
-        if (report != null) {
-            String logmsg =String.format("Get detail report: %s", report.get(0));
+        List<ReportResponse> report = reportService.getDetailReport(Integer.parseInt(id));
+        if (report != null || report.size() > 0) {
+            String logmsg = String.format("Get detail report: %s", report.get(0));
             logger.info(logmsg);
+            System.out.println(report);
             return new ResponseEntity<>(report.get(0), HttpStatus.OK);
         }
         logger.warn("Report id not found");
@@ -61,12 +62,12 @@ public class ReportController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReportResponse> updateReport(@PathVariable(value = "id") Integer id,
+    public ResponseEntity<ReportResponse> updateReport(@PathVariable(value = "id") String id,
             @Valid @RequestBody SolvingReport solution) {
         logger.info("Access update report API");
         try {
-            ReportResponse result = (reportService.updateReport(id, solution)).get(0);
-            String logmsg =String.format("Update report: %s", result);
+            ReportResponse result = (reportService.updateReport(Integer.parseInt(id), solution)).get(0);
+            String logmsg = String.format("Update report: %s", result);
             logger.info(logmsg);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -91,7 +92,7 @@ public class ReportController {
         }
 
         ReportResponse reportResponse = (reportService.addReport(report)).get(0);
-        String logmsg =String.format("Add report: %s", reportResponse);
+        String logmsg = String.format("Add report: %s", reportResponse);
         logger.info(logmsg);
         return new ResponseEntity<>(reportResponse, HttpStatus.OK);
     }
