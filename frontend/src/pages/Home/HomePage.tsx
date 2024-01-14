@@ -4,20 +4,20 @@ import { Position, type PanelDetail as PanelDetailType } from '@/types/ads';
 import { ActionIcon, Button, LoadingOverlay, Select } from '@mantine/core';
 import { GoogleMap, InfoWindow, MarkerF } from '@react-google-maps/api';
 import { IconCurrentLocation } from '@tabler/icons-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AddPanel, AddPosition } from './components/AddAds';
 import { PanelDetail, PositionDetail } from './components/Ads';
 
 import { useUserStore } from '@/stores/user';
 import { Role } from '@/types/enum';
+import { Location } from '@/types/location';
 import { ICON } from '@/utils/avatar';
+import { classNames } from '@/utils/classNames';
 import { CURRENT_LOCATION, getFullAddress } from '@/utils/location';
 import { PlaceDetail } from './components/Place';
 import { Report, ReportList } from './components/Report';
 import { SearchBox } from './components/SearchBox';
-import { Location } from '@/types/location';
-import { classNames } from '@/utils/classNames';
 
 const mapContainerStyle = {
   width: '100vw',
@@ -70,18 +70,19 @@ const HomePage = () => {
     setIsOpen(true);
   };
 
-  const handleCurrentLocation = useCallback(() => {
+  const handleCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude: lat, longitude: lng } }) => {
         const pos = { lat, lng };
-        setCurrentLocation(pos);
+        mapRef?.setCenter(pos);
+        mapRef?.setZoom(17);
       },
     );
-  }, [setCurrentLocation]);
+  };
 
   useEffect(() => {
     handleCurrentLocation();
-  }, [handleCurrentLocation]);
+  }, [mapRef]);
 
   const handleViewPosition = (position: Position) => {
     setIsOpen(false);

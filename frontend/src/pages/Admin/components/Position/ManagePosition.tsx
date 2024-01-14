@@ -319,7 +319,7 @@ const ManagePosition = () => {
       )}
       {position && (
         <RequestUpdatePosition
-          position={position?.adsPosition.id}
+          position={position.adsPosition}
           opened={request}
           onClose={() => {
             setRequest(false);

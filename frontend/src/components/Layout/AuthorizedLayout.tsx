@@ -4,6 +4,7 @@ import { useControlStore } from '@/stores/control';
 import { useUserStore } from '@/stores/user';
 import { Message } from '@/types/user';
 import { getMachineId } from '@/utils/device';
+import { GG_MAP_API_KEY } from '@/utils/env';
 import { AddReportParams } from '@/utils/message';
 import { LoadingOverlay } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -53,7 +54,7 @@ const AuthorizedLayout = ({ children }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [libraries] = useState<any>(['places']);
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyAESSzwLBdEfkk_WpjVmHQ7_1s15q_S4rg',
+    googleMapsApiKey: GG_MAP_API_KEY,
     libraries,
   });
 

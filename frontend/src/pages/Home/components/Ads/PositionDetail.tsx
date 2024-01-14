@@ -76,7 +76,7 @@ const PositionDetail = ({
             <div className="font-medium">Chưa có dữ liệu</div>
             <div className="text-sm">Vui lòng chọn địa điểm khác</div>
           </div>
-          <Button>Tạo vị trí</Button>
+          {user && <Button>Tạo vị trí</Button>}
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -119,12 +119,14 @@ const PositionDetail = ({
                 />
               )}
               <div className="flex items-center mt-4 justify-between">
-                <Button
-                  onClick={() => setModal(ModalName.ADD_POSITION)}
-                  leftSection={<IconPencil />}
-                >
-                  Chỉnh sửa
-                </Button>
+                {user && (
+                  <Button
+                    onClick={() => setModal(ModalName.ADD_POSITION)}
+                    leftSection={<IconPencil />}
+                  >
+                    Chỉnh sửa
+                  </Button>
+                )}
                 <Button
                   onClick={() =>
                     onReport?.({ position: filterData, panel: null })

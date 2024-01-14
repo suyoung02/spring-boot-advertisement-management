@@ -15,4 +15,6 @@ public interface AdsPositionRepository extends JpaRepository<AdsPosition, Intege
     @Query(value = "SELECT position,location,adsFrom,status FROM AdsPosition position JOIN LocationType location ON location.title = position.location_type JOIN AdsForm adsFrom ON adsFrom.title = position.ads_form JOIN PlanningStatus status ON status.title=position.planning_status WHERE position.id = ?1")
     public List<Object[]> getDetailPositionWithState(int id);
 
+    @Query(value = "SELECT COUNT(report) FROM AdsPosition position JOIN Report report ON position.id = report.adsPosition WHERE position.id = ?1 ")
+    public Integer countReport(int id);
 }

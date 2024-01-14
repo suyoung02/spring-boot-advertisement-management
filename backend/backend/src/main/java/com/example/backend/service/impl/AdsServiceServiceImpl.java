@@ -51,9 +51,14 @@ public class AdsServiceServiceImpl implements AdsService {
                 .map(objects -> new AdsPositionResponse((AdsPosition) objects[0], (LocationType) objects[1],
                         (AdsForm) objects[2], (PlanningStatus) objects[3],
                         adsPanelRepository.getPositionDetailWithPanel(((AdsPosition) objects[0]).getId()),
-                        getPanelOfPosition(((AdsPosition) objects[0]).getId())))
+                        getPanelOfPosition(((AdsPosition) objects[0]).getId()),
+                        haveReport(((AdsPosition) objects[0]).getId())))
                 .collect(Collectors.toList());
 
+    }
+
+    private Boolean haveReport(Integer id) {
+        return adsPositionRepository.countReport(id) > 0;
     }
 
     private List<AdsPanelResponse> getPanelOfPosition(Integer id) {

@@ -85,15 +85,11 @@ export const updateAdsPosition = async ({
   id,
   ...data
 }: UpdateAdsPositionRequest) => {
-  try {
-    const res = await apiPut<AddAdsPositionRequest, ApiDataResponse<boolean>>(
-      API_URL + `/ads/vhtt/updatePosition/${id}`,
-      data,
-    );
-    return res.data;
-  } catch {
-    return null;
-  }
+  const res = await apiPut<AddAdsPositionRequest, ApiDataResponse<boolean>>(
+    API_URL + `/ads/vhtt/updatePosition/${id}`,
+    data,
+  );
+  return res.data;
 };
 
 export const deleteAdsPosition = async (id: number) => {

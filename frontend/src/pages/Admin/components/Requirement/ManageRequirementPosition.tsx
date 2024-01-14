@@ -1,25 +1,25 @@
+import { UpdateAdsPositionRequest, updateAdsPosition } from '@/apis/position';
 import {
-  UpdateRequirementPositionRequest,
   approveRequirementPosition,
   deleteRequirementPosition,
   getAllRequirementPosition,
   rejectRequirementPosition,
-  updateRequirementPosition,
 } from '@/apis/requirement';
-import { useForm } from '@/hooks/useForm';
+import { RequestUpdatePosition } from '@/components/RequestUpdate';
 import { useControlStore } from '@/stores/control';
 import { useUserStore } from '@/stores/user';
-import { Role } from '@/types/enum';
+import { AdsPosition } from '@/types/ads';
+import { RequirementStatus, Role } from '@/types/enum';
 import { RequirementPosition } from '@/types/requirement';
 import { STATUS_TITLE } from '@/utils/avatar';
 import { sendAddReportMessage } from '@/utils/message';
-import { ActionIcon, Group, Table, Text, Textarea } from '@mantine/core';
+import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconPencil, IconTrash, IconX } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const ManageRequirementPosition = () => {
   const user = useUserStore.use.user();
@@ -32,50 +32,18 @@ const ManageRequirementPosition = () => {
 
   const [editId, setEditId] = useState(-1);
 
-  const { fields, onChangeField, reset, setFields, error, onError } =
-    useForm<UpdateRequirementPositionRequest>({
-      defaultState: {
-        ads_position: editId,
-        new_info: '',
-        reason: '',
-        time_submit: new Date(),
-        staff: user?.id as number,
-      },
-      config: {
-        new_info: {
-          required: true,
-        },
-        reason: {
-          required: true,
-        },
-      },
-    });
-
-  const { mutate: update } = useMutation({
-    mutationFn: (data: UpdateRequirementPositionRequest) =>
-      updateRequirementPosition(editId, data),
-    onSuccess: () => {
-      handleCancel();
-      refetch();
-    },
-    onError: (e) => {
-      handleCancel();
-      notifications.show({
-        color: 'red',
-        title: 'Có lỗi xảy ra',
-        message: e.message,
-      });
-    },
-  });
-
-  useEffect(() => {
-    onChangeField('ads_position', editId);
-  }, [editId]);
-
   const { mutate: approve } = useMutation({
-    mutationFn: (id: number) => approveRequirementPosition(id),
+    mutationFn: async ({
+      reportId,
+      ...data
+    }: { reportId: number } & UpdateAdsPositionRequest) => {
+      await updateAdsPosition(data);
+      return approveRequirementPosition(reportId);
+    },
     onSuccess: (_, variables) => {
-      const staff = data?.find((report) => report.id === variables)?.staff;
+      const staff = data?.find(
+        (report) => report.id === variables.reportId,
+      )?.staff;
       sendAddReportMessage(
         {
           toPerson: staff,
@@ -133,20 +101,23 @@ const ManageRequirementPosition = () => {
   });
 
   const handleEdit = async (res: RequirementPosition) => {
-    if (!data) return;
     setEditId(res.id);
-    setFields(res);
-  };
-
-  const handleUpdate = () => {
-    const err = onError();
-    if (err) return;
-    update(fields);
   };
 
   const handleCancel = () => {
-    reset();
     setEditId(-1);
+  };
+
+  const handleApprove = (id: number) => {
+    const res = data?.find((d) => d.id === id);
+    if (!res) return;
+    const position = JSON.parse(res?.new_info) as AdsPosition;
+    approve({
+      reportId: res.id,
+      ...position,
+      id: res.ads_position,
+      is_active: position.is_actived,
+    });
   };
 
   const openModalDelete = (id: number) => {
@@ -205,69 +176,29 @@ const ManageRequirementPosition = () => {
 
             {data?.map((item) => (
               <Table.Tr key={item.id}>
-                {editId !== item.id ? (
-                  <>
-                    <Table.Td className="w-[100px]">
-                      <Text fz="sm">{item.id}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fz="sm">{item.new_info}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fz="sm">{item.reason}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fz="sm">{STATUS_TITLE[item.status]}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fz="sm">
-                        {dayjs(item.time_submit).format('DD/MM/YYYY - HH:mm')}
-                      </Text>
-                    </Table.Td>
-                  </>
-                ) : (
-                  <>
-                    <Table.Td className="w-[100px]">
-                      <Text fz="sm">{item.id}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Textarea
-                        value={fields.new_info}
-                        placeholder="Ads title"
-                        error={error.new_info}
-                        onChange={(e) =>
-                          onChangeField('new_info', e.target.value)
-                        }
-                      />
-                    </Table.Td>
-                    <Table.Td>
-                      <Textarea
-                        value={fields.reason}
-                        placeholder="Ads title"
-                        error={error.reason}
-                        onChange={(e) =>
-                          onChangeField('reason', e.target.value)
-                        }
-                      />
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fz="sm">{STATUS_TITLE[item.status]}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text fz="sm">
-                        {dayjs(item.time_submit).format('DD/MM/YYYY - HH:mm')}
-                      </Text>
-                    </Table.Td>
-                  </>
-                )}
+                <Table.Td className="w-[100px] break-all">{item.id}</Table.Td>
+                <Table.Td>
+                  <div className="w-[300px]">{item.new_info}</div>
+                </Table.Td>
+                <Table.Td>
+                  <Text fz="sm">{item.reason}</Text>
+                </Table.Td>
+                <Table.Td>
+                  <Text fz="sm">{STATUS_TITLE[item.status]}</Text>
+                </Table.Td>
+                <Table.Td>
+                  <Text fz="sm">
+                    {dayjs(item.time_submit).format('DD/MM/YYYY - HH:mm')}
+                  </Text>
+                </Table.Td>
                 <Table.Td>
                   <Group gap={8} justify="flex-end" wrap="nowrap">
-                    {editId !== item.id ? (
+                    {item.status === RequirementStatus.IN_PROGRESS && (
                       <>
                         <ActionIcon
                           onClick={() =>
                             user?.role === Role.VHTT
-                              ? approve(item.id)
+                              ? handleApprove(item.id)
                               : handleEdit(item)
                           }
                           variant="subtle"
@@ -298,25 +229,6 @@ const ManageRequirementPosition = () => {
                           )}
                         </ActionIcon>
                       </>
-                    ) : (
-                      <>
-                        <ActionIcon
-                          onClick={handleUpdate}
-                          variant="subtle"
-                          color="teal"
-                          size="lg"
-                        >
-                          <IconCheck size={24} />
-                        </ActionIcon>
-                        <ActionIcon
-                          onClick={handleCancel}
-                          variant="subtle"
-                          color="red"
-                          size="lg"
-                        >
-                          <IconX size={24} />
-                        </ActionIcon>
-                      </>
                     )}
                   </Group>
                 </Table.Td>
@@ -325,6 +237,13 @@ const ManageRequirementPosition = () => {
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
+      {editId !== -1 && (
+        <RequestUpdatePosition
+          opened
+          report={data?.find((d) => d.id === editId)}
+          onClose={handleCancel}
+        />
+      )}
     </div>
   );
 };

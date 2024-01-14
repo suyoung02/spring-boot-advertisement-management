@@ -13,6 +13,7 @@ public class AdsPositionResponse {
     private PlanningStatus planningStatus;
     private List<AdsPanel> panels;
     private List<AdsPanelResponse> panelDetails;
+    private Boolean isReported;
 
     public AdsPositionResponse(AdsPosition adsPosition, LocationType locationType, AdsForm adsForm,
             PlanningStatus planningStatus) {
@@ -39,5 +40,17 @@ public class AdsPositionResponse {
         this.planningStatus = planningStatus;
         this.panels = panels;
         this.panelDetails = panelDetails;
+    }
+
+    public AdsPositionResponse(AdsPosition adsPosition, LocationType locationType, AdsForm adsForm,
+            PlanningStatus planningStatus, List<AdsPanel> panels, List<AdsPanelResponse> panelDetails,
+            Boolean isReporded) {
+        this.adsPosition = adsPosition;
+        this.locationType = locationType;
+        this.adsForm = adsForm;
+        this.planningStatus = planningStatus;
+        this.panels = panels;
+        this.panelDetails = panelDetails;
+        this.isReported = isReporded;
     }
 }

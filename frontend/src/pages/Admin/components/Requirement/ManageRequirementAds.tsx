@@ -161,7 +161,7 @@ const ManageRequirementAds = () => {
   return (
     <div className="p-8 pt-6">
       <div className="font-bold mb-3 text-xl">
-        Yêu cầu thay đổi điểm quảng cáo
+        Yêu cầu thay đổi bảng quảng cáo
       </div>
       <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
