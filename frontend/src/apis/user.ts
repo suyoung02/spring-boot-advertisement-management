@@ -1,6 +1,7 @@
 import { API_URL } from '@/utils/env';
 import { apiGet, apiPatch, apiPost, apiPut } from './api';
 import { User } from '@/types/user';
+import axios from 'axios';
 
 export type LoginRequest = {
   username: string;
@@ -10,6 +11,7 @@ export type LoginRequest = {
 export type LoginResponse = {
   accessToken: 'string';
   refreshToken: 'string';
+  expired_time: Date;
 };
 
 export const loginApi = async (data: LoginRequest) => {
@@ -68,7 +70,10 @@ export const registerApi = async (data: RegisterRequest) => {
 };
 
 export const refreshTokenApi = async (token: string) => {
-  const res = await apiPost(API_URL + '/auth/normal/refresh-token', { token });
+  const res = await axios.post<
+    { token: string },
+    ApiDataResponse<LoginResponse>
+  >(API_URL + '/auth/normal/refresh-token', { token });
   return res.data;
 };
 

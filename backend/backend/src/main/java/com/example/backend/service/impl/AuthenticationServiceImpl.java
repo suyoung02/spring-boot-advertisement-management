@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 
 @Service
@@ -77,13 +78,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByUsername(signInRequest.getUsername())
                 .orElseThrow(() -> new InvalidAccountException("Invalid username"));
 
-        var jwt = jwtService.generateToken(user);
+        long expired_time = generateExpiredTime();
+        var jwt = jwtService.generateToken(user, expired_time);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
         JwtAuthenticationReponse jwtAuthenticationReponse = new JwtAuthenticationReponse();
 
         jwtAuthenticationReponse.setAccessToken(jwt);
         jwtAuthenticationReponse.setRefreshToken(refreshToken);
+        jwtAuthenticationReponse.setExpired_time(new Date(expired_time));
 
         // Save a refresh token to database
         user.setRefreshToken(refreshToken);
@@ -92,6 +95,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtAuthenticationReponse;
     }
 
+    @Override
     public JwtAuthenticationReponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String username = jwtService.extractUserName(refreshTokenRequest.getToken());
         User user = userRepository.findByUsername(username)
@@ -99,12 +103,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)
                 && user.getRefreshToken().equals(refreshTokenRequest.getToken())) {
-            var jwt = jwtService.generateToken(user);
+            long expired_time = generateExpiredTime();
+            var jwt = jwtService.generateToken(user, expired_time);
 
             JwtAuthenticationReponse jwtAuthenticationReponse = new JwtAuthenticationReponse();
 
             jwtAuthenticationReponse.setAccessToken(jwt);
             jwtAuthenticationReponse.setRefreshToken(refreshTokenRequest.getToken());
+            jwtAuthenticationReponse.setExpired_time(new Date(expired_time));
 
             return jwtAuthenticationReponse;
         }
@@ -112,6 +118,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
+    @Override
     public boolean changePassword(ChangePasswordRequest changePasswordRequest, Principal connectedUser) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
@@ -136,6 +143,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return true;
     }
 
+    @Override
     public String regenerateOtp(String username) {
         Staff staff = staffRepository.findByUsername(username)
                 .orElseThrow(() -> new InvalidAccountException("Invalid username"));
@@ -158,6 +166,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return "OTP sent to your email ".concat(emailUtil.hashEmail(email));
     }
 
+    @Override
     public String resetPassword(ForgotPasswordRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new InvalidAccountException("Invalid username"));
@@ -221,5 +230,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         return true;
+    }
+
+    private long generateExpiredTime() {
+        return System.currentTimeMillis() + 1000 * 60 * 15;
     }
 }

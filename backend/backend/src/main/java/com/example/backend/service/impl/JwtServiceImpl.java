@@ -18,10 +18,10 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, long expired_time) {
         return Jwts.builder().setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(expired_time))
                 .signWith(getSigninKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
