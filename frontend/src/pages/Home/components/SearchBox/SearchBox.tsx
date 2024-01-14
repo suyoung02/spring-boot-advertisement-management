@@ -2,7 +2,7 @@ import { Autocomplete } from '@react-google-maps/api';
 import { useRef } from 'react';
 
 type Props = {
-  onPlaceChanged?: () => void;
+  onPlaceChanged?: (location?: google.maps.places.PlaceGeometry) => void;
   value?: string;
   readOnly?: boolean;
 };
@@ -15,8 +15,10 @@ const SearchBox = ({ onPlaceChanged, value }: Props) => {
   };
 
   const handleChanged = () => {
-    console.log('change', autocompleteRef);
-    onPlaceChanged?.();
+    console.log('change', autocompleteRef.current);
+    if (!autocompleteRef.current) return;
+    const place = autocompleteRef.current.getPlace();
+    onPlaceChanged?.(place.geometry);
   };
 
   return (

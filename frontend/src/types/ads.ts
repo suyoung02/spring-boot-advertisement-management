@@ -30,6 +30,7 @@ export type Position = {
   adsForm: AdsForm;
   planningStatus: AdsForm;
   panels: AdsPanel[];
+  panelDetails: PanelDetail[];
 };
 
 export type AdsPosition = {
@@ -46,7 +47,7 @@ export type AdsPosition = {
   place_id: string;
   latitude: number;
   longitude: number;
-  isactived: IS_ACTIVE;
+  is_actived: IS_ACTIVE;
 };
 
 export type Panel = {
@@ -59,8 +60,9 @@ export type AdsPanel = {
   id: number;
   ads_type: string;
   size: string;
-  contract_expiration: Date;
+  contract_id: number;
   ads_position: number;
+  content: string;
 };
 
 export type Contract = {
@@ -73,6 +75,20 @@ export type Contract = {
   ads_panel: number;
   state: string;
   staff: number;
+};
+
+export type PanelDetail = {
+  adsPanel: AdsPanel;
+  adsType: AdsType;
+  adsPosition: AdsPosition;
+  contract: Contract;
+  adsImages: AdsImages;
+};
+
+export type AdsImages = {
+  ads_image: string;
+  ads_panel: number;
+  id: number;
 };
 
 export type PresentingPanel = Position & { contract: Contract };

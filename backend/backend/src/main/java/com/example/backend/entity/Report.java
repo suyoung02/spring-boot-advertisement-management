@@ -56,5 +56,4 @@ public class Report {
 
     @Column(name = "ads_position")
     private Integer adsPosition;
-
 }

@@ -29,7 +29,7 @@ import com.example.backend.service.PositionRequirementService;
 @RequestMapping("api/v1/position_requirement")
 public class PositionRequirementController {
     private final PositionRequirementService positionRequirementService;
-    private static final Logger logger = Logger.getLogger(EditingRequirementController.class);
+    private static final Logger logger = Logger.getLogger(PositionRequirementService.class);
 
     public PositionRequirementController(PositionRequirementService positionRequirementService) {
         this.positionRequirementService = positionRequirementService;

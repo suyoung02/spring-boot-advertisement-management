@@ -10,6 +10,7 @@ type State = {
   user: User | null;
   status: AuthStatus;
   accessToken: string;
+  expired_time: string | null;
 };
 
 type Actions = {
@@ -23,6 +24,7 @@ const initialState: State = {
   user: null,
   status: 'loading',
   accessToken: localStorage.getItem('accessToken') || '',
+  expired_time: localStorage.getItem('expired_time') || null,
 };
 
 export const useUserStore = createSelectors(
@@ -41,7 +43,7 @@ export const useUserStore = createSelectors(
 );
 
 export const logout = () => {
-  localStorage.clear();
+  setToken('', '', undefined);
   const reset = useUserStore.getState().reset;
   reset();
 };
@@ -51,9 +53,26 @@ export const getAccessToken = () => {
   return accessToken || localStorage.getItem('access_token');
 };
 
-export const setToken = (accessToken: string, refreshToken: string) => {
+export const setToken = (
+  accessToken: string,
+  refreshToken: string,
+  expired_time?: Date,
+) => {
   const { setState } = useUserStore.getState();
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
-  setState({ accessToken });
+  localStorage.setItem(
+    'expired_time',
+    expired_time ? new Date(expired_time).toISOString() : '',
+  );
+  setState({
+    accessToken,
+    expired_time: expired_time ? new Date(expired_time).toISOString() : null,
+  });
+};
+
+export const expiredToken = () => {
+  const { expired_time, accessToken } = useUserStore.getState();
+  if (!accessToken || !expired_time) return false;
+  return +new Date(expired_time) <= +new Date();
 };

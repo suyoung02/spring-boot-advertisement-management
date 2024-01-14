@@ -111,7 +111,12 @@ const mockdata = [
       },
     ],
   },
-  { label: 'Thống kê', icon: IconPresentationAnalytics },
+  {
+    label: 'Thống kê',
+    icon: IconPresentationAnalytics,
+    link: '/admin/analytics',
+    role: [Role.VHTT, Role.DISTRICT, Role.WARD],
+  },
 ];
 
 const AdminLayout = ({ title, children, role }: Props) => {
@@ -149,7 +154,7 @@ const AdminLayout = ({ title, children, role }: Props) => {
         <div className="uppercase text-2xl py-4 border-b font-bold px-8">
           {title}
         </div>
-        <div>{children}</div>
+        <div className="overflow-auto max-h-[calc(100vh-80px)]">{children}</div>
       </div>
     </div>
   );

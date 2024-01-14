@@ -38,6 +38,7 @@ public class PositionRequirementService {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         Staff staff = staffRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new InvalidAccountException("Invalid staff"));
+        System.out.println(this.positionRequirementRepository.findAll());
         if (user.getRole() == Role.VHTT) {
             return this.positionRequirementRepository.findAll();
         }

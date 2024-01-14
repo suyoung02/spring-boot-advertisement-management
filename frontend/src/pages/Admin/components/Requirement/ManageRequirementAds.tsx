@@ -23,7 +23,7 @@ const ManageRequirementAds = () => {
   const user = useUserStore.use.user();
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['getAllRequirementPosition'],
+    queryKey: ['getAllRequirementPanel'],
     queryFn: () => getAllRequirementPanel(),
   });
 

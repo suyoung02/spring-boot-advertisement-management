@@ -13,10 +13,25 @@ public class AdsPanelResponse {
     private AdsPosition adsPosition;
     private Contract contract;
 
-    public AdsPanelResponse(AdsPanel adsPanel, AdsType adsType, AdsPosition adsPosition, Contract contract){
+    public AdsPanelResponse(AdsPanel adsPanel, AdsType adsType, AdsPosition adsPosition, Contract contract) {
         this.adsPanel = adsPanel;
         this.adsPosition = adsPosition;
         this.adsType = adsType;
         this.contract = contract;
+    }
+
+    public AdsPanelResponse(AdsPanel adsPanel, AdsType adsType, Contract contract) {
+        this.adsPanel = adsPanel;
+        this.adsType = adsType;
+        this.contract = contract;
+    }
+
+    public AdsPanelResponse(AdsPanel adsPanel, Contract contract) {
+        this.adsPanel = adsPanel;
+        this.contract = contract;
+    }
+
+    public AdsPanelResponse(AdsPanel adsPanel) {
+        this.adsPanel = adsPanel;
     }
 }

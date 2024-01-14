@@ -2,7 +2,6 @@ import { deleteAdsPosition, getAllAdsPosition } from '@/apis/position';
 import { RequestUpdatePosition } from '@/components/RequestUpdate';
 import useLocationOptions from '@/hooks/useLocationOptions';
 import { AddPosition } from '@/pages/Home/components/AddAds';
-import { PositionDetail } from '@/pages/Home/components/Ads';
 import { useUserStore } from '@/stores/user';
 import { Position } from '@/types/ads';
 import { Role } from '@/types/enum';
@@ -27,18 +26,19 @@ import {
 } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
+import PositionDetail from './PositionDetail';
 
 const ManagePosition = () => {
   const user = useUserStore.use.user();
+
   const { districts } = useLocationOptions({ district: user?.district });
 
   const [selectedWards, setSelectedWards] = useState<string[]>([]);
-
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
 
   useEffect(() => {
     if (user) {
-      setSelectedDistricts([user.district]);
+      user.district && setSelectedDistricts([user.district]);
       user.ward && setSelectedWards([`${user.district}_${user.ward}`]);
     }
   }, [user]);
@@ -107,6 +107,11 @@ const ManagePosition = () => {
   const handleDetail = (position: Position) => {
     setView(true);
     setPosition(position);
+  };
+
+  const handleEdit = () => {
+    user?.role === Role.VHTT ? setAdd(true) : setRequest(true);
+    setView(false);
   };
 
   const openModalDelete = (id: number) => {
@@ -297,6 +302,7 @@ const ManagePosition = () => {
             setView(false);
             setPosition(null);
           }}
+          onEdit={handleEdit}
           id={position.adsPosition.id}
         />
       )}

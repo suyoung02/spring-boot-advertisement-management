@@ -28,7 +28,7 @@ const LoginPage = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: LoginRequest) => loginApi(data),
     onSuccess: (data) => {
-      setToken(data.accessToken, data.refreshToken);
+      setToken(data.accessToken, data.refreshToken, data.expired_time);
       notifications.show({
         message: 'Đăng nhập thành công',
       });

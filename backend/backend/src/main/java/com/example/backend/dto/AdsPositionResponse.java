@@ -12,19 +12,32 @@ public class AdsPositionResponse {
     private AdsForm adsForm;
     private PlanningStatus planningStatus;
     private List<AdsPanel> panels;
+    private List<AdsPanelResponse> panelDetails;
 
-    public AdsPositionResponse(AdsPosition adsPosition, LocationType locationType, AdsForm adsForm, PlanningStatus planningStatus){
+    public AdsPositionResponse(AdsPosition adsPosition, LocationType locationType, AdsForm adsForm,
+            PlanningStatus planningStatus) {
         this.adsPosition = adsPosition;
         this.locationType = locationType;
         this.adsForm = adsForm;
         this.planningStatus = planningStatus;
     }
 
-    public AdsPositionResponse(AdsPosition adsPosition, LocationType locationType, AdsForm adsForm, PlanningStatus planningStatus, List<AdsPanel> panels){
+    public AdsPositionResponse(AdsPosition adsPosition, LocationType locationType, AdsForm adsForm,
+            PlanningStatus planningStatus, List<AdsPanel> panels) {
         this.adsPosition = adsPosition;
         this.locationType = locationType;
         this.adsForm = adsForm;
         this.planningStatus = planningStatus;
         this.panels = panels;
+    }
+
+    public AdsPositionResponse(AdsPosition adsPosition, LocationType locationType, AdsForm adsForm,
+            PlanningStatus planningStatus, List<AdsPanel> panels, List<AdsPanelResponse> panelDetails) {
+        this.adsPosition = adsPosition;
+        this.locationType = locationType;
+        this.adsForm = adsForm;
+        this.planningStatus = planningStatus;
+        this.panels = panels;
+        this.panelDetails = panelDetails;
     }
 }

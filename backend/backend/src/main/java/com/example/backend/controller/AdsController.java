@@ -42,7 +42,7 @@ public class AdsController {
         return new ResponseEntity<>("Id Not found", HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/vhtt/addNewPosition")
+    @PostMapping("/all/addNewPosition")
     public ResponseEntity<AdsPosition> addNewPosition(@Valid @RequestBody AddPositionRequest newPosition) {
         logger.info("Access add new position");
         try {
@@ -105,7 +105,7 @@ public class AdsController {
     public ResponseEntity<?> getDetailPanel(@PathVariable(value = "id") Integer id) {
         String logMessage1 = String.format("Request received for getDetailPanel with id: %s", id);
         logger.info(logMessage1);
-        List<AdsPanelResponse> panel = adsService.getDetailPanel(id);
+        List<AdsPanelWithImagesDTO> panel = adsService.getDetailPanel(id);
         if (panel != null && !panel.isEmpty()) {
             String logMessage = String.format("Retrieved panel details: %s", panel.get(0));
             logger.debug(logMessage);
@@ -170,18 +170,17 @@ public class AdsController {
     }
 
     @GetMapping("/all/presenting-panel")
-    public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel(Principal principal){
+    public ResponseEntity<List<AdsPanelWithImagesDTO>> getAllPresentingPanel(Principal principal) {
         logger.info("Request received for getAllPresentingPanel");
-        if(principal == null){
+        if (principal == null) {
             List<AdsPanelWithImagesDTO> panels = adsService.getAllPresentingPanel();
             String logMsg = String.format("Retrieved presenting panels: %s without token", panels);
             logger.debug(logMsg);
             return new ResponseEntity<>(panels, HttpStatus.OK);
-        }
-        else {
+        } else {
             String logMsg = String.format("Retrieved presenting panels: %s with token", principal.getName());
             logger.debug(logMsg);
-            List<AdsPanelWithImagesDTO> panels = adsService.getAllPanelWithPosition();
+            List<AdsPanelWithImagesDTO> panels = adsService.getAllPanelWithPosition(principal);
             return new ResponseEntity<>(panels, HttpStatus.OK);
         }
     }

@@ -120,7 +120,7 @@ export const deleteRequirementPosition = async (id: number) => {
 export const getAllRequirementPanel = async () => {
   try {
     const res = await apiGet<null, ApiDataResponse<RequirementPanel[]>>(
-      API_URL + '/editingt_requirement',
+      API_URL + '/editing_requirement',
     );
 
     return res.data;

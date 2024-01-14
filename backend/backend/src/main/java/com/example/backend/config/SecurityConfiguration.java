@@ -37,8 +37,8 @@ public class SecurityConfiguration {
                         request -> request.requestMatchers("/api/v1/auth/normal/**", "/api-docs", "/swagger-ui/**",
                                 "/api/v1/ads/all/**", "/api/v1/adsType/getAll", "/api/v1", "/api/v1/location/**",
                                 "/api/v1/report/**", "/api/v1/processing-status", "/api/logs", "/api/v1/adsType/getAll",
-                                "/api/v1/adsForm/getAll", "/api/v1/planningStatus/getAll",
-                                "/api/v1/locationType/getAll","/ws/**")
+                                "/api/v1/adsForm/getAll", "/api/v1/planningStatus/getAll", "/api/v1/report-form",
+                                "/api/v1/locationType/getAll", "/ws/**")
                                 .permitAll()
                                 .requestMatchers("/api/v1/auth/all/**", "/api/v1/staff/all/**")
                                 .hasAnyAuthority(Role.VHTT.name(), Role.DISTRICT.name(), Role.WARD.name())

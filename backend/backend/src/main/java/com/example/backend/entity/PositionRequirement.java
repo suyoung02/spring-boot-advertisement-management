@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "editing_requirement")
+@Table(name = "position_requirement")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

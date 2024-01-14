@@ -18,6 +18,7 @@ import {
   Profile,
   RegisterPage,
 } from '@/pages/Admin';
+import { Analytics } from '@/pages/Admin/components/Analytics';
 import { NotFound } from '@/pages/Error';
 import { HomePage } from '@/pages/Home';
 import { Role } from '@/types/enum';
@@ -30,7 +31,10 @@ export const router = createBrowserRouter([
       {
         path: '',
         element: (
-          <AdminLayout title="Hệ thống quản lý">
+          <AdminLayout
+            role={[Role.VHTT, Role.DISTRICT, Role.WARD]}
+            title="Hệ thống quản lý"
+          >
             <DashboardPage />
           </AdminLayout>
         ),
@@ -217,6 +221,17 @@ export const router = createBrowserRouter([
         element: <NotFound />,
       },
     ],
+  },
+  {
+    path: '/admin/analytics',
+    element: (
+      <AdminLayout
+        role={[Role.VHTT, Role.WARD, Role.DISTRICT]}
+        title="Thống kê"
+      >
+        <Analytics />
+      </AdminLayout>
+    ),
   },
   {
     path: '/',

@@ -233,6 +233,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private long generateExpiredTime() {
-        return System.currentTimeMillis() + 1000 * 60 * 60 * 24;
+        return System.currentTimeMillis() + 1000 * 60 * 15;
     }
 }

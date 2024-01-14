@@ -1,7 +1,7 @@
 import useGetPosition from '@/hooks/useGetPosition';
 import { ModalName, useControlStore } from '@/stores/control';
-import { AdsPanel, Position } from '@/types/ads';
-import { ActionIcon, Button } from '@mantine/core';
+import { Position, type PanelDetail as PanelDetailType } from '@/types/ads';
+import { ActionIcon, Button, LoadingOverlay } from '@mantine/core';
 import { GoogleMap, InfoWindow, MarkerF } from '@react-google-maps/api';
 import { IconCurrentLocation } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,10 +11,10 @@ import { PanelDetail, PositionDetail } from './components/Ads';
 
 import { useUserStore } from '@/stores/user';
 import { Role } from '@/types/enum';
+import { ICON } from '@/utils/avatar';
 import { CURRENT_LOCATION, getFullAddress } from '@/utils/location';
-import { Login } from './components/Login';
 import { PlaceDetail } from './components/Place';
-import { Report } from './components/Report';
+import { Report, ReportList } from './components/Report';
 import { SearchBox } from './components/SearchBox';
 
 const mapContainerStyle = {
@@ -38,11 +38,11 @@ const HomePage = () => {
   const [place, setPlace] = useState<google.maps.places.PlaceResult | null>(
     null,
   );
-  const [panel, setPanel] = useState<AdsPanel | null>(null);
+  const [panel, setPanel] = useState<PanelDetailType | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [infoWindowData, setInfoWindowData] = useState<any>();
 
-  const { data: markers } = useGetPosition();
+  const { data: markers, isLoading } = useGetPosition();
 
   const onMapLoad = (map: google.maps.Map) => {
     setMapRef(map);
@@ -86,9 +86,18 @@ const HomePage = () => {
     setModal(ModalName.POSITION_DETAIL);
   };
 
-  const handleViewPanel = (panel: AdsPanel) => {
+  const handleViewPanel = (panel: PanelDetailType) => {
     setPanel(panel);
     setModal(ModalName.PANEL_DETAIL);
+  };
+
+  const handlePlaceChange = (geometry?: google.maps.places.PlaceGeometry) => {
+    if (geometry?.viewport) {
+      mapRef?.fitBounds(geometry.viewport);
+    } else if (geometry?.location) {
+      mapRef?.setCenter(geometry.location);
+      mapRef?.setZoom(17);
+    }
   };
 
   const handleReport = () => {
@@ -111,14 +120,19 @@ const HomePage = () => {
     });
   };
 
+  if (isLoading) return <LoadingOverlay visible />;
+
   return (
     <div className="relative">
       <div className="absolute mt-4 z-10 w-[calc(100%-50px)]">
         <div className="ml-auto px-4 flex justify-between items-center">
-          <SearchBox />
+          <SearchBox onPlaceChanged={handlePlaceChange} />
           <div className="flex items-center gap-2">
             {!user && (
-              <Button onClick={() => setModal(ModalName.LOGIN)} color="teal">
+              <Button
+                onClick={() => setModal(ModalName.REPORT_LIST)}
+                color="teal"
+              >
                 Xem report
               </Button>
             )}
@@ -152,11 +166,17 @@ const HomePage = () => {
         onLoad={onMapLoad}
         center={CURRENT_LOCATION}
       >
-        {markers?.map(({ adsPosition, locationType, adsForm }, ind) => (
+        {markers?.map(({ panels, adsPosition, locationType, adsForm }, ind) => (
           <MarkerF
             key={adsPosition.id}
-            icon={locationType.icon || adsForm.icon}
-            position={{ lat: adsPosition.latitude, lng: adsPosition.longitude }}
+            icon={{
+              scaledSize: new google.maps.Size(30, 30),
+              url: panels?.[0] ? ICON.AD : locationType.icon || adsForm.icon,
+            }}
+            position={{
+              lat: adsPosition.latitude,
+              lng: adsPosition.longitude,
+            }}
             onMouseOver={() => {
               handleMarkerHover(
                 ind,
@@ -180,7 +200,7 @@ const HomePage = () => {
                   <h3 className="text-sm">{adsPosition.location_type}</h3>
                   <h3 className="text-sm">{getFullAddress(adsPosition)}</h3>
                   <h3 className="text-sm font-bold uppercase mt-1">
-                    {adsPosition.planning_status}
+                    {/* {adsPosition.planning_status} */}
                   </h3>
                 </div>
               </InfoWindow>
@@ -188,8 +208,6 @@ const HomePage = () => {
           </MarkerF>
         ))}
       </GoogleMap>
-
-      <Login opened={modal === ModalName.LOGIN} onClose={onCloseModal} />
 
       {modal === ModalName.ADD_POSITION && (
         <AddPosition
@@ -214,7 +232,11 @@ const HomePage = () => {
           opened={modal === ModalName.POSITION_DETAIL}
           onClose={onCloseModal}
           onViewPanel={handleViewPanel}
-          onReport={handleReport}
+          onReport={({ position, panel }) => {
+            handleReport();
+            setPanel(panel);
+            setPosition(position);
+          }}
           id={position.adsPosition.id}
         />
       )}
@@ -222,8 +244,12 @@ const HomePage = () => {
         <PanelDetail
           opened={modal === ModalName.PANEL_DETAIL}
           onClose={onCloseModal}
-          onReport={handleReport}
-          id={panel.id}
+          onReport={() => {
+            handleReport();
+            setPosition(null);
+            setPanel(panel);
+          }}
+          id={panel.adsPanel.id}
         />
       )}
       {place && (
@@ -240,9 +266,12 @@ const HomePage = () => {
         <Report
           opened={modal === ModalName.REPORT}
           onClose={onCloseModal}
-          positionId={position?.adsPosition.id}
-          panelId={panel?.id}
+          positionId={position?.adsPosition.id || panel?.adsPosition.id}
+          panelId={panel?.adsPanel.id}
         />
+      )}
+      {modal === ModalName.REPORT_LIST && (
+        <ReportList opened onClose={onCloseModal} />
       )}
     </div>
   );

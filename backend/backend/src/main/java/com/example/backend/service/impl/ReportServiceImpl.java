@@ -1,6 +1,7 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.dto.AddReportRequest;
+import com.example.backend.dto.AdsPanelResponse;
 import com.example.backend.dto.ReportResponse;
 import com.example.backend.dto.SolvingReport;
 import com.example.backend.entity.AdsPanel;
@@ -30,7 +31,7 @@ public class ReportServiceImpl implements ReportService {
         List<Object[]> list = reportRepository.getAllReport();
         return list.stream()
                 .map(objects -> new ReportResponse((Report) objects[0], (ReportForm) objects[1],
-                        (ProcessingStatus) objects[2], (AdsPosition) objects[3], (AdsPanel) objects[4]))
+                        (AdsPosition) objects[2], (AdsPanel) objects[3]))
                 .collect(Collectors.toList());
     }
 
@@ -40,7 +41,7 @@ public class ReportServiceImpl implements ReportService {
             List<Object[]> list = reportRepository.getDetailReport(id);
             return list.stream()
                     .map(objects -> new ReportResponse((Report) objects[0], (ReportForm) objects[1],
-                            (ProcessingStatus) objects[2], (AdsPosition) objects[3], (AdsPanel) objects[4]))
+                            (AdsPosition) objects[2], (AdsPanel) objects[3]))
                     .collect(Collectors.toList());
         }
         return null;
@@ -73,7 +74,7 @@ public class ReportServiceImpl implements ReportService {
         List<Object[]> list = reportRepository.getDetailReport(upcoming.getId());
         return list.stream()
                 .map(objects -> new ReportResponse((Report) objects[0], (ReportForm) objects[1],
-                        (ProcessingStatus) objects[2], (AdsPosition) objects[3], (AdsPanel) objects[4]))
+                        (AdsPosition) objects[2], (AdsPanel) objects[3]))
                 .collect(Collectors.toList());
     }
 
@@ -101,8 +102,9 @@ public class ReportServiceImpl implements ReportService {
             List<Object[]> list = reportRepository.getDetailReport(dbReport.getId());
             return list.stream()
                     .map(objects -> new ReportResponse((Report) objects[0], (ReportForm) objects[1],
-                            (ProcessingStatus) objects[2], (AdsPosition) objects[3], (AdsPanel) objects[4]))
+                            (AdsPosition) objects[2], (AdsPanel) objects[3]))
                     .collect(Collectors.toList());
+
         } else {
             throw new RuntimeException("Report id not found");
         }

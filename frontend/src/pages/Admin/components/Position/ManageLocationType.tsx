@@ -122,7 +122,7 @@ const ManageLocationType = () => {
     console.log(data[index]);
     setFields({
       title: data[index].title,
-      color: data[index].color,
+      color: data[index].color || '#fff',
       icon: img || null,
     });
   };

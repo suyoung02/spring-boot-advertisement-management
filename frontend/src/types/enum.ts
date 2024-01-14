@@ -14,3 +14,16 @@ export enum RequirementStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   ACTIVE = 'ACTIVE',
 }
+
+export enum ContractStatus {
+  REJECT = 'Đã từ chối',
+  IN_PROGRESS = 'Chờ duyệt',
+  ACTIVE = 'Đang hiện diện',
+  EXPIRED = 'Đã hết hạn',
+}
+
+export enum ReportStatus {
+  IN_PROGRESS = 'Đang xử lý',
+  SOLVED = 'Đã giải quyết',
+  CANCEL = 'Đã huỷ',
+}
