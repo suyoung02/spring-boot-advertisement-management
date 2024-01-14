@@ -11,3 +11,8 @@ export type User = {
   ward: string;
   district: string;
 };
+
+export type Message = {
+  text: string;
+  toPerson: string;
+};

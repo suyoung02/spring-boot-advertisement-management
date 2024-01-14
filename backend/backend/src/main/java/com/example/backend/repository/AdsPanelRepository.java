@@ -24,6 +24,6 @@ public interface AdsPanelRepository extends JpaRepository<AdsPanel, Integer> {
     @Query(value = "SELECT panel FROM AdsPosition position JOIN AdsPanel panel ON position.id = panel.ads_position WHERE position.id = ?1 ")
     public List<AdsPanel> getPositionDetailWithPanel(int id);
 
-    @Query(value = "SELECT panel, c, type FROM AdsPosition position JOIN AdsPanel panel ON position.id = panel.ads_position JOIN AdsType type ON panel.ads_type = type.title JOIN Contract c ON c.ads_panel = panel.id WHERE position.id = ?1 ")
+    @Query(value = "SELECT panel, c, type, position FROM AdsPosition position JOIN AdsPanel panel ON position.id = panel.ads_position JOIN AdsType type ON panel.ads_type = type.title JOIN Contract c ON c.ads_panel = panel.id WHERE position.id = ?1 ")
     public List<Object[]> getDetailWithPanel(int id);
 }

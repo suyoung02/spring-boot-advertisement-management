@@ -121,7 +121,7 @@ const HomePage = () => {
   };
 
   if (isLoading) return <LoadingOverlay visible />;
-
+  console.log({ panel });
   return (
     <div className="relative">
       <div className="absolute mt-4 z-10 w-[calc(100%-50px)]">

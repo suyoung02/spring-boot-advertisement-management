@@ -61,6 +61,7 @@ public class AdsServiceServiceImpl implements AdsService {
         System.out.println(panels);
         return panels.stream()
                 .map(objects -> new AdsPanelResponse((AdsPanel) objects[0], (AdsType) objects[2],
+                        (AdsPosition) objects[3],
                         (Contract) objects[1]))
                 .collect(Collectors.toList());
     }

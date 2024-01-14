@@ -22,7 +22,7 @@ const useGetPosition = () => {
       );
       return [...positions, { ...pos, panelDetails: panel }];
     }, []);
-  }, []);
+  }, [data]);
 
   return { data: filterData, isLoading, refetch };
 };
