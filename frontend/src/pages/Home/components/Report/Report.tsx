@@ -6,11 +6,13 @@ import {
 } from '@/apis/report';
 import { TextEditor } from '@/components/TextEditor';
 import { useForm } from '@/hooks/useForm';
+import { useControlStore } from '@/stores/control';
 import { PanelDetail, Position } from '@/types/ads';
 import { ReportStatus } from '@/types/enum';
 import { classNames } from '@/utils/classNames';
 import { getMachineId } from '@/utils/device';
 import { getFullAddress } from '@/utils/location';
+import { sendAddReportMessage } from '@/utils/message';
 import {
   Button,
   Drawer,
@@ -34,11 +36,10 @@ type Props = {
 };
 
 const Report = ({ onClose, opened, positionId, panelId }: Props) => {
-  const type = positionId ? 'position' : 'panel';
+  const type = !panelId ? 'position' : 'panel';
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [show, setShow] = useState(false);
-
-  console.log(positionId, panelId);
+  const client = useControlStore.use.client();
 
   const { data: reportTypes } = useQuery({
     queryKey: ['getAllReportType'],
@@ -104,14 +105,27 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
       },
     });
 
+  console.log(error);
+
   const { mutate } = useMutation({
     mutationFn: (data: CreateReportRequest) => createReport(data),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      sendAddReportMessage(
+        {
+          message: `Người dân đã tạo báo cáo cho địa điểm có ID = ${positionId}${
+            panelId ? `, có bảng quảng cáo có ID = ${panelId}` : ''
+          }`,
+          title: `Anh/Chị ${variables.fullName} đã tạo cáo báo số ${data.report.id}`,
+        },
+        client,
+      );
+
       notifications.show({
         message: 'Tạo báo cáo thành công',
       });
     },
     onError: (e) => {
+      recaptchaRef.current?.reset();
       notifications.show({
         color: 'red',
         title: 'Có lỗi xảy ra vui lòng thử lại',
@@ -119,8 +133,6 @@ const Report = ({ onClose, opened, positionId, panelId }: Props) => {
       });
     },
   });
-
-  console.log(error);
 
   const handleSubmit = async () => {
     setShow(false);

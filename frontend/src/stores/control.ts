@@ -18,10 +18,12 @@ export enum ModalName {
 type State = {
   modal: ModalName | null;
   currentLocation: Location;
+  client: any | null;
 };
 
 type Actions = {
   setModal: (modal: State['modal']) => void;
+  setClientSocket: (client: State['client']) => void;
   onCloseModal: () => void;
   setCurrentLocation: (location: State['currentLocation']) => void;
 };
@@ -29,6 +31,7 @@ type Actions = {
 const initialState: State = {
   modal: null,
   currentLocation: CURRENT_LOCATION,
+  client: null,
 };
 
 export const useControlStore = createSelectors(
@@ -42,6 +45,9 @@ export const useControlStore = createSelectors(
     },
     setCurrentLocation: (location) => {
       set({ currentLocation: location });
+    },
+    setClientSocket: (client) => {
+      set({ client });
     },
   })),
 );

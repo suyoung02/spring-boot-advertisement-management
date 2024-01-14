@@ -71,6 +71,7 @@ public class ReportController {
             logger.info(logmsg);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println(e);
             logger.error("Update report failed");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

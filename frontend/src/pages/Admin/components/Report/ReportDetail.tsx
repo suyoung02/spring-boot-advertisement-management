@@ -1,6 +1,8 @@
 import { getDetailReport, updateReport } from '@/apis/report';
+import { useControlStore } from '@/stores/control';
 import { ReportStatus } from '@/types/enum';
 import { getFullAddress } from '@/utils/location';
+import { sendUpdateReportMessage } from '@/utils/message';
 import { Button, Drawer, Textarea } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -17,7 +19,7 @@ const ReportDetail = ({ opened, onClose, reportId }: Props) => {
     queryKey: ['getDetailReport', reportId],
     queryFn: () => getDetailReport(reportId),
   });
-
+  const client = useControlStore.use.client();
   const [solving, setSolving] = useState('');
 
   useEffect(() => {
@@ -32,11 +34,27 @@ const ReportDetail = ({ opened, onClose, reportId }: Props) => {
         processingStatus: ReportStatus.SOLVED,
       }),
     onSuccess: () => {
+      data &&
+        sendUpdateReportMessage(
+          {
+            deviceId: data.report.deviceId,
+            message: `Nội dung phản hồi: ${solving}`,
+            title: !data.adsPanel
+              ? `Báo cáo của bạn về địa điểm ${getFullAddress(
+                  data.adsPosition,
+                )} đã được xử lý`
+              : `Báo cáo của bạn về bảng quảng cáo tại địa điểm ${getFullAddress(
+                  data.adsPosition,
+                )} đã được xử lý`,
+          },
+          client,
+        );
       notifications.show({ message: 'Cập nhật thành công' });
     },
-    onError: () => {
+    onError: (e) => {
+      console.log(e);
       notifications.show({
-        color: 'res',
+        color: 'red',
         message: 'Có lỗi xảy ra vui lòng thử lại',
       });
     },

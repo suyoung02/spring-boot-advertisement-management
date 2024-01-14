@@ -6,7 +6,6 @@ import { IS_ACTIVE, ReportStatus, Role } from '@/types/enum';
 import { Card, MultiSelect, Progress, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
-import { Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 const Analytics = () => {
   const user = useUserStore.use.user();
