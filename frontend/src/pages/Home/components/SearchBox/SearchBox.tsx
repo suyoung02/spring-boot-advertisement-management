@@ -7,7 +7,7 @@ import { ChangeEvent, useMemo, useState } from 'react';
 import { useDebounce } from 'usehooks-ts';
 
 type Props = {
-  onPlaceChanged?: (location?: Location) => void;
+  onPlaceChanged?: (location: Location) => void;
   readOnly?: boolean;
 };
 

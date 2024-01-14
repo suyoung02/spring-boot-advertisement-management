@@ -145,13 +145,15 @@ const PositionDetail = ({
                 <div className="font-medium">Chưa có dữ liệu</div>
                 <div className="text-sm">Vui lòng chọn địa điểm khác</div>
               </div>
-              <Button
-                onClick={() => setModal(ModalName.ADD_PANEL)}
-                className="ml-auto"
-                color="green"
-              >
-                Tạo bảng quảng cáo
-              </Button>
+              {user && (
+                <Button
+                  onClick={() => setModal(ModalName.ADD_PANEL)}
+                  className="ml-auto"
+                  color="green"
+                >
+                  Tạo bảng quảng cáo
+                </Button>
+              )}
             </div>
           )}
           {filterData.panelDetails.map((panel, index) => (

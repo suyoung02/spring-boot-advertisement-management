@@ -154,9 +154,11 @@ const PanelDetail = ({ id, opened, onClose, onReport }: Props) => {
                 />
               )}
               <div className="flex items-center mt-4 justify-between">
-                <Button onClick={handleEdit} leftSection={<IconPencil />}>
-                  Chỉnh sửa
-                </Button>
+                {user && (
+                  <Button onClick={handleEdit} leftSection={<IconPencil />}>
+                    Chỉnh sửa
+                  </Button>
+                )}
                 <Button
                   onClick={onReport}
                   color="red"
