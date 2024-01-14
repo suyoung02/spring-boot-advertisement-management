@@ -1,7 +1,7 @@
 import useGetPosition from '@/hooks/useGetPosition';
 import { ModalName, useControlStore } from '@/stores/control';
 import { Position, type PanelDetail as PanelDetailType } from '@/types/ads';
-import { ActionIcon, Button, LoadingOverlay } from '@mantine/core';
+import { ActionIcon, Button, LoadingOverlay, Select } from '@mantine/core';
 import { GoogleMap, InfoWindow, MarkerF } from '@react-google-maps/api';
 import { IconCurrentLocation } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -17,6 +17,7 @@ import { PlaceDetail } from './components/Place';
 import { Report, ReportList } from './components/Report';
 import { SearchBox } from './components/SearchBox';
 import { Location } from '@/types/location';
+import { classNames } from '@/utils/classNames';
 
 const mapContainerStyle = {
   width: '100vw',
@@ -35,6 +36,7 @@ const HomePage = () => {
 
   const [mapRef, setMapRef] = useState<google.maps.Map>();
   const [isOpen, setIsOpen] = useState(false);
+  const [filter, setFilter] = useState('Tất cả');
   const [position, setPosition] = useState<Position | null>(null);
   const [place, setPlace] = useState<google.maps.places.PlaceResult | null>(
     null,
@@ -43,7 +45,7 @@ const HomePage = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [infoWindowData, setInfoWindowData] = useState<any>();
 
-  const { data: markers, isLoading } = useGetPosition();
+  const { data: markers, isLoading } = useGetPosition(filter);
 
   const onMapLoad = (map: google.maps.Map) => {
     setMapRef(map);
@@ -125,6 +127,11 @@ const HomePage = () => {
         <div className="ml-auto px-4 flex justify-between items-center">
           <SearchBox onPlaceChanged={handlePlaceChange} />
           <div className="flex items-center gap-2">
+            <Select
+              value={filter}
+              onChange={(e) => setFilter(e || 'Tất cả')}
+              data={['Tất cả', 'Chưa báo cáo', 'Đã báo cáo']}
+            />
             {!user && (
               <Button
                 onClick={() => setModal(ModalName.REPORT_LIST)}
@@ -163,47 +170,49 @@ const HomePage = () => {
         onLoad={onMapLoad}
         center={CURRENT_LOCATION}
       >
-        {markers?.map(({ panels, adsPosition, locationType, adsForm }, ind) => (
-          <MarkerF
-            key={adsPosition.id}
-            icon={{
-              scaledSize: new google.maps.Size(30, 30),
-              url: panels?.[0] ? ICON.AD : locationType.icon || adsForm.icon,
-            }}
-            position={{
-              lat: adsPosition.latitude,
-              lng: adsPosition.longitude,
-            }}
-            onMouseOver={() => {
-              handleMarkerHover(
-                ind,
-                adsPosition.latitude,
-                adsPosition.longitude,
-                adsPosition.address,
-              );
-            }}
-            onClick={() => handleViewPosition(markers[ind])}
-          >
-            {isOpen && infoWindowData?.id === ind && (
-              <InfoWindow
-                onCloseClick={() => {
-                  setIsOpen(false);
-                }}
-              >
-                <div>
-                  <h3 className="font-bold text-base mb-1">
-                    {adsPosition.ads_form}
-                  </h3>
-                  <h3 className="text-sm">{adsPosition.location_type}</h3>
-                  <h3 className="text-sm">{getFullAddress(adsPosition)}</h3>
-                  <h3 className="text-sm font-bold uppercase mt-1">
-                    {/* {adsPosition.planning_status} */}
-                  </h3>
-                </div>
-              </InfoWindow>
-            )}
-          </MarkerF>
-        ))}
+        {markers?.map(
+          ({ panels, adsPosition, locationType, adsForm, isReported }, ind) => (
+            <MarkerF
+              key={adsPosition.id}
+              icon={{
+                scaledSize: new google.maps.Size(30, 30),
+                url: panels?.[0] ? ICON.AD : locationType.icon || adsForm.icon,
+              }}
+              position={{
+                lat: adsPosition.latitude,
+                lng: adsPosition.longitude,
+              }}
+              onMouseOver={() => {
+                handleMarkerHover(
+                  ind,
+                  adsPosition.latitude,
+                  adsPosition.longitude,
+                  adsPosition.address,
+                );
+              }}
+              onClick={() => handleViewPosition(markers[ind])}
+            >
+              {isOpen && infoWindowData?.id === ind && (
+                <InfoWindow
+                  onCloseClick={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <div className={classNames({ 'bg-pink-100': isReported })}>
+                    <h3 className="font-bold text-base mb-1">
+                      {adsPosition.ads_form}
+                    </h3>
+                    <h3 className="text-sm">{adsPosition.location_type}</h3>
+                    <h3 className="text-sm">{getFullAddress(adsPosition)}</h3>
+                    <h3 className="text-sm font-bold uppercase mt-1">
+                      {/* {adsPosition.planning_status} */}
+                    </h3>
+                  </div>
+                </InfoWindow>
+              )}
+            </MarkerF>
+          ),
+        )}
       </GoogleMap>
 
       {modal === ModalName.ADD_POSITION && (

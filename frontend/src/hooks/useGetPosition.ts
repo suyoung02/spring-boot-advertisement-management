@@ -5,7 +5,7 @@ import { IS_ACTIVE } from '@/types/enum';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
-const useGetPosition = () => {
+const useGetPosition = (filter: string) => {
   const user = useUserStore.use.user();
 
   const { data, isLoading, refetch } = useQuery({
@@ -20,9 +20,11 @@ const useGetPosition = () => {
       const panel = pos.panelDetails.filter((panel) =>
         !user ? panel.contract.state === 'Đang hiện diện' : true,
       );
+      if (filter === 'Chưa báo cáo' && pos.isReported) return positions;
+      if (filter === 'Đã báo cáo' && !pos.isReported) return positions;
       return [...positions, { ...pos, panelDetails: panel }];
     }, []);
-  }, [data]);
+  }, [data, filter]);
 
   return { data: filterData, isLoading, refetch };
 };

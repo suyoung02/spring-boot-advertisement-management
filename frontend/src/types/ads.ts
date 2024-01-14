@@ -31,6 +31,7 @@ export type Position = {
   planningStatus: AdsForm;
   panels: AdsPanel[];
   panelDetails: PanelDetail[];
+  isReported: boolean;
 };
 
 export type AdsPosition = {
