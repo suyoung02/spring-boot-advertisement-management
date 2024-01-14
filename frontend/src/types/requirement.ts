@@ -8,6 +8,7 @@ export type RequirementPanel = {
   status: RequirementStatus;
   staff: number;
   ads_panel: number;
+  ads_position?: number;
 };
 
 export type RequirementPosition = {
@@ -18,4 +19,5 @@ export type RequirementPosition = {
   status: RequirementStatus;
   staff: number;
   ads_position: number;
+  ads_panel?: number;
 };
