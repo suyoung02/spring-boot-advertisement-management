@@ -17,7 +17,7 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconPencil, IconTrash, IconX } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ManageRequirementAds = () => {
   const user = useUserStore.use.user();
@@ -32,6 +32,7 @@ const ManageRequirementAds = () => {
   const { fields, onChangeField, reset, setFields, error, onError } =
     useForm<UpdateRequirementPanelRequest>({
       defaultState: {
+        ads_panel: editId,
         new_info: '',
         reason: '',
         time_submit: new Date(),
@@ -63,6 +64,10 @@ const ManageRequirementAds = () => {
       });
     },
   });
+
+  useEffect(() => {
+    onChangeField('ads_panel', editId);
+  }, [editId]);
 
   const { mutate: approve } = useMutation({
     mutationFn: (id: number) => approveRequirementPanel(id),

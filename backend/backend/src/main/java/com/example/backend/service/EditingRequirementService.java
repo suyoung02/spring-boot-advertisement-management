@@ -55,11 +55,11 @@ public class EditingRequirementService {
         Staff staff = stafff.get();
 
         EditingRequirement editingRequirement = new EditingRequirement();
-        editingRequirement.setNew_info(editingRequirement.getNew_info());
-        editingRequirement.setReason(editingRequirement.getReason());
+        editingRequirement.setNew_info(editing.getNew_info());
+        editingRequirement.setReason(editing.getReason());
         editingRequirement.setStatus(Status.IN_PROGRESS);
         editingRequirement.setStaff(staff.getId());
-        editingRequirement.setAds_panel(editingRequirement.getAds_panel());
+        editingRequirement.setAds_panel(editing.getAds_panel());
         Date date = new Date();
         editingRequirement.setTime_submit(date);
 

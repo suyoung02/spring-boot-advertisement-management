@@ -18,6 +18,7 @@ import {
 import {
   IconCheck,
   IconCirclePlus,
+  IconPencil,
   IconTrash,
   IconX,
 } from '@tabler/icons-react';
@@ -31,6 +32,7 @@ import {
 } from '@/apis/contract';
 import { notifications } from '@mantine/notifications';
 import { modals } from '@mantine/modals';
+import { RequestUpdatePanel } from '@/components/RequestUpdate';
 
 const ManagePanel = () => {
   const user = useUserStore.use.user();
@@ -41,6 +43,7 @@ const ManagePanel = () => {
   const onCloseModal = useControlStore.use.onCloseModal();
   const [selectedWards, setSelectedWards] = useState<string[]>([]);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
+  const [request, setRequest] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -307,13 +310,22 @@ const ManagePanel = () => {
                     ) : (
                       <ActionIcon
                         onClick={() => {
-                          handleDelete(item.contract.id);
+                          if (item.contract.state !== 'Đang hiện diện') {
+                            handleDelete(item.contract.id);
+                          } else {
+                            setRequest(true);
+                            setPanel(item);
+                          }
                         }}
                         variant="subtle"
                         color="gray"
                         size="lg"
                       >
-                        <IconTrash size={24} />
+                        {item.contract.state === 'Đang hiện diện' ? (
+                          <IconPencil size={24} />
+                        ) : (
+                          <IconTrash size={24} />
+                        )}
                       </ActionIcon>
                     )}
                   </Group>
@@ -341,6 +353,16 @@ const ManagePanel = () => {
             setPanel(null);
           }}
           id={panel.adsPanel.id}
+        />
+      )}
+      {panel && (
+        <RequestUpdatePanel
+          panel={panel?.adsPanel.id}
+          opened={request}
+          onClose={() => {
+            setRequest(false);
+            setPanel(null);
+          }}
         />
       )}
     </div>

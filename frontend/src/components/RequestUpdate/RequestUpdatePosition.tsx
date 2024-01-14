@@ -56,7 +56,7 @@ const RequestUpdatePosition = ({ position, onClose, opened }: Props) => {
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Yêu cầu thay đổi bảng quảng cáo"
+      title="Yêu cầu thay đổi điểm quảng cáo"
     >
       <div className="flex flex-col gap-2">
         <Textarea

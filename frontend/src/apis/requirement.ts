@@ -64,7 +64,7 @@ export const getAllRequirementPosition = async () => {
 
 export type UpdateRequirementPositionRequest = Omit<
   RequirementPosition,
-  'id' | 'status' | 'ads_position'
+  'id' | 'status'
 >;
 
 export const updateRequirementPosition = async (
@@ -131,7 +131,7 @@ export const getAllRequirementPanel = async () => {
 };
 
 export type UpdateRequirementPanelRequest = Omit<
-  RequirementPosition,
+  RequirementPanel,
   'id' | 'status' | 'ads_position'
 >;
 
@@ -143,7 +143,7 @@ export const updateRequirementPanel = async (
     const res = await apiPut<
       UpdateRequirementPanelRequest,
       ApiDataResponse<RequirementPanel[]>
-    >(API_URL + `/editingt_requirement/${id}`, data);
+    >(API_URL + `/editing_requirement/${id}`, data);
 
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -154,7 +154,7 @@ export const updateRequirementPanel = async (
 
 export const approveRequirementPanel = async (id: number) => {
   try {
-    const res = await apiPost(API_URL + `/editingt_requirement/approve/${id}`);
+    const res = await apiPost(API_URL + `/editing_requirement/approve/${id}`);
 
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -165,7 +165,7 @@ export const approveRequirementPanel = async (id: number) => {
 
 export const rejectRequirementPanel = async (id: number) => {
   try {
-    const res = await apiPost(API_URL + `/editingt_requirement/reject/${id}`);
+    const res = await apiPost(API_URL + `/editing_requirement/reject/${id}`);
 
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -176,7 +176,7 @@ export const rejectRequirementPanel = async (id: number) => {
 
 export const deleteRequirementPanel = async (id: number) => {
   try {
-    const res = await apiDelete(API_URL + `/editingt_requirement/${id}`);
+    const res = await apiDelete(API_URL + `/editing_requirement/${id}`);
 
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
