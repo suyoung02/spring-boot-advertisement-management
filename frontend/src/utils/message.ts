@@ -1,12 +1,13 @@
 export type AddReportParams = {
   message: string;
   title: string;
+  toPerson?: number;
 };
 
 export const sendAddReportMessage = (data: AddReportParams, client: any) => {
   const req = {
     text: JSON.stringify(data),
-    toPerson: null,
+    toPerson: data.toPerson || null,
   };
   client.sendMessage('/app/application', JSON.stringify(req));
 };

@@ -12,7 +12,7 @@ public interface AdsPanelRepository extends JpaRepository<AdsPanel, Integer> {
     @Query(value = "SELECT position, A, img, c, type FROM AdsPanel A JOIN AdsType type ON A.ads_type = type.title JOIN AdsPosition position ON position.id = A.ads_position JOIN Contract c ON c.ads_panel = A.id JOIN AdsImages img ON img.ads_panel = A.id")
     public List<Object[]> getPanelWithContractAndImg();
 
-    @Query(value = "SELECT position, A, img, c, type FROM AdsPanel A JOIN AdsType type ON A.ads_type = type.title JOIN AdsPosition position ON position.id = A.ads_position JOIN Contract c ON c.ads_panel = A.id JOIN AdsImages img ON img.ads_panel = A.id WHERE c.staff = ?1")
+    @Query(value = "SELECT position, A, img, c, type FROM AdsPanel A JOIN AdsType type ON A.ads_type = type.title JOIN AdsPosition position ON position.id = A.ads_position JOIN Contract c ON c.ads_panel = A.id JOIN AdsImages img ON img.ads_panel = A.id")
     public List<Object[]> getPositionWithPanelWithLoggined(Integer staff);
 
     @Query(value = "SELECT panel, type, pos FROM AdsPanel panel JOIN AdsType type ON panel.ads_type = type.title JOIN AdsPosition pos ON pos.id = panel.ads_position ")

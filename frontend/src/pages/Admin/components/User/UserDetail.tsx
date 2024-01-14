@@ -94,8 +94,7 @@ const UserDetail = ({ id, onClose, opened }: Props) => {
 
   useEffect(() => {
     data && setFields(data);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
   const { districts, wards, cities } = useLocationOptions({
     district: fields.district,
@@ -134,7 +133,7 @@ const UserDetail = ({ id, onClose, opened }: Props) => {
   const handleSubmit = () => {
     const err = onError();
     if (err) return;
-    update(fields);
+    update({ ...fields, dob: new Date(fields.dob) });
   };
 
   const handleDelete = () => {

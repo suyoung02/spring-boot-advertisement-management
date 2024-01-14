@@ -1,50 +1,97 @@
-import { useEffect, useRef } from 'react';
+import { placeSearch } from '@/apis/location';
+import { Location } from '@/types/location';
+import { Combobox, TextInput, useCombobox } from '@mantine/core';
+import { IconMapPinFilled } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { ChangeEvent, useMemo, useState } from 'react';
+import { useDebounce } from 'usehooks-ts';
 
 type Props = {
-  onPlaceChanged?: (location?: google.maps.places.PlaceGeometry) => void;
-  value?: string;
+  onPlaceChanged?: (location?: Location) => void;
   readOnly?: boolean;
 };
 
-const SearchBox = ({ onPlaceChanged, value }: Props) => {
-  const autoCompleteRef = useRef<google.maps.places.Autocomplete>();
-  const inputRef = useRef<any>();
-  const options = {
-    componentRestrictions: { country: 'ng' },
-    fields: ['address_components', 'geometry', 'icon', 'name'],
-    types: ['establishment'],
+const SearchBox = ({ onPlaceChanged }: Props) => {
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+  const [value, setValue] = useState<string>('');
+  const debouncedValue = useDebounce<string>(value, 500);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+    combobox.openDropdown();
+    combobox.updateSelectedOptionIndex();
   };
 
-  useEffect(() => {
-    autoCompleteRef.current = new window.google.maps.places.Autocomplete(
-      inputRef.current,
-      options,
-    );
-    autoCompleteRef.current.addListener('place_changed', async function () {
-      const place = await autoCompleteRef.current?.getPlace();
-      onPlaceChanged?.(place?.geometry);
-    });
-  }, []);
+  const { data } = useQuery({
+    queryKey: ['placeSearch', debouncedValue],
+    queryFn: () => placeSearch(debouncedValue),
+    enabled: !!debouncedValue,
+  });
+
+  const options = useMemo(() => {
+    return data?.results.map((res) => ({
+      value: res.place_id,
+      lat: res.geometry.location.lat,
+      lng: res.geometry.location.lng,
+      label: res.formatted_address,
+      name: res.name,
+    }));
+  }, [data]);
+
+  const handleChangePlace = (placeId: string) => {
+    const place = options?.find((opt) => opt.value === placeId);
+    place && setValue(place.label);
+    place && onPlaceChanged?.({ lat: place.lat, lng: place.lng });
+  };
 
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      value={value}
-      placeholder="Search for Tide Information"
-      style={{
-        boxSizing: `border-box`,
-        border: `1px solid transparent`,
-        width: `240px`,
-        height: `32px`,
-        padding: `0 12px`,
-        borderRadius: `3px`,
-        boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-        fontSize: `14px`,
-        outline: `none`,
-        textOverflow: `ellipses`,
+    <Combobox
+      store={combobox}
+      withinPortal={false}
+      onOptionSubmit={(val) => {
+        handleChangePlace(val);
+        combobox.closeDropdown();
       }}
-    />
+    >
+      <Combobox.Target>
+        <TextInput
+          className="w-[300px]"
+          value={value}
+          placeholder="Nhập địa chỉ tìm kiếm"
+          onChange={handleChange}
+          onClick={() => combobox.openDropdown()}
+          onFocus={() => combobox.openDropdown()}
+          onBlur={() => combobox.closeDropdown()}
+        />
+      </Combobox.Target>
+      <Combobox.Dropdown>
+        <Combobox.Options>
+          {options?.length ? (
+            options.map((item) => (
+              <Combobox.Option
+                value={`${item.value}`}
+                key={item.value}
+                className="flex items-center gap-2"
+              >
+                <IconMapPinFilled />
+                <div className="flex flex-col gap-1">
+                  <div className="text-neutral-700 text-sm font-semibold">
+                    {item.name}
+                  </div>
+                  <div className="font-medium">{item.label}</div>
+                </div>
+              </Combobox.Option>
+            ))
+          ) : (
+            <Combobox.Empty className="flex items-center gap-2">
+              Chưa có dữ liệu
+            </Combobox.Empty>
+          )}
+        </Combobox.Options>
+      </Combobox.Dropdown>
+    </Combobox>
   );
 };
 export default SearchBox;

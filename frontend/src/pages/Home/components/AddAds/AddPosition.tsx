@@ -37,6 +37,7 @@ export type AddAdsPositionForm = {
   ads_form: string;
   planning_status: string;
   place_id: string;
+  is_active: IS_ACTIVE;
 };
 
 const AddPosition = ({
@@ -77,6 +78,7 @@ const AddPosition = ({
         ads_form: position?.adsForm.title || '',
         address: position?.adsPosition.address || placeAddress.address || '',
         place_id: position?.adsPosition.place_id || place?.place_id || '',
+        is_active: position?.adsPosition.is_actived || IS_ACTIVE.FALSE,
       },
       validate: {
         ward: ({ value, formValue }) => {
@@ -231,7 +233,7 @@ const AddPosition = ({
       place_id: fields.place_id,
       latitude: activePlace?.lat as number,
       longitude: activePlace?.lng as number,
-      is_active: user?.role === Role.VHTT ? IS_ACTIVE.TRUE : IS_ACTIVE.FALSE,
+      is_active: fields.is_active,
     };
 
     position
@@ -330,6 +332,19 @@ const AddPosition = ({
           onChange={(value) => onChangeField('ads_form', value || '')}
           withAsterisk
           error={error.ads_form}
+        />
+        <Select
+          disabled={user?.role !== Role.VHTT}
+          label="Trạng thái"
+          data={[
+            { value: IS_ACTIVE.TRUE, label: 'Đang hoạt động' },
+            { value: IS_ACTIVE.FALSE, label: 'Chưa hoạt động' },
+          ]}
+          placeholder="Trạng thái hoạt động"
+          value={fields.is_active}
+          onChange={(value) => onChangeField('is_active', value as IS_ACTIVE)}
+          withAsterisk
+          error={error.is_active}
         />
         <Button onClick={onSubmit} className="mt-3">
           {position

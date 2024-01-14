@@ -7,10 +7,12 @@ import {
   updateRequirementPosition,
 } from '@/apis/requirement';
 import { useForm } from '@/hooks/useForm';
+import { useControlStore } from '@/stores/control';
 import { useUserStore } from '@/stores/user';
 import { Role } from '@/types/enum';
 import { RequirementPosition } from '@/types/requirement';
 import { STATUS_TITLE } from '@/utils/avatar';
+import { sendAddReportMessage } from '@/utils/message';
 import { ActionIcon, Group, Table, Text, Textarea } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
@@ -21,6 +23,7 @@ import { useEffect, useState } from 'react';
 
 const ManageRequirementPosition = () => {
   const user = useUserStore.use.user();
+  const client = useControlStore.use.client();
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['getAllRequirementPosition'],
@@ -71,7 +74,16 @@ const ManageRequirementPosition = () => {
 
   const { mutate: approve } = useMutation({
     mutationFn: (id: number) => approveRequirementPosition(id),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      const staff = data?.find((report) => report.id === variables)?.staff;
+      sendAddReportMessage(
+        {
+          toPerson: staff,
+          message: `Yêu cầu của bạn đã được chấp nhận`,
+          title: 'Phản hồi yêu cầu điểm quảng cáo',
+        },
+        client,
+      );
       refetch();
     },
     onError: (e) => {
@@ -85,7 +97,16 @@ const ManageRequirementPosition = () => {
 
   const { mutate: reject } = useMutation({
     mutationFn: (id: number) => rejectRequirementPosition(id),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      const staff = data?.find((report) => report.id === variables)?.staff;
+      sendAddReportMessage(
+        {
+          toPerson: staff,
+          message: `Yêu cầu của bạn đã bị từ chối`,
+          title: 'Phản hồi yêu cầu điểm quảng cáo',
+        },
+        client,
+      );
       refetch();
     },
     onError: (e) => {

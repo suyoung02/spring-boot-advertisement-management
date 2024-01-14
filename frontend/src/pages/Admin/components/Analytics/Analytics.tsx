@@ -18,7 +18,7 @@ const Analytics = () => {
   useEffect(() => {
     if (user) {
       user.district && setSelectedDistricts([user.district]);
-      user.ward && setSelectedWards([`${user.district}_${user.ward}`]);
+      user.ward && setSelectedWards([`${user.ward}_${user.district}`]);
     }
   }, [user]);
 

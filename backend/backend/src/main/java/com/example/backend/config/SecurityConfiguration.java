@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                                 "/api/v1/ads/all/**", "/api/v1/adsType/getAll", "/api/v1", "/api/v1/location/**",
                                 "/api/v1/report/**", "/api/v1/processing-status", "/api/logs", "/api/v1/adsType/getAll",
                                 "/api/v1/adsForm/getAll", "/api/v1/planningStatus/getAll", "/api/v1/report-form",
-                                "/api/v1/locationType/getAll", "/ws/**")
+                                "/api/v1/locationType/getAll", "/ws/**", "/api/v1/auth/vhtt/signup")
                                 .permitAll()
                                 .requestMatchers("/api/v1/auth/all/**", "/api/v1/staff/all/**")
                                 .hasAnyAuthority(Role.VHTT.name(), Role.DISTRICT.name(), Role.WARD.name())

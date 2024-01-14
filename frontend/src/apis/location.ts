@@ -1,7 +1,6 @@
-import type { City } from '@/types/location';
+import type { City, PlaceResponse } from '@/types/location';
 import axios from 'axios';
 import { apiGet } from './api';
-import { GG_MAP_API_KEY } from '@/utils/env';
 
 export const getLocationApi = async (depth: number) => {
   try {
@@ -15,23 +14,14 @@ export const getLocationApi = async (depth: number) => {
   }
 };
 
-type PlaceSearchRequest = {
-  fields: string;
-  input: string;
-  inputtype: string;
-  key: string;
-};
-
-export const placeSearch = async (address: string) => {
-  const res = await apiGet<PlaceSearchRequest>(
-    'https://maps.googleapis.com/maps/api/place/findplacefromtext/json',
+export const placeSearch = async (input: string) => {
+  const res = await apiGet<any, ApiDataResponse<PlaceResponse>>(
+    'https://rsapi.goong.io/geocode',
     {
-      fields: 'formatted_address%2Cname%2Crating%2Copening_hours%2Cgeometry',
-      input: address,
-      inputtype: 'textquery',
-      key: GG_MAP_API_KEY,
+      api_key: 'sPgcfgAuWiG65qQ84c9TzLd6ABuCJU3f9hS1J41t',
+      address: input,
     },
   );
 
-  console.log(res);
+  return res.data;
 };

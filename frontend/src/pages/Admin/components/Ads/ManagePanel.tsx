@@ -2,10 +2,17 @@ import { getAllPresentingPanel } from '@/apis/position';
 import useLocationOptions from '@/hooks/useLocationOptions';
 import { useUserStore } from '@/stores/user';
 
+import {
+  approveContract,
+  deleteContract,
+  rejectContract,
+} from '@/apis/contract';
+import { RequestUpdatePanel } from '@/components/RequestUpdate';
 import { AddPanel } from '@/pages/Home/components/AddAds';
 import { ModalName, useControlStore } from '@/stores/control';
 import { Role } from '@/types/enum';
 import { getFullAddress } from '@/utils/location';
+import { sendAddReportMessage } from '@/utils/message';
 import {
   ActionIcon,
   Badge,
@@ -15,6 +22,8 @@ import {
   Table,
   Text,
 } from '@mantine/core';
+import { modals } from '@mantine/modals';
+import { notifications } from '@mantine/notifications';
 import {
   IconCheck,
   IconCirclePlus,
@@ -25,18 +34,11 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import PanelDetail from './PanelDetail';
-import {
-  approveContract,
-  deleteContract,
-  rejectContract,
-} from '@/apis/contract';
-import { notifications } from '@mantine/notifications';
-import { modals } from '@mantine/modals';
-import { RequestUpdatePanel } from '@/components/RequestUpdate';
 
 const ManagePanel = () => {
   const user = useUserStore.use.user();
   const { districts } = useLocationOptions({ district: user?.district });
+  const client = useControlStore.use.client();
 
   const modal = useControlStore.use.modal();
   const setModal = useControlStore.use.setModal();
@@ -48,7 +50,7 @@ const ManagePanel = () => {
   useEffect(() => {
     if (user) {
       user.district && setSelectedDistricts([user.district]);
-      user.ward && setSelectedWards([`${user.district}_${user.ward}`]);
+      user.ward && setSelectedWards([`${user.ward}_${user.district}`]);
     }
   }, [user]);
 
@@ -81,14 +83,19 @@ const ManagePanel = () => {
         return district === panel.adsPosition.district;
       });
 
+      console.log(selectedWards);
+
       const isIncludeWard = filterWards.length
         ? filterWards
             .map((ward) => {
+              console.log({ ward });
               const [_ward] = ward.split('_');
               return _ward;
             })
             .includes(panel.adsPosition.ward)
         : true;
+
+      console.log(isIncludeWard);
 
       return isIncludeDistrict && isIncludeWard;
     });
@@ -104,7 +111,17 @@ const ManagePanel = () => {
 
   const { mutate: approve } = useMutation({
     mutationFn: (id: number) => approveContract(id),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      const staff = data?.find((panel) => panel.contract.id === variables)
+        ?.contract.staff;
+      sendAddReportMessage(
+        {
+          toPerson: staff,
+          message: `Yêu cầu của bạn đã được chấp nhận`,
+          title: 'Phản hồi tạo quảng cáo',
+        },
+        client,
+      );
       refetch();
       notifications.show({ message: 'Chấp nhận thành công' });
     },
@@ -118,7 +135,17 @@ const ManagePanel = () => {
 
   const { mutate: reject } = useMutation({
     mutationFn: (id: number) => rejectContract(id),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      const staff = data?.find((panel) => panel.contract.id === variables)
+        ?.contract.staff;
+      sendAddReportMessage(
+        {
+          toPerson: staff,
+          message: `Yêu cầu của bạn đã bị từ chối`,
+          title: 'Phản hồi tạo quảng cáo',
+        },
+        client,
+      );
       refetch();
       notifications.show({ message: 'Từ chối thành công' });
     },
@@ -202,7 +229,7 @@ const ManagePanel = () => {
                     onClick={() => setModal(ModalName.ADD_PANEL)}
                     leftSection={<IconCirclePlus />}
                   >
-                    Tạo vị trí
+                    Tạo bảng quảng cáo
                   </Button>
                 </div>
               </Table.Th>
@@ -241,7 +268,7 @@ const ManagePanel = () => {
               ))}
 
             {filterData?.map((item) => (
-              <Table.Tr key={item.adsPosition.id}>
+              <Table.Tr key={item.contract.id}>
                 <Table.Td
                   className="cursor-pointer w-[50px]"
                   onClick={() => handleDetail(item)}
@@ -307,26 +334,31 @@ const ManagePanel = () => {
                           <IconX size={24} />
                         </ActionIcon>
                       </>
-                    ) : (
+                    ) : item.contract.state === 'Đang hiện diện' ? (
                       <ActionIcon
                         onClick={() => {
-                          if (item.contract.state !== 'Đang hiện diện') {
-                            handleDelete(item.contract.id);
-                          } else {
-                            setRequest(true);
-                            setPanel(item);
-                          }
+                          setRequest(true);
+                          setPanel(item);
                         }}
                         variant="subtle"
                         color="gray"
                         size="lg"
                       >
-                        {item.contract.state === 'Đang hiện diện' ? (
-                          <IconPencil size={24} />
-                        ) : (
-                          <IconTrash size={24} />
-                        )}
+                        <IconPencil size={24} />
                       </ActionIcon>
+                    ) : (
+                      user?.id === item.contract.staff && (
+                        <ActionIcon
+                          onClick={() => {
+                            handleDelete(item.contract.id);
+                          }}
+                          variant="subtle"
+                          color="gray"
+                          size="lg"
+                        >
+                          <IconTrash size={24} />
+                        </ActionIcon>
+                      )
                     )}
                   </Group>
                 </Table.Td>

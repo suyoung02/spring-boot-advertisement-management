@@ -2,6 +2,7 @@ import { User } from '@/types/user';
 import { apiDelete, apiGet, apiPatch } from './api';
 import { API_URL } from '@/utils/env';
 import { Role } from '@/types/enum';
+import dayjs from 'dayjs';
 
 export const getAllStaff = async () => {
   try {
@@ -43,7 +44,7 @@ export const updateOneStaff = async (id: number, data: UpdateStaffRequest) => {
   try {
     const res = await apiPatch<UpdateStaffRequest, ApiDataResponse<User>>(
       API_URL + `/staff/vhtt/update-one?id=${id}`,
-      data,
+      { ...data, dob: dayjs(data.dob).format('YYYY-MM-DD') as never },
     );
     return res.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

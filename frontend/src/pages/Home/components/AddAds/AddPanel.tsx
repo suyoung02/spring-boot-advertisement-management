@@ -101,6 +101,21 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
     queryFn: () => getAllAdsPosition(),
   });
 
+  const filterPositions = useMemo(() => {
+    return positions?.filter((pos) => {
+      if (user?.role === Role.WARD) {
+        return (
+          pos.adsPosition.district === user.district &&
+          pos.adsPosition.ward === user.ward
+        );
+      }
+      if (user?.role === Role.DISTRICT) {
+        return pos.adsPosition.district === user.district;
+      }
+      return true;
+    });
+  }, [positions, user]);
+
   const { mutate: addPanel, isPending: loading1 } = useMutation({
     mutationFn: (data: AddContractRequest) => addContract(data),
     onSuccess: () => {
@@ -218,7 +233,7 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
             <InputBase
               pointer
               withAsterisk
-              label="Chọn điểm bán hàng"
+              label="Chọn điểm quảng cáo"
               component="button"
               type="button"
               rightSection={<Combobox.Chevron />}
@@ -236,8 +251,8 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
           </Combobox.Target>
           <Combobox.Dropdown>
             <Combobox.Options>
-              {positions?.length ? (
-                positions.map((item) => (
+              {filterPositions?.length ? (
+                filterPositions.map((item) => (
                   <Combobox.Option
                     value={`${item.adsPosition.id}`}
                     key={item.adsPosition.id}
@@ -256,7 +271,8 @@ const AddPanel = ({ opened, panel, positionId, onClose }: Props) => {
                       <div className="font-medium text-xs">
                         {item.adsPosition.is_actived === 'TRUE'
                           ? 'Đang hoạt động'
-                          : 'Chưa hoạt động'}
+                          : 'Chưa hoạt động'}{' '}
+                        - {item.panels.length} Bảng quảng cáo
                       </div>
                     </div>
                   </Combobox.Option>

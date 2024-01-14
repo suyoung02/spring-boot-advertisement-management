@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/staff")
 public class StaffController {
     private final StaffService staffService;
-    private static final Logger logger  = Logger.getLogger(StaffController.class);
+    private static final Logger logger = Logger.getLogger(StaffController.class);
 
     @GetMapping("/all/get-individual")
     public ResponseEntity<StaffDto> getPersonalStaff(Principal connectedUser) {

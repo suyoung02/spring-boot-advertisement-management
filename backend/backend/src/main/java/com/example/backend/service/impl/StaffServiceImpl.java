@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import java.lang.reflect.Field;
 import java.security.Principal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -133,7 +134,7 @@ public class StaffServiceImpl implements StaffService {
                     }
 
                     case "dob": {
-                        ReflectionUtils.setField(fieldStaff, staff, value);
+                        ReflectionUtils.setField(fieldStaff, staff, Date.valueOf(String.valueOf(value)));
                         break;
                     }
 
@@ -159,26 +160,28 @@ public class StaffServiceImpl implements StaffService {
 
             try {
                 Field fieldUser = ReflectionUtils.findField(User.class, key);
-                fieldUser.setAccessible(true);
+                if (fieldUser != null) {
+                    fieldUser.setAccessible(true);
 
-                switch (key) {
-                    case "role": {
-                        ReflectionUtils.setField(fieldUser, user, Role.valueOf(value.toString()));
-                        break;
+                    switch (key) {
+                        case "role": {
+                            ReflectionUtils.setField(fieldUser, user, Role.valueOf(value.toString()));
+                            break;
+                        }
+
+                        case "ward": {
+                            ReflectionUtils.setField(fieldUser, user, value);
+                            break;
+                        }
+
+                        case "district": {
+                            ReflectionUtils.setField(fieldUser, user, value);
+                            break;
+                        }
+
+                        default:
+                            break;
                     }
-
-                    case "ward": {
-                        ReflectionUtils.setField(fieldUser, user, value);
-                        break;
-                    }
-
-                    case "district": {
-                        ReflectionUtils.setField(fieldUser, user, value);
-                        break;
-                    }
-
-                    default:
-                        break;
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();

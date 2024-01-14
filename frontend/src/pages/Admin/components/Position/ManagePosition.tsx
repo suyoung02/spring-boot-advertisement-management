@@ -4,7 +4,7 @@ import useLocationOptions from '@/hooks/useLocationOptions';
 import { AddPosition } from '@/pages/Home/components/AddAds';
 import { useUserStore } from '@/stores/user';
 import { Position } from '@/types/ads';
-import { Role } from '@/types/enum';
+import { IS_ACTIVE, Role } from '@/types/enum';
 import { getFullAddress } from '@/utils/location';
 
 import {
@@ -39,7 +39,7 @@ const ManagePosition = () => {
   useEffect(() => {
     if (user) {
       user.district && setSelectedDistricts([user.district]);
-      user.ward && setSelectedWards([`${user.district}_${user.ward}`]);
+      user.ward && setSelectedWards([`${user.ward}_${user.district}`]);
     }
   }, [user]);
 
@@ -154,6 +154,7 @@ const ManagePosition = () => {
               <Table.Th className="w-[150px]">Ads type</Table.Th>
               <Table.Th className="w-[100px]">Loại</Table.Th>
               <Table.Th className="w-[100px]">Tình trạng</Table.Th>
+              <Table.Th className="w-[100px]">Trạng thái</Table.Th>
               <Table.Th className="w-[200px]">
                 <div className="flex justify-end">
                   <Button
@@ -239,6 +240,16 @@ const ManagePosition = () => {
                   <Badge color={item.planningStatus.color} variant="outline">
                     {item.planningStatus.title}
                   </Badge>
+                </Table.Td>
+                <Table.Td
+                  className="cursor-pointer"
+                  onClick={() => handleDetail(item)}
+                >
+                  <Text fz="sm">
+                    {item.adsPosition.is_actived === IS_ACTIVE.TRUE
+                      ? 'Đang hoạt động'
+                      : 'Chưa hoạt động'}
+                  </Text>
                 </Table.Td>
                 <Table.Td>
                   <Group gap={8} justify="flex-end">

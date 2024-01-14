@@ -16,6 +16,7 @@ import { CURRENT_LOCATION, getFullAddress } from '@/utils/location';
 import { PlaceDetail } from './components/Place';
 import { Report, ReportList } from './components/Report';
 import { SearchBox } from './components/SearchBox';
+import { Location } from '@/types/location';
 
 const mapContainerStyle = {
   width: '100vw',
@@ -91,13 +92,9 @@ const HomePage = () => {
     setModal(ModalName.PANEL_DETAIL);
   };
 
-  const handlePlaceChange = (geometry?: google.maps.places.PlaceGeometry) => {
-    if (geometry?.viewport) {
-      mapRef?.fitBounds(geometry.viewport);
-    } else if (geometry?.location) {
-      mapRef?.setCenter(geometry.location);
-      mapRef?.setZoom(17);
-    }
+  const handlePlaceChange = (location: Location) => {
+    mapRef?.setCenter(location);
+    mapRef?.setZoom(17);
   };
 
   const handleReport = () => {

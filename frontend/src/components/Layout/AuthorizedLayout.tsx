@@ -27,6 +27,7 @@ const AuthorizedLayout = ({ children }: Props) => {
 
   const onMessageReceived = (data: Message, topic: string) => {
     if (topic === '/all/messages' && user) {
+      if (data.toPerson && user.id !== +data.toPerson) return;
       const res = JSON.parse(data.text) as AddReportParams;
       notifications.show({
         color: 'cyan',
